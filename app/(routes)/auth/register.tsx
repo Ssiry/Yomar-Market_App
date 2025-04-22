@@ -1,5 +1,4 @@
-
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, View, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { scale } from 'react-native-size-matters'
@@ -7,189 +6,259 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
 import { router } from "expo-router";
 
-
-
 const Register = () => {
+    const [phone, setPhone] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isAgree, setIsAgree] = useState(false);
+    const [error, setError] = useState('');
+
+
+
+    const handlePhoneChange = (text: string) => {
+        let filtered = text.replace(/[^0-9]/g, ''); // Allow only numbers
+
+        if (filtered.length === 1 && filtered !== '0') {
+            filtered = '';
+        } else if (filtered.length === 2 && filtered !== '05') {
+            filtered = '0';
+        }
+
+        if (filtered.length > 10) {
+            filtered = filtered.slice(0, 10);
+        }
+
+        setPhone(filtered);
+
+        // Validation check for phone number
+        if (filtered.length < 10 && filtered.length > 0) {
+            setError('رقم الهاتف غير مكتمل');
+        } else if (filtered.length === 0) {
+            setError('');
+        } else {
+            setError('');
+        }
+    };
+
+    const handleRegister = () => {
+        if (!phone || !password || !confirmPassword) {
+            Alert.alert("تنبيه", "برجاء ملء جميع البيانات");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            Alert.alert("تنبيه", "كلمتا المرور غير متطابقتين");
+            return;
+        }
+
+        if (!isAgree) {
+            Alert.alert("تنبيه", "يجب الموافقة على الشروط والأحكام");
+            return;
+        }
+
+        // هنا تقدر تضيف منطق التسجيل الفعلي
+        Alert.alert("تم التسجيل", "مرحبا بك في يومار!");
+        // router.push("/(routes)/home");
+    };
 
     return (
         <SafeAreaView style={styles.safeContainer}>
+            <Text style={styles.header}>انضم الينا الآن</Text>
 
-
-            <Text style={styles.header}>
-                انضم الينا الآن
-            </Text>
             <Text style={styles.subHeader}>
                 انشئ حساب الآن في
-                <Text style={{ color: "#036E65", fontFamily: 'Almarai', fontSize: scale(14), fontWeight: 'bold' }}>
-                    “يومار”
-                </Text>
+                <Text style={styles.brandText}> “يومار” </Text>
                 و استمتع بافضل خدمة توصيل تستحقها
             </Text>
 
-            <Text style={styles.inputHeader}>
-                رقم الهاتف
-            </Text>
+            {/* رقم الهاتف */}
+            <Text style={styles.inputHeader}>رقم الهاتف</Text>
             <TextInput
                 style={styles.textInput}
-                placeholder='
-                ادخل رقم هاتفك
-                '
+                placeholder='ادخل رقم هاتفك'
                 placeholderTextColor="#878787"
+                keyboardType="phone-pad"
+                textAlign="right"
+                value={phone}
+                onChangeText={setPhone}
             />
 
-            <Text style={styles.inputHeader}>
-                كلمة المرور
-            </Text>
-
-            <View style={{
-                flexDirection: "row", width: '100%', justifyContent: "space-between", alignItems: "center", borderColor: '#878787', borderWidth: 1, borderRadius: scale(8), marginBottom: scale(14), height: scale(48),
-            }}>
-
+            {/* كلمة المرور */}
+            <Text style={styles.inputHeader}>كلمة المرور</Text>
+            <View style={styles.passwordContainer}>
                 <TouchableOpacity
-                    style={{ width: scale(34), paddingLeft: scale(10) }}
+                    style={styles.iconButton}
                     onPress={() => setShowPassword(!showPassword)}
                 >
-                    {!showPassword ? (
-                        <Icon name="eye-outline" color={'gray'} size={24} />
-                    ) : (
-                        <Icon name="eye-off-outline" color={'gray'} size={24} />
-                    )}
+                    <Icon
+                        name={showPassword ? "eye-off-outline" : "eye-outline"}
+                        color={'gray'}
+                        size={24}
+                    />
                 </TouchableOpacity>
-
-                <TextInput style={styles.PassInput}
-                    secureTextEntry={true} textContentType='password' autoComplete='password'
+                <TextInput
+                    style={styles.PassInput}
+                    secureTextEntry={!showPassword}
+                    textContentType='password'
+                    autoComplete='password'
                     textAlign='right'
-                    placeholder='
-                ادخل كلمة المرور    
-                '
+                    placeholder='ادخل كلمة المرور'
                     placeholderTextColor="#878787"
+                    value={password}
+                    onChangeText={setPassword}
                 />
-
             </View>
-            <Text style={styles.inputHeader}>
-                تاكيد كلمة المرور            </Text>
-            <View style={{
-                flexDirection: "row", width: '100%', justifyContent: "space-between", alignItems: "center", borderColor: '#878787', borderWidth: 1, borderRadius: scale(8), marginBottom: scale(14), height: scale(48),
-            }}>
 
+            {/* تأكيد كلمة المرور */}
+            <Text style={styles.inputHeader}>تأكيد كلمة المرور</Text>
+            <View style={styles.passwordContainer}>
                 <TouchableOpacity
-                    style={{ width: scale(34), paddingLeft: scale(10) }}
+                    style={styles.iconButton}
                     onPress={() => setShowPassword(!showPassword)}
                 >
-                    {!showPassword ? (
-                        <Icon name="eye-outline" color={'gray'} size={24} />
-                    ) : (
-                        <Icon name="eye-off-outline" color={'gray'} size={24} />
-                    )}
+                    <Icon
+                        name={showPassword ? "eye-off-outline" : "eye-outline"}
+                        color={'gray'}
+                        size={24}
+                    />
                 </TouchableOpacity>
-
-                <TextInput style={styles.PassInput}
-                    secureTextEntry={true} textContentType='password' autoComplete='password'
+                <TextInput
+                    style={styles.PassInput}
+                    secureTextEntry={!showConfirmPassword}
+                    textContentType='password'
+                    autoComplete='password'
                     textAlign='right'
-                    placeholder='
-                ادخل كلمة المرور    
-                '
+                    placeholder='ادخل كلمة المرور'
                     placeholderTextColor="#878787"
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
                 />
-
             </View>
 
-            <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: scale(24), width: '100%' }}>
-
-                <Text style={{ fontSize: scale(12), fontWeight: 'light', color: "#000", fontFamily: 'Almarai', textAlign: "right", width: "90%" }}>
+            {/* الشروط */}
+            <View style={styles.termsContainer}>
+                <Text style={styles.termsText}>
                     انا موافق علي
-
-                    <Text style={{ color: "#036E65", fontFamily: 'Almarai', fontSize: scale(14), fontWeight: 'bold' }}>
-                        {' '}
-                        الشروط و الاحكام
-                    </Text>
-
-
-
-                    <Text style={{ color: "#000", fontFamily: 'Almarai', fontSize: scale(12), fontWeight: 'light' }}>
-                        {' '}
-                        الخاصة بالتطبيق
-
-
-                    </Text>
-
+                    <Text style={styles.termsLink}> الشروط و الاحكام </Text>
+                    <Text>الخاصة بالتطبيق</Text>
                 </Text>
                 <TouchableOpacity
-                    style={{ width: scale(34), paddingRight: scale(10), marginLeft: scale(10) }}
+                    style={styles.iconButton}
                     onPress={() => setIsAgree(!isAgree)}
                 >
-                    {isAgree ? (
-                        <Icon name="checkbox" color={'#036E65'} size={24} />
-                    ) : (
-                        <Icon name="checkbox-outline" color={'#000'} size={24} />
-                    )}
+                    <Icon
+                        name={isAgree ? "checkbox" : "checkbox-outline"}
+                        color={isAgree ? '#036E65' : '#000'}
+                        size={24}
+                    />
                 </TouchableOpacity>
-
             </View>
 
-            <TouchableOpacity style={{
-                width: '100%', height: scale(48), backgroundColor: "#036E65", justifyContent: "center", alignItems: "center", borderRadius: scale(100)
-            }}>
-                <Text style={{ fontFamily: 'Almarai', fontSize: scale(14), fontWeight: 'bold', color: "#fff" }}>
-                    انضم الان
-                </Text>
+            {/* زر التسجيل */}
+            <TouchableOpacity
+                onPress={handleRegister}
+                disabled={!phone || !password || !confirmPassword || !isAgree}
+                style={[
+                    styles.registerButton,
+                    { backgroundColor: (!phone || !password || !confirmPassword || !isAgree) ? '#ccc' : '#036E65' }
+                ]}
+            >
+                <Text style={styles.registerButtonText}>انضم الان</Text>
             </TouchableOpacity>
 
-            <View style={{
-                flexDirection: "row", width: '100%', justifyContent: "center", alignItems: "center", marginTop: scale(24)
-            }}>
-
-                <View style={{ width: scale(50), height: 1, backgroundColor: "#878787", marginHorizontal: scale(8) }} />
-
-                <Text style={{ fontFamily: 'Almarai', fontSize: scale(14), height: scale(20), color: "#878787" }}>
-                    هل انت مستخدم بالفعل ؟
-                </Text>
-
-                <View style={{ width: scale(50), height: 1, backgroundColor: "#878787", marginHorizontal: scale(8) }} />
-
+            {/* تسجيل الدخول */}
+            <View style={styles.dividerContainer}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>هل انت مستخدم بالفعل ؟</Text>
+                <View style={styles.dividerLine} />
             </View>
 
             <TouchableOpacity
-                onPress={() => {
-                    // router.push("/(routes)/auth/login");
-                    router.replace("/(routes)/auth/login");
-
-                    // router.back();
-                }}
-                style={{
-                    height: scale(33), backgroundColor: "#D9D9D9", justifyContent: "center", alignItems: "center", borderRadius: scale(100), marginTop: scale(16), paddingHorizontal: scale(24)
-                }}>
-                <Text style={{ fontFamily: 'Almarai', fontSize: scale(14), fontWeight: 'medium', color: "#036E65" }}>
-                    تسجيل الدخول
-                </Text>
+                onPress={() => router.replace("/(routes)/auth/login")}
+                style={styles.loginButton}
+            >
+                <Text style={styles.loginButtonText}>تسجيل الدخول</Text>
             </TouchableOpacity>
-
-
         </SafeAreaView>
-    )
-}
+    );
+};
 
 export default Register
 
 const styles = StyleSheet.create({
     safeContainer: {
-        flex: 1, justifyContent: "flex-start", alignItems: 'center', padding: scale(24), backgroundColor: "#fff"
+        flex: 1, justifyContent: "flex-start", alignItems: 'center',
+        padding: scale(24), backgroundColor: "#fff"
     },
     header: {
-        fontSize: scale(32), fontWeight: 'bold', marginBottom: scale(8), fontFamily: 'Almarai', textAlign: "right", width: "100%", height: scale(40)
+        fontSize: scale(32), fontWeight: 'bold', marginBottom: scale(8),
+        fontFamily: 'Almarai', textAlign: "right", width: "100%"
     },
     subHeader: {
-        fontSize: scale(14), fontWeight: 'normal', marginBottom: scale(32), fontFamily: 'Almarai', textAlign: "right", width: "100%", color: "#878787"
+        fontSize: scale(14), fontWeight: 'normal', marginBottom: scale(32),
+        fontFamily: 'Almarai', textAlign: "right", width: "100%", color: "#878787"
+    },
+    brandText: {
+        color: "#036E65", fontWeight: 'bold'
     },
     textInput: {
-        width: '100%', height: scale(48), borderColor: '#878787', borderWidth: 1, borderRadius: scale(8), paddingHorizontal: scale(10), marginBottom: scale(14), textAlign: "right", fontFamily: 'Almarai', fontSize: scale(12),
-    },
-    PassInput: {
-        width: '80%', height: scale(48), borderRadius: scale(8), paddingHorizontal: scale(10), fontFamily: 'Almarai', fontSize: scale(12),
+        width: '100%', height: scale(48), borderColor: '#878787',
+        borderWidth: 1, borderRadius: scale(8), paddingHorizontal: scale(10),
+        marginBottom: scale(14), textAlign: "right", fontFamily: 'Almarai'
     },
     inputHeader: {
-        fontSize: scale(14), fontWeight: 'normal', marginBottom: scale(8), fontFamily: 'Almarai', textAlign: "right", width: "100%",
+        fontSize: scale(14), fontWeight: 'normal', marginBottom: scale(8),
+        fontFamily: 'Almarai', textAlign: "right", width: "100%"
     },
-})
+    passwordContainer: {
+        flexDirection: "row", width: '100%', alignItems: "center",
+        borderColor: '#878787', borderWidth: 1, borderRadius: scale(8),
+        marginBottom: scale(14), height: scale(48)
+    },
+    PassInput: {
+        width: '80%', height: scale(48), paddingHorizontal: scale(0),
+        fontFamily: 'Almarai'
+    },
+    iconButton: {
+        width: scale(34), paddingLeft: scale(10)
+    },
+    termsContainer: {
+        flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+        marginBottom: scale(24), width: '100%'
+    },
+    termsText: {
+        fontSize: scale(12), fontWeight: 'light', color: "#000",
+        fontFamily: 'Almarai', textAlign: "right", width: "90%"
+    },
+    termsLink: {
+        color: "#036E65", fontWeight: 'bold'
+    },
+    registerButton: {
+        width: '100%', height: scale(48), justifyContent: "center",
+        alignItems: "center", borderRadius: scale(100)
+    },
+    registerButtonText: {
+        fontFamily: 'Almarai', fontSize: scale(14), fontWeight: 'bold', color: "#fff"
+    },
+    dividerContainer: {
+        flexDirection: "row", width: '100%', justifyContent: "center",
+        alignItems: "center", marginTop: scale(24)
+    },
+    dividerLine: {
+        width: scale(50), height: 1, backgroundColor: "#878787", marginHorizontal: scale(8)
+    },
+    dividerText: {
+        fontFamily: 'Almarai', fontSize: scale(14), height: scale(20), color: "#878787"
+    },
+    loginButton: {
+        height: scale(33), backgroundColor: "#D9D9D9", justifyContent: "center",
+        alignItems: "center", borderRadius: scale(100), marginTop: scale(16),
+        paddingHorizontal: scale(24)
+    },
+    loginButtonText: {
+        fontFamily: 'Almarai', fontSize: scale(14), fontWeight: 'medium',
+        color: "#036E65"
+    }
+});

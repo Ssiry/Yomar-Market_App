@@ -20,7 +20,10 @@ const Auth = () => {
             const isValid = await check60DayValidation(); // Replace with your logic
             // const isValid = true;
             if (isValid) {
-                router.push('/(routes)/auth/login');
+                router.push('/(routes)/home');
+
+
+                // router.push('/(routes)/auth/login');
                 return;
             }
 

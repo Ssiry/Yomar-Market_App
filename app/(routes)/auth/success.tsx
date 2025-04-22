@@ -38,7 +38,7 @@ const Success = () => {
             </View>
             {/* submit btn */}
             <TouchableOpacity
-                onPress={() => (router.push("/(routes)/auth"))}
+                onPress={() => (router.push("/(routes)/home"))}
                 style={{
                     width: '100%', height: scale(48), backgroundColor: "#036E65", justifyContent: "center", alignItems: "center", borderRadius: scale(100)
                 }}>
