@@ -99,6 +99,21 @@ const Login = () => {
             </View>
 
             <TouchableOpacity
+                onPress={() => { router.push('/(routes)/auth/checkPhone') }}
+                style={{ width: "100%" }}>
+                <Text style={{
+                    fontFamily: 'Almarai',
+                    fontSize: scale(14),
+                    fontWeight: 'normal',
+                    color: "#036E65",
+                    textAlign: 'left',
+                    width: '100%',
+                }}>
+                    نسيت كلمة المرور؟
+                </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
                 onPress={handleSubmit}
                 style={{
                     width: '100%',

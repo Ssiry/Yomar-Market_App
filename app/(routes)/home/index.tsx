@@ -3,18 +3,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Feather';
-// FontAwesome6
 import Icon3 from 'react-native-vector-icons/FontAwesome6';
-// account-circle
 import Icon4 from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Main from '@/app/(routes)/home/main'
 import Cart from '@/app/(routes)/home/cart'
 import Orders from '@/app/(routes)/home/orders'
 import Favourite from '@/app/(routes)/home/fav';
-
 import Profile from '@/app/(routes)/home/profile'
-import { scale } from 'react-native-size-matters';
 
 
 
@@ -55,7 +51,7 @@ export default function Home() {
       />
       <Tab.Screen
         name="المفضلة"
-        component={Orders}
+        component={Favourite}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="heart-sharp" color={color} size={size} />
@@ -64,7 +60,7 @@ export default function Home() {
       />
       <Tab.Screen
         name="الطلبات"
-        component={Favourite}
+        component={Orders}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon2 name="box" color={color} size={size} />

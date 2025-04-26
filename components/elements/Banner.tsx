@@ -47,7 +47,7 @@ const BannerSlider = () => {
             currentIndex = (currentIndex + 1) % banners.length;
 
             Animated.timing(scrollX, {
-                toValue: currentIndex * (scale(300) + scale(16)),
+                toValue: currentIndex * (scale(310) + scale(14)),
                 duration: 800,
                 useNativeDriver: true,
             }).start();
@@ -55,7 +55,7 @@ const BannerSlider = () => {
             // Ensure scrollViewRef.current is not undefined before accessing
             if (scrollViewRef.current) {
                 (scrollViewRef.current as any).scrollTo({
-                    x: currentIndex * (scale(300) + scale(16)),
+                    x: currentIndex * (scale(310) + scale(14)),
                     animated: true,
                 });
             }
@@ -70,7 +70,7 @@ const BannerSlider = () => {
                 ref={scrollViewRef}
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                snapToInterval={scale(300) + scale(16)}
+                snapToInterval={scale(310) + scale(14)}
                 decelerationRate="fast"
                 bounces={true}
                 overScrollMode="always"
@@ -78,9 +78,9 @@ const BannerSlider = () => {
             >
                 {banners.map((banner, index) => {
                     const inputRange = [
-                        (index - 1) * (scale(300) + scale(16)),
-                        index * (scale(300) + scale(16)),
-                        (index + 1) * (scale(300) + scale(16)),
+                        (index - 1) * (scale(310) + scale(14)),
+                        index * (scale(310) + scale(14)),
+                        (index + 1) * (scale(310) + scale(14)),
                     ];
 
                     const scaleAnim = scrollX.interpolate({
@@ -123,7 +123,7 @@ const BannerSlider = () => {
                         styles.progressBarFill,
                         {
                             width: scrollX.interpolate({
-                                inputRange: [0, (banners.length - 1) * (scale(300) + scale(16))],
+                                inputRange: [0, (banners.length - 1) * (scale(310) + scale(14)) - scale(14)],
                                 outputRange: ['0%', '100%'],
                                 extrapolate: 'clamp',
                             }),
@@ -139,17 +139,19 @@ export default BannerSlider;
 
 const styles = StyleSheet.create({
     container: {
+        marginHorizontal: "auto",
         width: '100%',
         height: scale(170),
         justifyContent: 'flex-start',
         display: 'flex',
         flexDirection: "column",
         alignItems: 'center',
+        // backgroundColor: "red"
     },
     bannerContainer: {
-        width: scale(300),
-        height: scale(135),
-        marginRight: scale(16),
+        width: scale(310),
+        height: scale(140),
+        marginRight: scale(14),
     },
     banner: {
         flex: 1,
@@ -160,7 +162,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.35)',
         justifyContent: 'center',
         alignItems: 'flex-end',
-        padding: scale(16),
+        padding: scale(14),
         borderRadius: scale(12),
     },
     title: {
@@ -195,7 +197,7 @@ const styles = StyleSheet.create({
         height: scale(6),
         width: '50%',
         backgroundColor: 'transparent',
-        // marginTop: scale(10),
+        marginTop: scale(10),
         overflow: 'hidden',
         borderRadius: scale(3),
         transform: [{ translateY: scale(-20) }],

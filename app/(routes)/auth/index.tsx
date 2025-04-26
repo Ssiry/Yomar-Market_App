@@ -3,7 +3,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from "expo-router";
-import Loader from '@/components/elements/loading';
+// import Loader from '@/components/elements/loading';
 
 const Auth = () => {
     useEffect(() => {
@@ -11,8 +11,9 @@ const Auth = () => {
             // Check if the user is using the app for the first time
             const isFirstTime = await checkFirstTimeUse(); // Replace with your logic
             // const isFirstTime = true;
-            if (isFirstTime) {
-                router.push("/(routes)/auth/register");
+            if (true) {
+                // router.push("/(routes)/auth/register");
+                router.push('/(routes)/home')
                 return;
             }
 
@@ -20,10 +21,9 @@ const Auth = () => {
             const isValid = await check60DayValidation(); // Replace with your logic
             // const isValid = true;
             if (isValid) {
-                router.push('/(routes)/home');
+                // router.push('/(routes)/home');
 
-
-                // router.push('/(routes)/auth/login');
+                router.push('/(routes)/auth/login');
                 return;
             }
 

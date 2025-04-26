@@ -59,8 +59,9 @@ const Register = () => {
         }
 
         // هنا تقدر تضيف منطق التسجيل الفعلي
-        Alert.alert("تم التسجيل", "مرحبا بك في يومار!");
-        // router.push("/(routes)/home");
+        // Alert.alert("تم التسجيل", "مرحبا بك في يومار!");
+
+        router.push("/(routes)/home");
     };
 
     return (
