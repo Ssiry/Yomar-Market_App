@@ -174,7 +174,6 @@ export default function MarketsMap() {
                                 <Text style={styles.cardDesc}>{selectedMarker.description}</Text>
                             </View>
 
-                            // R Content 2
                             <View style={styles.RContent2}>
                                 <Text style={{ fontFamily: "Almarai", color: '#036E65', fontWeight: '700', fontSize: scale(18), marginLeft: scale(3) }}>{selectedMarker.rate}</Text>
                                 <View style={{ flexDirection: 'row', gap: scale(1) }}>
@@ -236,7 +235,6 @@ export default function MarketsMap() {
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity
-                        // onPress={handleSubmit}
                         style={{
                             width: '100%',
                             height: scale(48),
@@ -250,7 +248,6 @@ export default function MarketsMap() {
                         <Text
                             style={{ fontFamily: 'Almarai', fontSize: scale(14), fontWeight: 'bold', color: '#fff' }}>
                             تسوق الآن
-
                         </Text>
                     </TouchableOpacity>
                 </Animated.View>
@@ -284,7 +281,6 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         position: 'absolute',
-
         bottom: scale(20),
         // width: "100%",
         padding: 15,
@@ -315,6 +311,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: scale(14),
         borderRadius: scale(16),
+        borderWidth: 3,
+        borderColor: '#036E65',
 
 
         // for its content 

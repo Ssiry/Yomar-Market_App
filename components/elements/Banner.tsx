@@ -39,6 +39,7 @@ const banners = [
 
 const BannerSlider = () => {
     const scrollX = useRef(new Animated.Value(0)).current;
+    const progressBarWidth = useRef(new Animated.Value(0)).current;
     const scrollViewRef = useRef<React.ComponentRef<typeof Animated.ScrollView>>(null);
 
     useEffect(() => {
@@ -50,6 +51,13 @@ const BannerSlider = () => {
                 toValue: currentIndex * (scale(310) + scale(14)),
                 duration: 800,
                 useNativeDriver: true,
+            }).start();
+
+            // Animate progress bar width (cannot use native driver for width)
+            Animated.timing(progressBarWidth, {
+                toValue: (currentIndex / (banners.length - 1)) * (0.5 * Dimensions.get('window').width),
+                duration: 800,
+                useNativeDriver: false,
             }).start();
 
             // Ensure scrollViewRef.current is not undefined before accessing
@@ -122,11 +130,7 @@ const BannerSlider = () => {
                     style={[
                         styles.progressBarFill,
                         {
-                            width: scrollX.interpolate({
-                                inputRange: [0, (banners.length - 1) * (scale(310) + scale(14)) - scale(14)],
-                                outputRange: ['0%', '100%'],
-                                extrapolate: 'clamp',
-                            }),
+                            width: progressBarWidth,
                         },
                     ]}
                 />
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
     progressBarFill: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: '#036E65',
-        width: '0%',
+        width: 0,
         borderRadius: scale(3),
 
     },

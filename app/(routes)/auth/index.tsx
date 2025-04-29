@@ -3,7 +3,6 @@ import React from 'react'
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from "expo-router";
-// import Loader from '@/components/elements/loading';
 
 const Auth = () => {
     useEffect(() => {
