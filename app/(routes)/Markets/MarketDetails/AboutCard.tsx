@@ -11,7 +11,7 @@ const AboutCard = () => {
             <View style={styles.topSection}>
                 <View style={styles.imageWrapper}>
                     <Image
-                        source={require('@/assets/images/banners.png')}
+                        source={require('@/assets/images/Background.png')}
                         style={styles.image}
                     />
                 </View>

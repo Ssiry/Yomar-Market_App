@@ -12,7 +12,8 @@ const Auth = () => {
             // const isFirstTime = true;
             if (true) {
                 // router.push("/(routes)/auth/register");
-                router.push('/(routes)/home')
+                // router.push('/(routes)/home')
+                router.push('/(routes)/Markets/MarketDetails');
                 return;
             }
 
