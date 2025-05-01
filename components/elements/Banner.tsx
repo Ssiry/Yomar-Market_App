@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ImageBackground, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { StyleSheet, View, ImageBackground, Animated, Dimensions } from 'react-native';
 import React, { useRef, useEffect } from 'react';
 import { scale } from 'react-native-size-matters';
 
@@ -21,20 +21,20 @@ const banners = [
         id: 3,
         title: 'أفضل تجربة توصيل في يومار',
         subtitle: 'جرب بنفسك الآن',
-        image: require('@/assets/images/banners.png'),
+        image: require('@/assets/images/Banner1.png'),
     },
     {
         id: 4,
         title: 'عروض حصرية لفترة محدودة!',
         subtitle: 'لا تفوّت الفرصة',
-        image: require('@/assets/images/banners.png'),
+        image: require('@/assets/images/Banner2.png'),
     },
-    {
-        id: 5,
-        title: 'أفضل تجربة توصيل في يومار',
-        subtitle: 'جرب بنفسك الآن',
-        image: require('@/assets/images/banners.png'),
-    },
+    // {
+    //     id: 5,
+    //     title: 'أفضل تجربة توصيل في يومار',
+    //     subtitle: 'جرب بنفسك الآن',
+    //     image: require('@/assets/images/Banner3.png'),
+    // },
 ];
 
 const BannerSlider = () => {
@@ -110,13 +110,13 @@ const BannerSlider = () => {
                                 style={styles.banner}
                                 imageStyle={{ borderRadius: scale(12) }}
                             >
-                                <View style={styles.overlay}>
+                                {/* <View style={styles.overlay}>
                                     <Text style={styles.title}>{banner.title}</Text>
                                     <Text style={styles.subtitle}>{banner.subtitle}</Text>
                                     <TouchableOpacity style={styles.button} onPress={() => { }}>
                                         <Text style={styles.buttonText}>سجل الآن</Text>
                                     </TouchableOpacity>
-                                </View>
+                                </View> */}
                             </ImageBackground>
                         </Animated.View>
                     );

@@ -1,6 +1,6 @@
 import OnBoarding1 from "@/assets/svg/Onboarding1";
 import OnBoarding2 from "@/assets/svg/Onboarding2";
-import Onboarding3 from "@/assets/svg/Onboarding3";
+import OnBoarding3 from "@/assets/svg/Onboarding3";
 
 export const OnBoardingData: OnBoardingDataType[] = [
 
@@ -20,7 +20,7 @@ export const OnBoardingData: OnBoardingDataType[] = [
         id: "3",
         title: "آمن، بسيط، وتقدر تعتمد عليه",
         subtitle: "دفع آمن، توصيل مضمون، ودعم موجود دايم لخدمتك.",
-        image: <Onboarding3 />
+        image: <OnBoarding3 />
     },
 
 
