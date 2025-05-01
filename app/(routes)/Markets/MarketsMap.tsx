@@ -153,7 +153,10 @@ export default function MarketsMap() {
                             longitudeDelta: 0.01,
                         }
                 }
-                showsUserLocation
+                showsUserLocation={true}
+                cameraZoomRange={{
+                }}
+                userLocationUpdateInterval={1000}
                 showsMyLocationButton
                 showsCompass={false}
                 mapType="mutedStandard"
@@ -182,6 +185,7 @@ export default function MarketsMap() {
                 >
                     <View style={styles.cardHeader}>
                         <Image source={selectedMarker.image} style={styles.cardImage} />
+
                         <View style={styles.cardContent}>
                             <Text style={styles.cardTitle}>{selectedMarker.title}</Text>
                             <Text style={styles.cardDesc}>{selectedMarker.description}</Text>
@@ -304,7 +308,8 @@ const styles = StyleSheet.create({
     cardContent: {
         width: '60%',
         alignItems: 'flex-end',
-        paddingLeft: scale(8),
+        justifyContent: 'space-between',
+        paddingVertical: scale(18),
         gap: scale(6),
     },
     cardTitle: {
@@ -333,21 +338,26 @@ const styles = StyleSheet.create({
     detailsRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+
         width: '100%',
     },
     detailBox: {
         width: '48%',
-        alignItems: 'center',
+        alignItems: 'flex-end',
+
     },
     detailLabel: {
         fontFamily: 'Almarai',
         fontSize: scale(10),
+        textAlign: 'center',
         color: '#4F9993',
     },
     detailValue: {
         fontFamily: 'Almarai',
         fontWeight: '700',
-        fontSize: scale(18),
+        textAlign: 'center',
+
+        fontSize: scale(16),
         color: '#036E65',
     },
     buyButton: {

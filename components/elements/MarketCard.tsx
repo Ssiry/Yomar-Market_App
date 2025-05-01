@@ -78,6 +78,8 @@ const MarketCard = () => {
 
 
                 showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+                horizontal={false}
                 bounces
             >
                 <View style={styles.cards}>
