@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Banner from '@/components/elements/Banner';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SearchIcon from 'react-native-vector-icons/Ionicons';
+import IonIcon from 'react-native-vector-icons/Ionicons'
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 import { router } from 'expo-router';
 // import NavBar from '@/components/elements/NavBar';
@@ -15,7 +16,12 @@ const NavBar = () => {
         <View style={styles.navbar}>
             {/* Left */}
             <View style={styles.navLeft}>
-                <Icon name="location-history" size={scale(36)} color={'#036E65'} />
+                <TouchableOpacity
+                    onPress={() => router.back()}
+                    style={styles.iconButton}>
+                    <IonIcon name="chevron-back-outline" size={scale(24)} color={'#036E65'} />
+                </TouchableOpacity>
+
                 <View style={styles.locationTextContainer}>
                     <Text style={styles.userName}>حسن عسيري</Text>
                     <Text style={styles.locationText}>1234 شارع الملك عبد العزيز</Text>
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     locationTextContainer: {
-        marginLeft: scale(4),
+        marginLeft: scale(10),
         display: 'flex',
         alignItems: 'flex-start',
         justifyContent: 'center',

@@ -3,6 +3,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from "expo-router";
+import BgPattern from '@/assets/svg/Pattern';
 
 const Auth = () => {
     useEffect(() => {
@@ -10,12 +11,10 @@ const Auth = () => {
             // Check if the user is using the app for the first time
             const isFirstTime = await checkFirstTimeUse(); // Replace with your logic
             // const isFirstTime = true;
-            if (true) {
-                // router.push("/(routes)/auth/register");
-                // router.push('/(routes)/home')
-                // router.push('/(routes)/Markets/MarketDetails/Product');
-                // router.push('/(routes)/Markets/MarketsMap');
-                router.push('/(routes)/Utitilies/Search')
+            if (isFirstTime) {
+
+                router.push("/(routes)/auth/register");
+                // router.push('/(routes)/Utitilies/Search')
                 return;
             }
 
@@ -38,6 +37,10 @@ const Auth = () => {
 
         checkUserStatus();
     }, []);
+
+
+
+
 
     // Replace checkFirstTimeUse and check60DayValidation with actual implementations
     const checkFirstTimeUse = async () => {
@@ -80,6 +83,9 @@ const Auth = () => {
 
     return (
         <View style={styles.container}>
+            <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
+                <BgPattern />
+            </View>
 
             <ActivityIndicator size="large" color="#036E65" />
 

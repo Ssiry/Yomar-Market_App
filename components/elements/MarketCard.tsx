@@ -4,6 +4,7 @@ import { scale } from 'react-native-size-matters'
 import { ImageBackground } from 'react-native'
 import SearchIcon from 'react-native-vector-icons/Ionicons';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { router } from 'expo-router';
 
 
 const Cards = [
@@ -153,7 +154,9 @@ const MarketCard = () => {
                                 </View>
 
                                 {/* right */}
-                                <TouchableOpacity style={{}}>
+                                <TouchableOpacity
+                                    onPress={() => { router.push('/(routes)/Markets/MarketDetails') }}
+                                    style={{}}>
                                     <SearchIcon name="enter" size={scale(32)} color={'#036E65'} />
                                 </TouchableOpacity>
                             </View>

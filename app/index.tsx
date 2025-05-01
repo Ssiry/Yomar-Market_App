@@ -12,9 +12,8 @@ export default function index() {
             const isOnboarding = await AsyncStorage.getItem('onboarding');
             const isUser = await AsyncStorage.getItem('UserCounter');
 
-            if (true) {
+            if (isUser) {
                 setIsOnboarding(false);
-
             } else {
 
             }

@@ -11,7 +11,7 @@ import Description from './Description'
 import Review from './Review'
 import AddToCard from './addToCard'
 import BgPattern from '@/assets/svg/Pattern'
-import PopUp from '@/app/(routes)/Utitilies/popUpMsg'
+import PopUp from '@/components/elements/popUpMsg'
 
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6'
 
@@ -103,19 +103,7 @@ const index = () => {
                     }}
 
                 /> */}
-                <PopUp
-                    icon={<FontAwesome6Icon name='location-crosshairs' color={'#00695C'} size={scale(30)} />}
-                    title='السماح لـ "يومار" بتحديد الموقع'
-                    subtitle='لكي يمكنك دخول التطبيق يجب أن تسمح لـ "يومار" بتحديد موقعك'
-                    btnText='Allow'
-                    isVisible={visible}
-                    onPress={async () => {
-                        console.log('طلب إذن الموقع هنا');
-                        setVisible(false);
-                        await requestLocationPermission();
 
-                    }}
-                />
                 {/* add to card */}
             </View>
         </SafeAreaView>

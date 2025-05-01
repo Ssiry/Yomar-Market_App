@@ -1,17 +1,22 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import NavBar from '@/components/elements/NavBar'
+// import NavBar from '@/components/elements/NavBar'
 import { scale } from 'react-native-size-matters'
 import { router } from 'expo-router';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 import CategoryBar from '@/components/elements/CategoryBar';
 import MarketCard from '@/components/elements/MarketCard';
+import NavBar from './NavBar';
+import BgPattern from '@/assets/svg/Pattern';
 
 
 const AllMarkets = () => {
     return (
         <SafeAreaView style={styles.safeContainer}>
+            <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
+                <BgPattern />
+            </View>
             <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}

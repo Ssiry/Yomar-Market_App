@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { scale } from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { router } from 'expo-router'
+import BgPattern from '@/assets/svg/Pattern'
 
 const ChangePass = () => {
     const [newPassword, setNewPassword] = useState('');
@@ -29,6 +30,9 @@ const ChangePass = () => {
             style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <SafeAreaView style={styles.safeContainer}>
+                    <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
+                        <BgPattern />
+                    </View>
                     {/* page title & back btn */}
                     <View style={styles.pageTitle}>
                         <TouchableOpacity onPress={() => router.back()}>

@@ -4,24 +4,75 @@ import { scale } from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import BgPattern from '@/assets/svg/Pattern'
 
 const CheckPhone = () => {
-    const [phoneNumber, setPhoneNumber] = useState('')
+    const [phone, setPhone] = useState('');
+    const [error, setError] = useState('');
 
-    const handleSendCode = () => {
-        const saudiPhoneRegex = /^05\d{8}$/;
+    const handlePhoneChange = (text: string) => {
+        let filtered = text.replace(/[^0-9]/g, '');
 
-        if (!saudiPhoneRegex.test(phoneNumber)) {
-            Alert.alert("رقم غير صحيح", "من فضلك أدخل رقم سعودي صحيح يبدأ بـ 05 مكون من 10 أرقام")
-            return;
+        if (filtered.length === 1 && filtered !== '0') {
+            filtered = '';
+        } else if (filtered.length === 2 && filtered !== '05') {
+            filtered = '0';
         }
 
-        router.push("/(routes)/auth/verifyOTP")
-    }
+        if (filtered.length > 10) {
+            filtered = filtered.slice(0, 10);
+        }
+
+        setPhone(filtered);
+
+        if (filtered.length < 10 && filtered.length > 0) {
+            setError('رقم الهاتف غير مكتمل');
+        } else {
+            setError('');
+        }
+    };
+
+
+    const handleSubmit = () => {
+        if (phone.length === 10) {
+            //generate OTP
+
+            generateOTP();
+
+            // Perform the API call to send the OTP
+            router.push('/(routes)/auth/verifyOTP');
+        } else {
+            alert('يرجى إدخال رقم الهاتف وكلمة المرور بشكل صحيح');
+        }
+    };
+
+    const generateOTP = () => {
+        // Generate a random 4-digit OTP
+        // You can customize the length of the OTP as needed
+        // For a 4-digit OTP:
+
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        console.log('Generated OTP:', otp);
+        AsyncStorage.setItem('otp', otp.toString())
+        AsyncStorage.setItem('otpFor', 'changePassword')
+            .then(() => {
+                console.log('OTP saved to AsyncStorage:', otp);
+
+            })
+            .catch((error) => {
+                console.error('Error saving OTP to AsyncStorage:', error);
+                return;
+
+            });
+
+    };
 
     return (
         <SafeAreaView style={styles.safeContainer}>
-
+            <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
+                <BgPattern />
+            </View>
             {/* page title & back btn */}
             <View style={styles.pageTitle}>
                 <TouchableOpacity onPress={() => router.back()}>
@@ -50,16 +101,18 @@ const CheckPhone = () => {
                     style={styles.textInput}
                     placeholder='ادخل رقم هاتفك'
                     placeholderTextColor="#878787"
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber}
+                    value={phone}
+                    onChangeText={handlePhoneChange}
                     keyboardType="phone-pad"
                     maxLength={10}
                 />
+                {error ? <Text style={styles.errorMessage}>{error}</Text> : null}
+
             </View>
 
             {/* submit btn */}
             <TouchableOpacity
-                onPress={handleSendCode}
+                onPress={handleSubmit}
                 style={{
                     width: '100%',
                     height: scale(48),
@@ -92,9 +145,19 @@ const styles = StyleSheet.create({
         fontSize: scale(14), fontWeight: 'normal', marginBottom: scale(32), fontFamily: 'Almarai', textAlign: "right", width: "100%", color: "#878787", lineHeight: scale(20)
     },
     textInput: {
-        width: '100%', height: scale(48), borderColor: '#878787', borderWidth: 1, borderRadius: scale(8), paddingHorizontal: scale(10), marginBottom: scale(14), textAlign: "right", fontFamily: 'Almarai', fontSize: scale(12),
+        width: '100%', height: scale(48), borderColor: '#878787', borderWidth: 1, borderRadius: scale(8), paddingHorizontal: scale(10), marginBottom: scale(10), textAlign: "right", fontFamily: 'Almarai', fontSize: scale(12),
     },
     inputHeader: {
         fontSize: scale(14), fontWeight: 'normal', marginBottom: scale(8), fontFamily: 'Almarai', textAlign: "right", width: "100%",
+    }, errorMessage: {
+        fontSize: scale(12),
+        fontFamily: 'Almarai',
+        color: 'red',
+        textAlign: 'left',
+        width: '100%',
+        marginTop: scale(4),
+        // marginBottom: scale(10),
+        lineHeight: scale(20),
+        marginBottom: scale(14),
     },
 })

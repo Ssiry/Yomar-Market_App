@@ -5,13 +5,14 @@ import { scale } from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native';
 import { router } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BgPattern from '@/assets/svg/Pattern';
 
 const Register = () => {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isAgree, setIsAgree] = useState(false);
     const [error, setError] = useState('');
 
@@ -60,12 +61,49 @@ const Register = () => {
 
         // هنا تقدر تضيف منطق التسجيل الفعلي
         // Alert.alert("تم التسجيل", "مرحبا بك في يومار!");
-
+        handleSubmit();
         router.push("/(routes)/home");
     };
 
+    const handleSubmit = () => {
+        if (phone.length === 10) {
+            //generate OTP
+
+            generateOTP();
+
+            // Perform the API call to send the OTP
+            router.push('/(routes)/auth/verifyOTP');
+        } else {
+            alert('يرجى إدخال رقم الهاتف وكلمة المرور بشكل صحيح');
+        }
+    };
+
+    const generateOTP = () => {
+        // Generate a random 4-digit OTP
+        // You can customize the length of the OTP as needed
+        // For a 4-digit OTP:
+
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        console.log('Generated OTP:', otp);
+        AsyncStorage.setItem('otp', otp.toString())
+        AsyncStorage.setItem('otpFor', 'verifyRegister')
+            .then(() => {
+                console.log('OTP saved to AsyncStorage:', otp);
+
+            })
+            .catch((error) => {
+                console.error('Error saving OTP to AsyncStorage:', error);
+                return;
+            });
+
+    };
+
+
     return (
         <SafeAreaView style={styles.safeContainer}>
+            <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
+                <BgPattern />
+            </View>
             <Text style={styles.header}>انضم الينا الآن</Text>
 
             <Text style={styles.subHeader}>
@@ -80,10 +118,11 @@ const Register = () => {
                 style={styles.textInput}
                 placeholder='ادخل رقم هاتفك'
                 placeholderTextColor="#878787"
+
                 keyboardType="phone-pad"
                 textAlign="right"
                 value={phone}
-                onChangeText={setPhone}
+                onChangeText={handlePhoneChange}
             />
 
             {/* كلمة المرور */}
@@ -127,7 +166,7 @@ const Register = () => {
                 </TouchableOpacity>
                 <TextInput
                     style={styles.PassInput}
-                    secureTextEntry={!showConfirmPassword}
+                    secureTextEntry={!showPassword}
                     textContentType='password'
                     autoComplete='password'
                     textAlign='right'
@@ -259,7 +298,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: scale(24)
     },
     loginButtonText: {
-        fontFamily: 'Almarai', fontSize: scale(14), fontWeight: 'medium',
+        fontFamily: 'Almarai', fontSize: scale(14), fontWeight: '800',
         color: "#036E65"
     }
 });

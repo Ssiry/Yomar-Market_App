@@ -7,6 +7,7 @@ import { scale } from 'react-native-size-matters'
 import SuccessIcon from "@/assets/svg/Success";
 import Icon from 'react-native-vector-icons/FontAwesome6';
 import { router } from 'expo-router';
+import BgPattern from '@/assets/svg/Pattern';
 // import Loader from '@/components/elements/loading';
 
 
@@ -17,7 +18,9 @@ const Success = () => {
     }
     return (
         <SafeAreaView style={styles.safeContainer}>
-
+            <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
+                <BgPattern />
+            </View>
 
             <SuccessIcon />
 

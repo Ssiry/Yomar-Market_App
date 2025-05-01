@@ -18,14 +18,17 @@ import { scale, verticalScale } from "react-native-size-matters";
 import { useFonts } from "expo-font";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
+import CheckLoc from "@/app/(routes)/Utitilies/checkLoc";
+import CheckNet from "@/app/(routes)/Utitilies/checkNet";
+import BgPattern from "@/assets/svg/Pattern";
 
 export default function OnBoardingScreen() {
+
 
 
   let [fontsLoaded, fontError] = useFonts({
     SegoeUI: require("../assets/fonts/SegoeUI.ttf"),
   });
-
   if (!fontsLoaded && !fontError) {
     return null;
   }
@@ -52,11 +55,14 @@ export default function OnBoardingScreen() {
       });
       setActiveIndex(nextIndex);
     } else {
+
       await AsyncStorage.setItem('onboarding', 'true');
+
+
       router.push("/(routes)/auth");
+
     }
   }
-
   //MARK: - Handle Prev
   const handelPrev = async () => {
     const nextIndex = activeIndex - 1;
@@ -68,9 +74,11 @@ export default function OnBoardingScreen() {
       setActiveIndex(nextIndex);
     } else {
       await AsyncStorage.setItem('onboarding', 'true');
-      //  router.push("/(routes)/home");
+      // check network connection
+
     }
   }
+
 
 
 
@@ -84,7 +92,16 @@ export default function OnBoardingScreen() {
       end={{ x: 1, y: 1 }}
       style={styles.container}
     >
+      <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
+        <BgPattern />
+      </View>
       <StatusBar barStyle="dark-content" />
+
+      <CheckLoc />
+      <CheckNet />
+
+
+
 
       {/* make the status bar in the <View/> below */}
       <Text style={styles.header}>هلا فيك في “يومار”</Text>
