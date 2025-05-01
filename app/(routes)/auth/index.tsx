@@ -13,7 +13,8 @@ const Auth = () => {
             if (true) {
                 // router.push("/(routes)/auth/register");
                 // router.push('/(routes)/home')
-                router.push('/(routes)/Markets/MarketDetails/Product');
+                // router.push('/(routes)/Markets/MarketDetails/Product');
+                router.push('/(routes)/Markets/MarketsMap');
                 return;
             }
 
