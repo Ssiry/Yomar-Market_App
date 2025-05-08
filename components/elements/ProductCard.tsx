@@ -35,7 +35,7 @@ const ProductCard: React.FC = () => {
 
 
     const NavigateToProductDetails = (id: number) => {
-        router.push('/(routes)/auth/success')
+        router.push('/(routes)/Markets/MarketDetails/Product')
         console.log('Product ID:', id);
     }
 

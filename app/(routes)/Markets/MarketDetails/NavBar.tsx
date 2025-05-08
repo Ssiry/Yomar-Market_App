@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/AntDesign';
 import Ionic from 'react-native-vector-icons/Ionicons';
@@ -14,9 +14,8 @@ const NavBar = () => {
             <View style={styles.navLeft}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <Ionic name="chevron-back-outline" size={scale(24)} color="#000" />
-                </TouchableOpacity>                    <View style={styles.locationTextContainer}>
+                </TouchableOpacity>
 
-                </View>
             </View>
 
             {/* Right */}

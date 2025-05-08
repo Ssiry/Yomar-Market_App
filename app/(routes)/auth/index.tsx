@@ -25,6 +25,7 @@ const Auth = () => {
                 // router.push('/(routes)/home');
 
                 router.push('/(routes)/auth/login');
+                // router.push('/(routes)/Markets/MarketDetails');
                 return;
             }
 

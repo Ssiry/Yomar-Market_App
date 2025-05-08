@@ -14,9 +14,8 @@ const NavBar = () => {
             <View style={styles.navLeft}>
                 <TouchableOpacity onPress={() => router.back()}>
                     <Ionic name="chevron-back-outline" size={scale(24)} color="#000" />
-                </TouchableOpacity>                    <View style={styles.locationTextContainer}>
+                </TouchableOpacity>
 
-                </View>
             </View>
 
             {/* Right */}

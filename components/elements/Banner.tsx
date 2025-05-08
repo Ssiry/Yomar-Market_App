@@ -29,12 +29,7 @@ const banners = [
         subtitle: 'لا تفوّت الفرصة',
         image: require('@/assets/images/Banner2.png'),
     },
-    // {
-    //     id: 5,
-    //     title: 'أفضل تجربة توصيل في يومار',
-    //     subtitle: 'جرب بنفسك الآن',
-    //     image: require('@/assets/images/Banner3.png'),
-    // },
+
 ];
 
 const BannerSlider = () => {

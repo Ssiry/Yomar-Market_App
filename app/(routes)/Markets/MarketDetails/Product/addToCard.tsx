@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { router } from 'expo-router'
 
 const AddToCard = () => {
     const [count, setCount] = useState(1)
@@ -15,9 +16,19 @@ const AddToCard = () => {
 
 
     }
-    const handleDeleteFromCart = () => {
+    const handleGoToConfirmOrder = () => {
         // Handle removing from cart logic here
-        console.log('Removed from cart:', setCount(0))
+        // console.log('Removed from cart:', setCount(0))
+
+        console.log('Go to confirm order:', count)
+        // Navigate to the confirm order screen
+        router.push({
+            pathname: '/(routes)/OrderProccess',
+            params: {
+                count: count,
+            },
+        })
+
 
     }
 
@@ -33,10 +44,10 @@ const AddToCard = () => {
                 </TouchableOpacity>
             ) : (
                 <TouchableOpacity
-                    onPress={() => handleDeleteFromCart()}
+                    onPress={() => handleGoToConfirmOrder()}
                     style={[styles.cartButton]}>
-                    <Icon name='delete' size={scale(16)} color="#fff" />
-                    <Text style={styles.cartText}>تاكيد الطلب</Text>
+                    <Icon name='moped' size={scale(22)} color="#fff" />
+                    <Text style={styles.cartText}> تاكيد الطلب </Text>
                 </TouchableOpacity>
             )}
 

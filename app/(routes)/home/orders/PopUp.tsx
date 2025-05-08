@@ -5,27 +5,30 @@ import {
     Modal,
     TouchableOpacity,
     StyleSheet,
-    I18nManager,
 } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-I18nManager.forceRTL(true);
 
 interface PopUpProps {
-    icon: string | React.ReactNode;
-    title: string;
-    subtitle: string;
+    // icon: string | React.ReactNode;
+    view1: React.ReactNode;
+    view2: React.ReactNode;
+    // title: string;
+    // subtitle: string;
     btnText: string;
 
     isVisible?: boolean;
 
 
 
+
+
+
     onPress: () => void;
 }
 
-const PopUP: React.FC<PopUpProps> = ({ icon, title, subtitle, btnText, isVisible, onPress }) => {
+const PopUp: React.FC<PopUpProps> = ({ view1, view2, btnText, isVisible, onPress }) => {
     const [, setVisible] = useState(true);
 
     return (
@@ -40,31 +43,29 @@ const PopUP: React.FC<PopUpProps> = ({ icon, title, subtitle, btnText, isVisible
                     <View style={styles.modal}>
                         {/* Icon */}
                         <View style={styles.iconContainer}>
-
-
-                            {icon && typeof icon === 'string' ? (
-                                <Icon name={icon} color='#000' size={scale(24)} />
-                            ) : (
-                                icon
-                            )}
-
+                            {view1}
+                        </View>
+                        <View style={[styles.iconContainer, { backgroundColor: 'transparent' }]}>
+                            {view2}
                         </View>
 
-                        {/* Title */}
-                        <Text style={styles.title}>
-                            {title}
+                        <View style={[styles.btnContainer]}>
 
-                        </Text>
+                            <TouchableOpacity style={[styles.button, { backgroundColor: 'red' }]} onPress={() => {
+                                onPress();
+                            }}>
+                                <Icon name="close-circle" size={scale(24)} color="#fff" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.button, { borderRadius: scale(50) }]} onPress={() => {
+                                // onPress();
+                                // Perform any action you want on button press
+                                alert('تم الاضافة الي السلة');
+                                // setVisible(false);
+                            }}>
+                                <Text style={styles.buttonText}>{btnText}</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                        {/* Description */}
-                        <Text style={styles.description}>
-                            {subtitle}
-                        </Text>
-
-                        {/* Button */}
-                        <TouchableOpacity style={styles.button} onPress={() => { onPress(); setVisible(false); }}>
-                            <Text style={styles.buttonText}>{btnText}</Text>
-                        </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
@@ -92,10 +93,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     iconContainer: {
-        backgroundColor: '#E8F5E9',
-        borderRadius: scale(50),
-        padding: scale(12),
-        marginBottom: scale(20),
+
+        width: "100%",
     },
     icon: {
         width: scale(40),
@@ -119,11 +118,18 @@ const styles = StyleSheet.create({
         fontFamily: 'Almarai',
         lineHeight: scale(22),
     },
+    btnContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginTop: scale(20),
+    },
     button: {
         backgroundColor: '#00695C',
         borderRadius: scale(15),
         paddingVertical: scale(12),
-        paddingHorizontal: scale(40),
+        paddingHorizontal: scale(12),
     },
     buttonText: {
         color: '#fff',
@@ -132,7 +138,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         lineHeight: scale(22),
         fontWeight: '600',
+        marginHorizontal: scale(30),
     },
+
 });
 
-export default PopUP;
+export default PopUp;

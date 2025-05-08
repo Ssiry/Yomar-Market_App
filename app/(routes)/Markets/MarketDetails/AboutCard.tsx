@@ -35,6 +35,11 @@ const AboutCard = () => {
                 </View>
 
                 <View style={styles.infoBox}>
+                    <Icon name="star" color="#046132" size={scale(20)} />
+                    <Text style={styles.infoText}>4.5</Text>
+                </View>
+
+                <View style={styles.infoBox}>
                     <AntIcon name="clockcircle" color="#036E65" size={scale(14)} />
                     <Text style={styles.infoText}>20 - 30 د</Text>
                 </View>

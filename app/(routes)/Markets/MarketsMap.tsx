@@ -18,7 +18,7 @@ const markerData = [
         id: 1,
         title: 'تموينات الراعي',
         description: 'ألبان ومواد غذائية',
-        coordinate: { latitude: 24.0889, longitude: 32.8980 },
+        coordinate: { latitude: 24.0819, longitude: 32.8960 },
         image: require('@/assets/images/Background.png'),
         rate: 3.5,
     },

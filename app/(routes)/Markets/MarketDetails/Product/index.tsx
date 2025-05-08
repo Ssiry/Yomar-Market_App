@@ -11,9 +11,7 @@ import Description from './Description'
 import Review from './Review'
 import AddToCard from './addToCard'
 import BgPattern from '@/assets/svg/Pattern'
-import PopUp from '@/components/elements/popUpMsg'
 
-import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6'
 
 
 const index = () => {
@@ -53,7 +51,6 @@ const index = () => {
 
         } else {
             console.log('access granted');
-            // Get the current location
             const location = await Location.getCurrentPositionAsync({});
             console.log('Current location:', location);
             setVisible(false);
@@ -91,18 +88,7 @@ const index = () => {
             }}>
                 {/* add to card */}
                 <AddToCard />
-                {/* <PopUp
-                    icon={<FontAwesome6Icon name='location-crosshairs' color={'#000'} size={scale(24)} />}
-                    title='Product added to cart'
-                    subtitle='You can check it in the cart'
-                    btnText='Go to cart'
-                    isVisible={visible}
-                    onPress={() => {
-                        console.log('go to cart')
-                        setVisible(false)
-                    }}
 
-                /> */}
 
                 {/* add to card */}
             </View>

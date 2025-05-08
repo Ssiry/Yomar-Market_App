@@ -10,7 +10,7 @@ import Main from '@/app/(routes)/home/main'
 import Cart from '@/app/(routes)/home/cart'
 import Orders from '@/app/(routes)/home/orders'
 import Favourite from '@/app/(routes)/home/fav';
-import Profile from '@/app/(routes)/home/profile'
+import Profile from '@/app/(routes)/home/account'
 
 
 
