@@ -20,7 +20,9 @@ const NavBar = () => {
 
             {/* Right */}
             <View style={styles.navRight}>
-                <TouchableOpacity style={styles.iconButton}>
+                <TouchableOpacity
+                    onPress={() => router.push('/(routes)/Utitilies/ChatPage')}
+                    style={styles.iconButton}>
                     <Ionic name="chatbox" size={scale(24)} color={'#036E65'} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.iconButton}>

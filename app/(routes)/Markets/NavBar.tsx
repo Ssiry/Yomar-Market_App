@@ -35,6 +35,7 @@ const NavBar = () => {
                     style={styles.iconButton}>
                     <SearchIcon name="search" size={scale(24)} color={'#036E65'} />
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.iconButton}>
                     <SearchIcon name="notifications" size={scale(24)} color={'#036E65'} />
                 </TouchableOpacity>

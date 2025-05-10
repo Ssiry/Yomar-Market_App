@@ -12,19 +12,50 @@ import {
     Platform,
     TouchableWithoutFeedback,
     Keyboard,
+    Modal
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Picker } from '@react-native-picker/picker';
 import { scale } from 'react-native-size-matters';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import BgPattern from '@/assets/svg/Pattern';
 import { router } from 'expo-router';
 
 I18nManager.forceRTL(true);
 
+
 const AccountInfoScreen = () => {
     const [gender, setGender] = useState('ذكر');
-    const [birthDate, setBirthDate] = useState('19/06/1999');
+    const [birthDate, setBirthDate] = useState(new Date(1999, 5, 19)); // شهر يبدأ من 0
+    const [showDatePicker, setShowDatePicker] = useState(true);
+
+    const handleDateChange = (event: any, selectedDate?: Date) => {
+        setShowDatePicker(false);
+        if (selectedDate) {
+            if (!isValidBirthDate(selectedDate)) {
+                alert('تاريخ الميلاد غير صالح. يجب أن يكون عمرك 13 سنة على الأقل ولا يمكن أن يكون في المستقبل.');
+                return;
+            }
+            setBirthDate(selectedDate);
+        }
+    };
+
+    const isValidBirthDate = (date: Date): boolean => {
+        const today = new Date();
+        const minAge = 13;
+        const minDate = new Date(
+            today.getFullYear() - minAge,
+            today.getMonth(),
+            today.getDate()
+        );
+
+        return date <= minDate; // العمر 13 سنة أو أكثر، وليس في المستقبل
+    };
+
+    const formatDate = (date: Date) => {
+        return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    };
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -86,8 +117,8 @@ const AccountInfoScreen = () => {
                                     value="علي حسن طلال عسيري"
                                 />
 
-                                <View style={[{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }]}>
-
+                                <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    {/* النوع */}
                                     <View style={[styles.form, { width: '35%' }]}>
                                         <Text style={styles.label}>النوع</Text>
                                         <View style={styles.pickerWrapper}>
@@ -101,20 +132,34 @@ const AccountInfoScreen = () => {
                                             </Picker>
                                         </View>
                                     </View>
-                                    <View style={[styles.form, { width: '60%' }]}>
 
+                                    {/* تاريخ الميلاد */}
+                                    <View style={[styles.form, { width: '60%' }]}>
                                         <Text style={styles.label}>تاريخ الميلاد</Text>
-                                        <TextInput
+                                        <TouchableOpacity
+                                            onPress={() => setShowDatePicker(true)}
                                             style={[styles.input, {
-                                                marginTop: scale(4), height: scale(70),
+                                                justifyContent: 'center',
+                                                height: scale(70),
+                                                marginTop: scale(4)
                                             }]}
-                                            value={birthDate}
-                                            onChangeText={setBirthDate}
-                                        />
+                                        >
+                                            <Text style={{ textAlign: 'right' }}>
+                                                {formatDate(birthDate)}
+                                            </Text>
+                                        </TouchableOpacity>
+
+                                        {showDatePicker && (
+                                            <DateTimePicker
+
+                                                value={birthDate}
+                                                mode="date"
+                                                display="default"
+                                                onChange={handleDateChange}
+                                            />
+                                        )}
                                     </View>
                                 </View>
-
-
                             </View>
 
                             {/* Save Button */}
@@ -130,7 +175,6 @@ const AccountInfoScreen = () => {
 };
 
 export default AccountInfoScreen;
-
 const styles = StyleSheet.create({
     safeContainer: {
         flex: 1,

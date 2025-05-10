@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
 import NavBar from '@/components/elements/NavBar';
 import FeaturedMarkets from '@/components/elements/FeaturedMarkets';
-import CategoryBar from '@/components/elements/CategoryBar';
 import BgPattern from '@/assets/svg/Pattern';
 import MyMap from '@/components/elements/mapView';
 import { router } from 'expo-router';

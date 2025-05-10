@@ -81,15 +81,19 @@ const Profile = () => {
                 <View style={styles.card}>
                     <Text style={{ width: '100%', fontFamily: 'Almarai' }}> الحساب</Text>
                     <ProfileItem icon="person" label="معلومات الحساب" onPress={() => {
-                        router.push('/(routes)/home/account/AccountInfoScreen');
+                        router.push('/(routes)/home/account/AccountInfo');
                     }} />
-                    <ProfileItem icon="settings-outline" label="الاعدادات العامة" onPress={() => { }} />
+                    <ProfileItem icon="settings-outline" label="الاعدادات العامة" onPress={() => {
+                        router.push('/(routes)/home/account/GeneralSettings')
+                    }} />
                 </View>
 
                 {/* Support */}
                 <View style={styles.card}>
                     <Text style={{ width: '100%', fontFamily: 'Almarai' }}>مركز المساعدة</Text>
-                    <ProfileItem icon="help-circle-outline" label="الدعم الفني" onPress={() => { }} />
+                    <ProfileItem icon="help-circle-outline" label="الدعم الفني" onPress={() => {
+                        router.push('/(routes)/home/account/HelpCenter');
+                    }} />
                 </View>
 
                 {/* Logout */}
@@ -185,7 +189,6 @@ const styles = StyleSheet.create({
     card: {
         width: '100%',
         paddingVertical: scale(10),
-        paddingHorizontal: scale(20),
         borderRadius: scale(8),
         marginVertical: scale(10),
         justifyContent: 'center',
