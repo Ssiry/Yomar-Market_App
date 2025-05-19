@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon3 from 'react-native-vector-icons/FontAwesome6';
 import Icon4 from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 import Main from '@/app/(routes)/home/main'
 import Cart from '@/app/(routes)/home/cart'
@@ -20,13 +22,15 @@ export default function Home() {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: 'white', borderTopWidth: 0, elevation: 0, shadowOpacity: 0.1, height: 100, paddingTop: 10 },
+        tabBarStyle: {
+          backgroundColor: 'white', borderTopWidth: 0, elevation: 0, shadowOpacity: 0.1, height: 100, paddingTop: 10
+        },
         tabBarActiveTintColor: '#036E65',
         tabBarInactiveTintColor: '#BDBDBD',
-        tabBarLabelStyle: { fontFamily: 'Almarai', fontWeight: 'bold' },
-
-        // tabBarLabelStyle: { fontSize: 12, fontWeight: 'bold' },
-        // tabBarShowLabel: false,
+        tabBarLabelStyle: {
+          fontFamily: 'Almarai', fontWeight: 'bold',
+          marginTop: 5,
+        },
         tabBarHideOnKeyboard: true,
 
       }}
@@ -45,16 +49,16 @@ export default function Home() {
         component={Cart}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon2 name="shopping-bag" color={color} size={size} />
+            <MaterialIcons name="delivery-dining" color={color} size={size} />
           ),
         }}
       />
       <Tab.Screen
-        name="المفضلة"
+        name="المنتجات"
         component={Favourite}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Icon name="heart-sharp" color={color} size={size} />
+            <FontAwesome5Icon name="boxes" color={color} size={size} />
           ),
         }}
       />

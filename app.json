@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "yomar-app",
-    "slug": "yomar-app",
+    "name": "yomar-market-app",
+    "slug": "yomar-market-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
