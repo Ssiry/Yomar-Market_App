@@ -1,17 +1,17 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Icon from 'react-native-vector-icons/Ionicons';
+// import Icon from 'react-native-vector-icons/Ionicons';
 import Icon2 from 'react-native-vector-icons/Feather';
 import Icon3 from 'react-native-vector-icons/FontAwesome6';
 import Icon4 from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
-import Main from '@/app/(routes)/home/main'
-import Cart from '@/app/(routes)/home/cart'
+import Main from '@/app/(routes)/home/main/main'
+import Delivery from '@/app/(routes)/home/Delivery'
 import Orders from '@/app/(routes)/home/orders'
-import Favourite from '@/app/(routes)/home/fav';
+import Products from '@/app/(routes)/home/products';
 import Profile from '@/app/(routes)/home/account'
 
 
@@ -45,17 +45,17 @@ export default function Home() {
         }}
       />
       <Tab.Screen
-        name="السلة"
-        component={Cart}
+        name="المندوب"
+        component={Delivery}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="delivery-dining" color={color} size={size} />
+            <MaterialIcons name="delivery-dining" color={color} size={size + 5} />
           ),
         }}
       />
       <Tab.Screen
         name="المنتجات"
-        component={Favourite}
+        component={Products}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5Icon name="boxes" color={color} size={size} />

@@ -27,7 +27,7 @@ export default function index() {
     if (loading) {
         return null;
     }
-    // return <Redirect href={Onbaording ? "/(routes)/onboarding" : "/(routes)/auth"} />
+    // return <Redirect href={!Onbaording ? "/(routes)/onboarding" : "/(routes)/auth/register"} />
     return <Redirect href={Onbaording ? "/(routes)/home" : "/(routes)/auth"} />
 
 }

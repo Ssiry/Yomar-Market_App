@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { } from 'react'
+import React from 'react'
 import { scale } from 'react-native-size-matters'
 import RS from '@/assets/svg/RS'
 

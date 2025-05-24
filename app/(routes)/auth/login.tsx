@@ -81,7 +81,7 @@ const Login = () => {
             <Text style={styles.header}>تسجيل الدخول الي حسابك</Text>
             <Text style={styles.subHeader}>من فضلك ادخل بياناتك لتسجيل الدخول</Text>
 
-            <Text style={[styles.inputHeader, { marginTop: scale(24) }]}>رقم الهاتف</Text>
+            <Text style={[styles.inputHeader, { marginTop: scale(24) }]}>رقم الجوال</Text>
             <TextInput
                 style={styles.textInput}
                 value={phone}

@@ -1,20 +1,25 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { scale } from 'react-native-size-matters'
 import BgPattern from '@/assets/svg/Pattern'
 import { router } from 'expo-router'
 import Icon from 'react-native-vector-icons/Ionicons'
-import CurrentOrders from './currentOrders'
+// import CurrentOrders from './currentOrders'
 import LastOrders from './LastOrders'
+import CategoryBar from './CategoryBar'
+import CurrentOrders from './currentOrders'
+import WorkingOnOrders from './workingOnOrders'
+import Waitting from './Waitting'
 
 
-const orders = [
-    { id: 'DSERC-76618-717', status: 'تم توصيل الطلب', shop: 'متجر السعدي', total: '37.00', delivery: 'مجانا', discount: '1.00', items: '4.0' },
-    // Add more if needed
-];
+// const orders = [
+//     { id: 'DSERC-76618-717', status: 'تم توصيل الطلب', shop: 'متجر السعدي', total: '37.00', delivery: 'مجانا', discount: '1.00', items: '4.0' },
+//     // Add more if needed
+// ];
 
 const Orders = () => {
+    const [selectedCategory, setSelectedCategory] = useState('المعلقة');
     return (
         <SafeAreaView style={styles.safeContainer}>
             <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
@@ -35,13 +40,13 @@ const Orders = () => {
                     </TouchableOpacity>
 
                     <Text style={styles.pageTitleText}>
-                        طلباتي
+                        الطلبات
                     </Text>
 
                     <View style={styles.dummyView} />
                 </View>
 
-                <View style={styles.separatorContainer}>
+                {/* <View style={styles.separatorContainer}>
                     <View style={styles.separatorLine} />
                     <Text style={styles.separatorText}>
                         الطلبات الحالية
@@ -49,21 +54,89 @@ const Orders = () => {
                     <View style={styles.separatorLine} />
                 </View>
 
-                <CurrentOrders />
+                <CurrentOrders /> */}
+
+                <View style={{ width: '100%', height: scale(55), justifyContent: 'center', alignItems: 'center', marginTop: scale(10) }}>
+                    <CategoryBar
+                        categories={['المعلقة', 'قيد التجهيز', 'قيد التوصيل', 'تم التوصيل']}
+                        onCategorySelect={(cat) => setSelectedCategory(cat)}
+                        initialSelected="المعلقة"
+                    />
+                </View>
+
+
+
+
+
 
 
 
                 {/* MARK:- Last Orders
                  */}
-                <View style={styles.separatorContainer}>
-                    <View style={styles.separatorLine} />
-                    <Text style={styles.separatorText}>
-                        اخر الطلبات
-                    </Text>
-                    <View style={styles.separatorLine} />
-                </View>
 
-                <LastOrders />
+                {selectedCategory === 'المعلقة' && <View>
+
+                    <View style={styles.separatorContainer}>
+                        <View style={styles.separatorLine} />
+                        <Text style={styles.separatorText}>
+                            قائمة الانتظار
+                        </Text>
+                        <View style={styles.separatorLine} />
+                    </View>
+
+                    <Waitting />
+
+
+                    {/* <LastOrders /> */}
+                </View>
+                }
+
+                {selectedCategory === 'قيد التوصيل' && <View>
+
+                    <View style={styles.separatorContainer}>
+                        <View style={styles.separatorLine} />
+                        <Text style={styles.separatorText}>
+                            قيد التوصيل
+                        </Text>
+                        <View style={styles.separatorLine} />
+                    </View>
+
+
+                    <CurrentOrders />
+                </View>
+                }
+
+                {selectedCategory === 'تم التوصيل' && <View>
+
+                    <View style={styles.separatorContainer}>
+                        <View style={styles.separatorLine} />
+                        <Text style={styles.separatorText}>
+                            تم التوصيل
+                        </Text>
+                        <View style={styles.separatorLine} />
+                    </View>
+
+
+                    {/* <CurrentOrders /> */}
+                    <LastOrders />
+                </View>
+                }
+
+                {selectedCategory === 'قيد التجهيز' && <View>
+
+                    <View style={styles.separatorContainer}>
+                        <View style={styles.separatorLine} />
+                        <Text style={styles.separatorText}>
+                            قيد التجهيز
+                        </Text>
+                        <View style={styles.separatorLine} />
+                    </View>
+                    <WorkingOnOrders />
+                </View>
+                }
+
+
+
 
 
 
@@ -131,14 +204,18 @@ const styles = StyleSheet.create({
     },
     separatorLine: {
         width: scale(50),
-        height: 1,
-        backgroundColor: "#878787",
+        height: 3,
+        backgroundColor: "#036E65",
+        opacity: 0.5,
         marginHorizontal: scale(8)
     },
     separatorText: {
         fontFamily: 'Almarai',
         fontSize: scale(14),
         height: scale(20),
-        color: "#878787"
+        fontWeight: 'bold',
+        color: "#036E65",
+        opacity: 0.5,
+
     },
 })

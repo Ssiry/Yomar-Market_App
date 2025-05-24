@@ -1,9 +1,7 @@
-import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ImageBackground, StyleSheet, Text, View } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { scale } from 'react-native-size-matters'
 import RS from '@/assets/svg/RS'
-import Icon from 'react-native-vector-icons/Ionicons'
-
 
 
 interface Product {
@@ -30,6 +28,7 @@ const createProducts = (count = 3): Product[] => {
         isFavorite: false,
     }));
 };
+
 
 
 const productImages: { [key: string]: any } = {
@@ -71,51 +70,44 @@ const OrderItems = () => {
 
     return (
 
-        <View
-
-            style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: scale(7),
-                paddingVertical: scale(10),
-            }}>
+        <View style={{
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: scale(7),
+            paddingTop: scale(10),
+        }}>
 
             {products.map(product => (
 
-                <View
-                    key={product.id}
-                    style={{
-                        width: '95%',
-                        height: scale(80),
-                        backgroundColor: '#fff',
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        padding: scale(10),
-                        borderWidth: scale(1),
-                        borderColor: '#E5E5E5',
-                        borderRadius: scale(8),
-                        shadowColor: '#000',
-                        shadowOffset: {
-                            width: 0,
-                            height: 0,
-                        },
-                        shadowOpacity: 0.10,
-                        shadowRadius: 3.0,
-                        elevation: 1,
-                        gap: scale(10),
-
-
-                    }}>
-                    <TouchableOpacity
+                <View style={{
+                    width: '95%',
+                    height: scale(80),
+                    backgroundColor: '#fff',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: scale(10),
+                    borderWidth: scale(1),
+                    borderColor: '#E5E5E5',
+                    borderRadius: scale(8),
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 0,
+                    },
+                    shadowOpacity: 0.10,
+                    shadowRadius: 3.0,
+                    elevation: 1,
+                }}>
+                    {/* <TouchableOpacity
                         style={[styles.iconButton, { height: "100%", backgroundColor: '#e5e5e5' }]}
                         onPress={() => { }}>
 
                         <Icon name={'trash-bin'} size={scale(20)} color="#036E65" />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
 
                     <ImageBackground style={{
@@ -134,11 +126,12 @@ const OrderItems = () => {
 
                         }}
                     />
+
                     <View style={{
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
-                        alignItems: 'flex-start',
+                        alignItems: 'flex-end',
                         gap: scale(5),
                         height: '100%',
                         paddingVertical: scale(5),
@@ -153,42 +146,19 @@ const OrderItems = () => {
                             </View>
                             <Text style={styles.MarketName}>منتج غذائي</Text>
                         </View>
-                        {/* <View
-                                    style={styles.priceRow}>
-                                    <View style={styles.priceBlock}>
-                                        <RS />
-                                        <Text style={styles.MarketDescription}>37</Text>
-                                    </View>
-                                    <Text style={styles.MarketName}>منتج غذائي</Text>
-                                </View> */}
+
 
                         <View style={styles.quantityRow}>
-                            <View style={styles.quantityControls}>
-
-                                {product.numberOfItems === 1 ?
-                                    <TouchableOpacity style={[styles.quantityControlsBtn, { opacity: 0.5 }]}
-                                        disabled={true}
-                                    >
-                                        <Icon name="remove" size={scale(16)} color="#036E65" />
-                                    </TouchableOpacity> : <TouchableOpacity style={styles.quantityControlsBtn} onPress={() => handleDecrement(product.id)}>
-                                        <Icon name="remove" size={scale(16)} color="#036E65" />
-                                    </TouchableOpacity>}
-                                <Text style={styles.MarketDescription}>{product.numberOfItems}</Text>
-
-                                {product.numberOfItems === 10 ?
-                                    <TouchableOpacity style={[styles.quantityControlsBtn, { opacity: 0.5 }]}
-                                        disabled={true}
-                                    >
-                                        <Icon name="add" size={scale(16)} color="#036E65" />
-                                    </TouchableOpacity> : <TouchableOpacity style={styles.quantityControlsBtn} onPress={() => handleIncrement(product.id)}>
-                                        <Icon name="add" size={scale(16)} color="#036E65" />
-                                    </TouchableOpacity>}
+                            <View style={[styles.iconButton, { height: scale(24), width: scale(34) }]}>
+                                <Text style={[styles.quantityText, { textAlign: "center", width: scale(30) }]}> 14</Text>
                             </View>
-                            <Text style={styles.quantityText}> العدد</Text>
+
+                            <Text style={styles.quantityText}> عدد العناصر</Text>
                         </View>
 
 
                     </View>
+
                 </View>
             ))}
 
@@ -245,24 +215,14 @@ const styles = StyleSheet.create({
     quantityControls: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: scale(5),
+        // gap: scale(5),
+        paddingHorizontal: scale(5),
     },
-    quantityControlsBtn: {
 
-        backgroundColor: 'transparent',
-        borderRadius: "50%",
-        width: scale(24),
-        height: scale(24),
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: '#E5E5E5',
-        borderWidth: scale(1),
-
-    },
     quantityText: {
         fontSize: scale(12),
         fontFamily: 'Almarai',
-        fontWeight: '600',
+        fontWeight: '700',
         color: '#333',
         textAlign: 'right',
     },

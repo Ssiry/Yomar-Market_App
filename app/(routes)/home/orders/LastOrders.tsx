@@ -4,7 +4,8 @@ import { scale } from 'react-native-size-matters'
 import OrderDone from '@/assets/svg/OrderDone'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import PopUp from './PopUp'
-import OrderDetails from './orderDetails'
+// import OrderDetails from './orderDetails'
+import OrderStatus from './OrderStatus'
 
 const LastOrders = () => {
     const [viewOrderDetails, setViewOrderDetails] = useState(false);
@@ -183,11 +184,11 @@ const LastOrders = () => {
 
 
                 view2={
-                    // <LastOrders />
-                    // <Text>hi</Text>
-                    <OrderDetails />
+                    <View style={{ height: scale(450), width: '100%' }} >
+                        <OrderStatus />
+                    </View>
                 }
-                btnText={'اعادة الطلب'}
+                btnText={'اغلاق'}
                 onPress={() => {
                     setViewOrderDetails(false)
                 }}

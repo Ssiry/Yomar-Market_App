@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { scale } from 'react-native-size-matters'
-import RS from '@/assets/svg/RS'
+// import RS from '@/assets/svg/RS'
 
 interface InfoSectionProps {
     customerName: string;

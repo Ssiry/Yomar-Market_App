@@ -3,8 +3,17 @@ import React from 'react'
 import { scale } from 'react-native-size-matters'
 import RS from '@/assets/svg/RS'
 
-const OrderDetails = () => {
+interface InfoSectionProps {
+    orderPrice: string;
+    deliveryFee: number;
+    totalPrice: number;
+}
+
+const PayInfo = ({ orderPrice, deliveryFee, totalPrice }: InfoSectionProps) => {
+
+
     return (
+
         <View style={{
             width: "100%",
             display: "flex",
@@ -15,82 +24,86 @@ const OrderDetails = () => {
             gap: scale(15),
 
             borderRadius: scale(8),
-            backgroundColor: '#F5F5F5',
-            marginVertical: scale(10),
-            // marginBottom: scale(50),
-
+            borderBottomWidth: scale(3),
+            borderBottomColor: '#F5F5F5', marginVertical: scale(10),
         }}>
+            {/* عنوان القسم */}
+
+
             <Text style={{
-                fontSize: scale(14),
+                fontSize: scale(16),
                 fontFamily: 'Almarai',
-                fontWeight: '700',
-                color: '#333',
+                fontWeight: '800',
+                color: '#046132',
+                textDecorationLine: 'underline',
                 textAlign: 'right',
             }}>
-                تفاصيل الطلب
+                الحسابات
             </Text>
+
+
+            {/* سعر الطلب*/}
             <View
                 style={styles.priceRow}>
                 <View style={styles.priceBlock}>
-                    {/* <RS /> */}
-                    <Text style={[styles.MarketDescription, { color: "#333" }]}>#0132323</Text>
+                    <Text style={[styles.MarketDescription, { color: "#046132" }]}>#{orderPrice}</Text>
                 </View>
                 <Text style={styles.MarketName}>
-                    الطلب ID
+                    سعر الطلب
                 </Text>
             </View>
 
-            <View
-                style={styles.priceRow}>
-                <View style={styles.priceBlock}>
-                    <RS color='#333' />
-                    <Text style={[styles.MarketDescription, { color: "#333" }]}>٤٨.٥</Text>
-                </View>
-                <Text style={styles.MarketName}>
-                    اجمالي العناصر
-                </Text>
-            </View>
             {/* رسوم التوصيل */}
             <View
                 style={styles.priceRow}>
                 <View style={styles.priceBlock}>
-                    {/* <RS /> */}
-                    <Text style={[styles.MarketDescription, { color: "#333" }]}>مجاناً </Text>
+                    <RS color='#046132' />
+                    <Text style={[styles.MarketDescription, { color: "#046132" }]}>
+                        {deliveryFee === 0 ? 'مجاناً' : deliveryFee}
+                    </Text>
                 </View>
                 <Text style={styles.MarketName}>
                     رسوم التوصيل
                 </Text>
             </View>
+
+
             {/* الخصم */}
             <View
                 style={styles.priceRow}>
                 <View style={styles.priceBlock}>
-                    <RS color='#333' />
-                    <Text style={[styles.MarketDescription, { color: "#333" }]}>٤.٥ </Text>
+                    <RS color='#046132' />
+                    <Text style={[styles.MarketDescription, { color: "#046132" }]}>{totalPrice}</Text>
                 </View>
                 <Text style={styles.MarketName}>
-                    الخصم
+                    المبلغ الاجمالي
                 </Text>
             </View>
-            {/* السعر النهائي */}
-            <View
-                style={styles.priceRow}>
-                <View style={styles.priceBlock}>
-                    <RS color='#333' />
-                    <Text style={[styles.MarketDescription, { color: "#333" }]}>٤٤.٥</Text>
-                </View>
-                <Text style={styles.MarketName}>
-                    السعر النهائي
-                </Text>
-            </View>
+
+            <Text style={[styles.iconButton, {
+                fontSize: scale(14),
+                fontFamily: 'Almarai',
+                fontWeight: '500',
+                color: '#333',
+                textAlign: 'center',
+            }]}>
+                الدفع عند الاستلام
+            </Text>
+
 
         </View>
     )
 }
 
-export default OrderDetails
+export default PayInfo
 
 const styles = StyleSheet.create({
+    iconButton: {
+        backgroundColor: '#E5E5E5', borderRadius: scale(8), paddingVertical: scale(8),
+        paddingHorizontal: scale(22),
+        //  width: scale(36), height: scale(36), 
+        justifyContent: 'center', alignItems: 'center',
+    },
     priceRow: {
         flexDirection: 'row-reverse',
         justifyContent: 'space-between',
@@ -106,15 +119,16 @@ const styles = StyleSheet.create({
         fontSize: scale(12),
         fontWeight: '700',
         fontFamily: 'Almarai',
-        color: '#036E65',
+        color: '#878787',
         textAlign: 'right',
+        lineHeight: scale(14),
         // width: '100%',
     },
     MarketDescription: {
         fontSize: scale(12),
         fontFamily: 'Almarai',
         fontWeight: '700',
-        color: '#036E65',
+        color: '#046132',
         textAlign: 'right',
 
     },

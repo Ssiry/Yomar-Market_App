@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import React from 'react';
 import { scale } from 'react-native-size-matters';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Banner from '@/components/elements/Banner';
+// import { SafeAreaView } from 'react-native-safe-area-context';
+// import Banner from '@/components/elements/Banner';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import SearchIcon from 'react-native-vector-icons/Ionicons';
-import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { router } from 'expo-router';
+// import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
+// import { router } from 'expo-router';
 // import NavBar from '@/components/elements/NavBar';
 
 
@@ -25,12 +26,12 @@ const NavBar = () => {
             {/* Right */}
             <View style={styles.navRight}>
                 <TouchableOpacity
-                    onPress={() => router.push('/(routes)/Utitilies/Search')}
+                    onPress={() => router.push('/(routes)/home/chat')}
                     style={styles.iconButton}>
-                    <SearchIcon name="search" size={scale(24)} color={'#036E65'} />
+                    <Ionicons name="chatbox" size={scale(24)} color={'#036E65'} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.iconButton}>
-                    <SearchIcon name="notifications" size={scale(24)} color={'#036E65'} />
+                    <Ionicons name="notifications" size={scale(24)} color={'#036E65'} />
                 </TouchableOpacity>
             </View>
         </View>

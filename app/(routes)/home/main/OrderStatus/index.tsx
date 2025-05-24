@@ -1,16 +1,12 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { scale } from 'react-native-size-matters'
-import { router } from 'expo-router'
-import Icon from 'react-native-vector-icons/Ionicons'
 import DeliveryInfo from './DeliveryInfo'
-import PayInfo from './PayInfo'
-import OrderItems from './OrderItems'
+
 import BgPattern from '@/assets/svg/Pattern'
-import PopUP from '@/components/elements/popUpMsg'
-import Share from '@/assets/svg/share'
-import SuccessIcon from '@/assets/svg/Success'
+import PayInfo from '@/app/(routes)/home/main/OrderStatus/PayInfo'
+import OrderItems from '@/app/(routes)/home/main/OrderStatus/OrderItems'
 
 const index = () => {
     const [isVisible, setVisible] = React.useState(false);
@@ -26,48 +22,7 @@ const index = () => {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
             >
-
-                <View style={styles.pageTitle}>
-                    <TouchableOpacity
-                        style={styles.iconButton}
-                        onPress={() => router.back()}>
-                        <Icon name="chevron-back-outline" size={scale(24)} color="#333" />
-                    </TouchableOpacity>
-                    <Text style={styles.pageTitleText}>
-                        تاكيد الطلب
-                    </Text>
-                    <View style={styles.dummyView} />
-                </View>
-
-
-                <Text style={{
-                    fontSize: scale(14),
-                    fontFamily: 'Almarai',
-                    fontWeight: '300',
-                    color: '#878787',
-                    textAlign: 'center',
-                    marginVertical: scale(10),
-                }}>
-                    انت تستحق خدمة رائعة
-                </Text>
-
-                <Text style={{
-                    fontSize: scale(16),
-                    fontFamily: 'Almarai',
-                    fontWeight: '700',
-                    color: '#046132',
-                    textDecorationLine: 'underline',
-                    marginVertical: scale(10),
-
-                    textAlign: 'center',
-                }}>
-                    عناصر الطلب
-                </Text>
-
-
                 <OrderItems />
-
-
                 <PayInfo
                     orderPrice="123456"
                     deliveryFee={5}
@@ -103,31 +58,6 @@ const index = () => {
                     </Text>
                 </View>
 
-
-
-
-                <TouchableOpacity
-                    onPress={() => {
-                        {
-                            setVisible(true);
-
-                        }
-                    }}
-                    style={styles.Button}
-                >
-                    <Text style={styles.ButtonText}>
-                        تاكيد الطلب
-                    </Text>
-                </TouchableOpacity>
-                {isVisible &&
-                    <PopUP icon={'basket-check'} title={'تم اتمام الطلب بنجاح'} subtitle={'تم اتممام الطلب رقم #1099322 '} btnText={'الذهاب الي الصفحة الرئيسية'} onPress={function (): void {
-
-                        setVisible(false);
-                    }}
-                    />
-                }
-
-
             </ScrollView>
         </SafeAreaView>
     )
@@ -137,7 +67,8 @@ export default index
 
 const styles = StyleSheet.create({
     safeContainer: {
-        flex: 1, justifyContent: "flex-start", alignItems: 'center', paddingHorizontal: scale(24), backgroundColor: "#fff"
+        height: '100%',
+        flex: 1, justifyContent: "flex-start", alignItems: 'center', paddingHorizontal: scale(4), backgroundColor: "#fff"
     },
     scrollView: {
         width: '100%', height: '100%', marginBottom: scale(-30)
