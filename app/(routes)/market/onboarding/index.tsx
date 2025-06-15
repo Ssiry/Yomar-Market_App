@@ -22,22 +22,22 @@ import CheckLoc from "@/app/(Utitilies)/checkLoc";
 import CheckNet from "@/app/(Utitilies)/checkNet";
 import BgPattern from "@/assets/svg/Pattern";
 
-export default function OnBoardingScreen() {
+const OnBoarding = () => {
 
 
 
   let [fontsLoaded, fontError] = useFonts({
-    SegoeUI: require("../assets/fonts/SegoeUI.ttf"),
+    SegoeUI: require("@/assets/fonts/SegoeUI.ttf"),
   });
   if (!fontsLoaded && !fontError) {
     return null;
   }
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const scrollViewRef = useRef(null);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   // MARK: - Handle Scroll
-  const handleScroll = (event) => {
+  const handleScroll = (event: { nativeEvent: { contentOffset: { x: any; }; layoutMeasurement: { width: number; }; }; }) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
     const currentIndex = Math.round(
       contentOffsetX / event.nativeEvent.layoutMeasurement.width
@@ -84,6 +84,9 @@ export default function OnBoardingScreen() {
 
 
 
+
+
+
   return (
     // MARK: - Main Container start
     <LinearGradient
@@ -115,7 +118,7 @@ export default function OnBoardingScreen() {
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}
         ref={scrollViewRef}
-        style={styles.ScrollContainer}
+      // style={styles.ScrollContainer}
       >
         {OnBoardingData.map((item, index) => (
           <View key={index} style={styles.slide}>
@@ -156,6 +159,8 @@ export default function OnBoardingScreen() {
 
   );
 }
+
+export default OnBoarding
 
 const styles = StyleSheet.create({
 
@@ -198,9 +203,9 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     height: scale(40),
     paddingTop: verticalScale(10),
-    height: scale(80),
+    // height: scale(80),
     marginBottom: verticalScale(20),
-    width: '75%',
+    // width: '75%',
     lineHeight: scale(24)
   },
   paginationContainer: {
