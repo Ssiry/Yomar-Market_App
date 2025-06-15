@@ -37,6 +37,10 @@ const headerData = [
 
 ]
 
+
+
+// الطلبات ، المبيعات ، الهدف 
+
 const Main = () => {
     return (
         <SafeAreaView style={styles.safeContainer}>

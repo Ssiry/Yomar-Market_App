@@ -1,7 +1,8 @@
 import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState, useCallback } from 'react';
 import { scale } from 'react-native-size-matters';
-import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import RS from '@/assets/svg/RS';
 import { router } from 'expo-router';
 
@@ -36,7 +37,7 @@ const ProductCard: React.FC = () => {
 
     const NavigateToProductDetails = (id: number) => {
         router.push('/(routes)/home/products/ProductDetails')
-        // console.log('Product ID:', id);
+        console.log('Product ID:', id);
     }
 
     const updateProduct = useCallback((id: number, updates: Partial<Product>) => {
@@ -47,35 +48,35 @@ const ProductCard: React.FC = () => {
         );
     }, []);
 
-    const handleAddToCart = (id: number) => {
-        updateProduct(id, { addToCart: true });
-    };
+    // const handleAddToCart = (id: number) => {
+    //     updateProduct(id, { addToCart: true });
+    // };
 
-    const handleIncrement = (id: number) => {
-        setProducts(prevProducts =>
-            prevProducts.map(product =>
-                product.id === id ? { ...product, numberOfItems: product.numberOfItems + 1 } : product
-            )
-        );
+    // const handleIncrement = (id: number) => {
+    //     setProducts(prevProducts =>
+    //         prevProducts.map(product =>
+    //             product.id === id ? { ...product, numberOfItems: product.numberOfItems + 1 } : product
+    //         )
+    //     );
 
-    };
+    // };
 
-    const handleDecrement = (id: number) => {
-        setProducts(prevProducts =>
-            prevProducts.map(product =>
-                product.id === id && product.numberOfItems > 1
-                    ? { ...product, numberOfItems: product.numberOfItems - 1 }
-                    : product
-            )
-        );
-        if (products.find(product => product.id === id)?.numberOfItems === 1) {
-            updateProduct(id, { addToCart: false });
-        }
-    };
+    // const handleDecrement = (id: number) => {
+    //     setProducts(prevProducts =>
+    //         prevProducts.map(product =>
+    //             product.id === id && product.numberOfItems > 1
+    //                 ? { ...product, numberOfItems: product.numberOfItems - 1 }
+    //                 : product
+    //         )
+    //     );
+    //     if (products.find(product => product.id === id)?.numberOfItems === 1) {
+    //         updateProduct(id, { addToCart: false });
+    //     }
+    // };
 
     return (
         <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false} bounces>
+            <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} bounces horizontal>
                 <View style={styles.cards}>
                     {products.map(product => (
                         <View key={product.id} style={[styles.card, product.addToCart ? { borderColor: '#036E65' } : {
@@ -88,16 +89,13 @@ const ProductCard: React.FC = () => {
                                     imageStyle={styles.imageStyle}
 
                                 >
-                                    <TouchableOpacity onPress={() => {
-                                        updateProduct(product.id, { isFavorite: !product.isFavorite });
-                                        console.log('product ID : ', product.id, '  Product isFav : ', product.isFavorite);
-                                    }} style={styles.favoriteIcon}>
-                                        {product.isFavorite ? (
-                                            <Icon name="heart" size={scale(22)} color="#FF7272" />
-                                        ) : (
-                                            <Icon name="heart-outline" size={scale(22)} color="#000" />
-                                        )}
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            router.push('/(routes)/home/products/editProduct')
+                                        }} style={styles.editIcon}>
+                                        <MaterialCommunityIcon name="circle-edit-outline" size={scale(20)} color="#000" />
                                     </TouchableOpacity>
+
                                 </ImageBackground>
                             </TouchableOpacity>
 
@@ -110,41 +108,11 @@ const ProductCard: React.FC = () => {
                                         <Text style={styles.MarketDescription}>{product.price}</Text>
                                     </View>
                                     <Text style={styles.MarketName}>{product.name}</Text>
-                                    <Text style={styles.productDescription}>{product.description}</Text>
-
                                 </TouchableOpacity>
 
-                                {/* <View style={styles.infoArea}>
-                                    {product.addToCart ? (
-                                        <View style={styles.cartInfoBox}>
-                                            <Text style={styles.cartAddedText}>تم الإضافة إلى السلة</Text>
-                                            <View style={styles.quantityRow}>
-                                                <View style={styles.quantityControls}>
-                                                    <TouchableOpacity style={styles.quantityControlsBtn} onPress={() => handleDecrement(product.id)}>
-                                                        <Icon name="remove" size={scale(16)} color="#036E65" />
-                                                    </TouchableOpacity>
-                                                    <Text style={styles.MarketDescription}>{product.numberOfItems}</Text>
-                                                    <TouchableOpacity style={styles.quantityControlsBtn} onPress={() => handleIncrement(product.id)}>
-                                                        <Icon name="add" size={scale(16)} color="#036E65" />
-                                                    </TouchableOpacity>
-                                                </View>
-                                                <Text style={styles.quantityText}> العدد</Text>
-                                            </View>
-                                        </View>
-                                    ) : (
-                                        <View style={{ width: '100%' }}>
-                                            <Text style={styles.productDescription}>{product.description}</Text>
-                                            <TouchableOpacity
-                                                style={styles.addToCartBtn}
-                                                onPress={() => handleAddToCart(product.id)}
-                                            >
-                                                <Icon name="cart" size={scale(16)} color="#036E65" />
-                                                <Text style={styles.MarketName}>أضف إلى السلة</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    )}
-                                </View> */}
-
+                                <View style={styles.infoArea}>
+                                    <Text style={[{ width: '100%' }, styles.productDescription]}>{product.description}</Text>
+                                </View>
                             </View>
                         </View>
                     ))}
@@ -158,25 +126,26 @@ export default ProductCard;
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: scale(5),
+        marginTop: scale(12),
         backgroundColor: 'transparent',
         borderRadius: scale(8),
         width: '100%',
     },
     cards: {
         flexDirection: 'row',
-        flexWrap: 'wrap',
+        // flexWrap: 'wrap',
+        gap: scale(4),
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: scale(30),
     },
     card: {
         backgroundColor: '#C8DFDD',
-        width: scale(145),
+        width: scale(155),
         borderRadius: scale(13),
         padding: scale(8),
         borderWidth: scale(1),
-        marginBottom: scale(10),
+        // marginBottom: scale(10),
         gap: scale(8),
     },
     productImage: {
@@ -189,7 +158,8 @@ const styles = StyleSheet.create({
         borderRadius: scale(7),
         resizeMode: 'cover',
     },
-    favoriteIcon: {
+
+    editIcon: {
         position: 'absolute',
         top: scale(6),
         left: scale(6),

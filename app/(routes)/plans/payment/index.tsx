@@ -11,12 +11,12 @@ import {
 import { scale } from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-interface AddDeliveryProps {
+interface PaymentCardProps {
     isVisible?: boolean;
     onPress: () => void;
 }
 
-const AddDelivery: React.FC<AddDeliveryProps> = ({ isVisible, onPress }) => {
+const PaymentCard: React.FC<PaymentCardProps> = ({ isVisible, onPress }) => {
 
     const [visible, setVisible] = useState(true);
     const [phone, setPhone] = useState('');
@@ -171,7 +171,7 @@ const AddDelivery: React.FC<AddDeliveryProps> = ({ isVisible, onPress }) => {
     )
 }
 
-export default AddDelivery
+export default PaymentCard
 
 const styles = StyleSheet.create({
 

@@ -177,10 +177,6 @@ const index = () => {
             <Call
                 visible={call}
                 onConfirm={() => handleCellularCall('+966555333123')}
-                // make a cellular call
-                // Linking.openURL(`tel:${'+966555333123'}`);
-                // ; setCall(false)
-
                 onCancel={() => { setCall(false) }}
             />
 
