@@ -50,7 +50,7 @@ const index = () => {
 
                 <TouchableOpacity style={[styles.Btn, { backgroundColor: '#fff' }]}
                     onPress={() => {
-                        router.push('/(routes)/market')
+                        router.push('/(routes)/delivery')
                     }}
                 >
                     <Text style={[styles.BtnText, { color: '#036E65' }]}>

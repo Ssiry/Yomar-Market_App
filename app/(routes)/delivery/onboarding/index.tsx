@@ -59,7 +59,7 @@ const OnBoarding = () => {
       await AsyncStorage.setItem('onboarding', 'true');
 
 
-      router.push("/(routes)/market/auth");
+      router.push("/(routes)/delivery/auth");
 
     }
   }
