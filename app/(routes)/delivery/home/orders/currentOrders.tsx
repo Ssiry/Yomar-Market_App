@@ -5,8 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const OrderData = [
     { id: 'DSERC-76618-717', status: 'تم توصيل الطلب', shop: 'متجر السعدي', total: '37.00', delivery: 'مجانا', discount: '1.00', items: '4' },
-    { id: 'DSERC-22319-118', status: 'قيد التوصيل', shop: 'متجر النور', total: '52.00', delivery: '5.00', discount: '2.00', items: '3' },
-    { id: 'DSERC-55322-115', status: 'جاري التحضير', shop: 'مطعم الشرق', total: '89.00', delivery: '10.00', discount: '0.00', items: '5' },
+
 ]
 
 const CurrentOrders = () => {

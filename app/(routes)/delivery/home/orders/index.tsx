@@ -35,9 +35,9 @@ const Orders = () => {
                 */}
 
                 <View style={styles.pageTitle}>
-                    <TouchableOpacity style={styles.iconButton} onPress={() => router.back()} >
-                        <Icon name="chevron-back-outline" size={scale(24)} color="#333" />
-                    </TouchableOpacity>
+
+                    <View style={styles.dummyView} />
+
 
                     <Text style={styles.pageTitleText}>
                         الطلبات
@@ -58,9 +58,9 @@ const Orders = () => {
 
                 <View style={{ width: '100%', height: scale(55), justifyContent: 'center', alignItems: 'center', marginTop: scale(10) }}>
                     <CategoryBar
-                        categories={['المعلقة', 'قيد التجهيز', 'قيد التوصيل', 'تم التوصيل']}
+                        categories={['الحالية', 'تم التوصيل']}
                         onCategorySelect={(cat) => setSelectedCategory(cat)}
-                        initialSelected="المعلقة"
+                        initialSelected="الحالية"
                     />
                 </View>
 
@@ -74,7 +74,18 @@ const Orders = () => {
                 {/* MARK:- Last Orders
                  */}
 
-                {selectedCategory === 'المعلقة' && <View>
+                {selectedCategory === 'الحالية' && <View>
+
+                    <View style={styles.separatorContainer}>
+                        <View style={styles.separatorLine} />
+                        <Text style={styles.separatorText}>
+                            قيد التوصيل
+                        </Text>
+                        <View style={styles.separatorLine} />
+                    </View>
+
+
+                    <CurrentOrders />
 
                     <View style={styles.separatorContainer}>
                         <View style={styles.separatorLine} />
@@ -90,7 +101,7 @@ const Orders = () => {
                     {/* <LastOrders /> */}
                 </View>
                 }
-
+                {/* 
                 {selectedCategory === 'قيد التوصيل' && <View>
 
                     <View style={styles.separatorContainer}>
@@ -104,7 +115,7 @@ const Orders = () => {
 
                     <CurrentOrders />
                 </View>
-                }
+                } */}
 
                 {selectedCategory === 'تم التوصيل' && <View>
 
@@ -122,18 +133,6 @@ const Orders = () => {
                 </View>
                 }
 
-                {selectedCategory === 'قيد التجهيز' && <View>
-
-                    <View style={styles.separatorContainer}>
-                        <View style={styles.separatorLine} />
-                        <Text style={styles.separatorText}>
-                            قيد التجهيز
-                        </Text>
-                        <View style={styles.separatorLine} />
-                    </View>
-                    <WorkingOnOrders />
-                </View>
-                }
 
 
 

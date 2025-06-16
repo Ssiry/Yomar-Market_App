@@ -97,8 +97,8 @@ const Waitting = () => {
                         <OrderStatus />
                     </View>
                 }
-                btnText={'تم التجهيز (استدعاء المندوب)'}
-                onPress={() => { }}
+                btnText={'استلام الطلب'}
+                onPress={() => setShowOrderDetailsPopup(false)}
                 // onPress={() => setShowOrderDetailsPopup(false)}
                 isVisible={showOrderDetailsPopup}
             />

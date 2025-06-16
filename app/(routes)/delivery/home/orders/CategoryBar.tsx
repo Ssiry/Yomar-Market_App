@@ -19,7 +19,7 @@ const CategoryBar: React.FC<CategoryBarProps> = ({ categories, onCategorySelect,
     return (
         <View style={styles.container}>
             <ScrollView
-                style={{ borderRadius: scale(100), paddingHorizontal: scale(10) }}
+                style={{ borderRadius: scale(100), paddingHorizontal: scale(0) }}
                 horizontal showsHorizontalScrollIndicator={false}>
                 {categories.map((category) => (
                     <TouchableOpacity
