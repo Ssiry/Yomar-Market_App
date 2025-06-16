@@ -13,6 +13,8 @@ import BgPattern from '@/assets/svg/Pattern';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CurrentOrders from '../orders/currentOrders';
 import { router } from 'expo-router';
+import PopUp from '../orders/PopUp';
+import WorkerTimeCard from './WorkerTimeCard';
 
 const ProfileItem: React.FC<{ icon: string; label: string; onPress: () => void }> = ({ icon, label, onPress }) => (
     <TouchableOpacity onPress={onPress} style={styles.Row}>
@@ -39,6 +41,7 @@ const ProfileItem: React.FC<{ icon: string; label: string; onPress: () => void }
 
 const Profile = () => {
     const [activeOrder, setActiveOrder] = useState(0);
+    const [workTime, setWorkTime] = useState(false);
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -93,13 +96,10 @@ const Profile = () => {
                     <Text style={{ width: '100%', fontFamily: 'Almarai' }}>
                         الكوبونات و الاشتراكات
                     </Text>
-                    <ProfileItem icon="ticket-outline" label="الكوبنات" onPress={() => {
-                        router.push('/(routes)/delivery/home/account/Copuns');
+                    <ProfileItem icon="time-outline" label="ساعات العمل" onPress={() => {
+                        setWorkTime(true);
                     }} />
 
-                    <ProfileItem icon="id-card" label="الباقات" onPress={() => {
-                        router.push('/(routes)/delivery/home/account/plans');
-                    }} />
                 </View>
 
                 {/* Support */}
@@ -121,7 +121,29 @@ const Profile = () => {
                     <Icon name="exit-outline" size={scale(20)} color="red" />
                     <Text style={styles.logoutText}>تسجيل الخروج</Text>
                 </TouchableOpacity>
+
+
             </ScrollView>
+
+            <PopUp
+                view1={
+                    <Text>
+                        هل تريد استخدام الكوبون؟ يمكنك استخدامه مرة واحدة فقط.
+                    </Text>
+                }
+                view2={
+                    <View style={{ width: '100%', height: scale(200), justifyContent: 'center', alignItems: 'center' }}>
+                        <WorkerTimeCard />
+                    </View>
+                }
+                btnText='استخدام الكوبون'
+
+                isVisible={workTime}
+
+                onPress={() => {
+                    setWorkTime(false);
+                }}
+            />
         </SafeAreaView>
     );
 };
