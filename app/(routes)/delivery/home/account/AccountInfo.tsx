@@ -104,7 +104,7 @@ const AccountInfoScreen = () => {
                                     editable={false}
                                 />
 
-                                <Text style={styles.label}>رقم الهاتف</Text>
+                                <Text style={styles.label}>رقم الجوال</Text>
                                 <TextInput
                                     style={styles.input}
                                     value="+966 - 433-7656"
@@ -134,30 +134,16 @@ const AccountInfoScreen = () => {
                                     </View>
 
                                     {/* تاريخ الميلاد */}
-                                    <View style={[styles.form, { width: '60%' }]}>
+                                    <View style={[styles.form, { width: '60%', alignItems: 'flex-end', gap: scale(24) }]}>
                                         <Text style={styles.label}>تاريخ الميلاد</Text>
-                                        <TouchableOpacity
-                                            onPress={() => setShowDatePicker(true)}
-                                            style={[styles.input, {
-                                                justifyContent: 'center',
-                                                height: scale(70),
-                                                marginTop: scale(4)
-                                            }]}
-                                        >
-                                            <Text style={{ textAlign: 'right' }}>
-                                                {formatDate(birthDate)}
-                                            </Text>
-                                        </TouchableOpacity>
 
-                                        {showDatePicker && (
-                                            <DateTimePicker
+                                        <DateTimePicker
 
-                                                value={birthDate}
-                                                mode="date"
-                                                display="default"
-                                                onChange={handleDateChange}
-                                            />
-                                        )}
+                                            value={birthDate}
+                                            mode="date"
+                                            display="default"
+                                            onChange={handleDateChange}
+                                        />
                                     </View>
                                 </View>
                             </View>

@@ -19,7 +19,7 @@ import Waitting from './Waitting'
 // ];
 
 const Orders = () => {
-    const [selectedCategory, setSelectedCategory] = useState('المعلقة');
+    const [selectedCategory, setSelectedCategory] = useState('الحالية');
     return (
         <SafeAreaView style={styles.safeContainer}>
             <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>

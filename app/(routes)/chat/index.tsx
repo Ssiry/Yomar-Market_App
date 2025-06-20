@@ -70,7 +70,7 @@ const index = () => {
                 {ChatSections.map((item) => (
 
                     <TouchableOpacity
-                        onPress={() => router.push('/home/chat/ChatPage')}
+                        onPress={() => router.push('/(routes)/chat/ChatPage')}
                         activeOpacity={0.7}
                         key={item.id}
                         style={{

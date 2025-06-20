@@ -36,7 +36,7 @@ const ProductCard: React.FC = () => {
 
 
     const NavigateToProductDetails = (id: number) => {
-        router.push('/(routes)/home/products/ProductDetails')
+        router.push('/(routes)/market/home/products/ProductDetails')
         console.log('Product ID:', id);
     }
 
@@ -91,7 +91,7 @@ const ProductCard: React.FC = () => {
                                 >
                                     <TouchableOpacity
                                         onPress={() => {
-                                            router.push('/(routes)/home/products/editProduct')
+                                            router.push('/(routes)/market/home/products/editProduct')
                                         }} style={styles.editIcon}>
                                         <MaterialCommunityIcon name="circle-edit-outline" size={scale(20)} color="#000" />
                                     </TouchableOpacity>

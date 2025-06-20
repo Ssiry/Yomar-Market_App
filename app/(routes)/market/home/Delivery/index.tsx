@@ -9,7 +9,7 @@ import { router } from 'expo-router'
 import CurrentOrders from '../main/currentOrders'
 import AddDelivery from './addDelivery'
 import DeleteDeliery from './deleteDeliery'
-import Call from '../chat/Call'
+import Call from '../../../chat/Call'
 import { Alert } from 'react-native';
 
 
@@ -143,7 +143,7 @@ const index = () => {
                             <View style={[styles.Row, { gap: scale(6), }]}>
 
                                 <TouchableOpacity style={[styles.Touchable]} onPress={() => {
-                                    router.push('/(routes)/market/home/chat/ChatPage')
+                                    router.push('/(routes)/chat/ChatPage')
                                 }}>
                                     <Icon name={'chatbox-ellipses-outline'} size={scale(20)} color="#fff" />
                                 </TouchableOpacity>

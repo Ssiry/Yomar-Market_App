@@ -1,10 +1,11 @@
 import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import BgPattern from '@/assets/svg/Pattern'
 import { scale } from 'react-native-size-matters'
 import { router } from 'expo-router'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import LanguageModal from './Language'
 
 // ✅ نقل المكون ProfileItem للأعلى واستخدام props للتحكم بالحالة
 const ProfileItem: React.FC<{
@@ -43,10 +44,11 @@ const ProfileItem: React.FC<{
     </TouchableOpacity>
 );
 
-const GeneralSettings = () => {
+const Index = () => {
     // ✅ يجب أن تكون هذه داخل مكون GeneralSettings
-    const [isNotificationEnabled, setIsNotificationEnabled] = React.useState(true);
-    const [isLocationEnabled, setIsLocationEnabled] = React.useState(false);
+    const [isNotificationEnabled, setIsNotificationEnabled] = useState(true);
+    const [isLocationEnabled, setIsLocationEnabled] = useState(false);
+    const [language, setLanguage] = useState<boolean>(false);
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -86,11 +88,14 @@ const GeneralSettings = () => {
                         value={isLocationEnabled}
                         onValueChange={setIsLocationEnabled}
                     />
+                    {/* <TouchableOpacity onPress={() => setLanguage(true)}   > */}
+
                     <ProfileItem
                         category="غير ذلك"
                         label="اللغة"
-                        onPress={() => { }}
+                        onPress={() => { setLanguage(true) }}
                     />
+                    {/* </TouchableOpacity> */}
                 </View>
 
                 <View style={styles.card}>
@@ -106,11 +111,21 @@ const GeneralSettings = () => {
                     }} />
                 </View>
             </ScrollView>
+
+            {/* language modal */}
+            <LanguageModal
+                visible={language}
+                onConfirm={() => setLanguage(false)}
+                onCancel={() => setLanguage(false)}
+            />
+
+
+
         </SafeAreaView>
     )
 }
 
-export default GeneralSettings
+export default Index
 
 
 const styles = StyleSheet.create({

@@ -2,7 +2,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { scale } from 'react-native-size-matters'
-import OnBoarding1 from '@/assets/svg/Onboarding1'
+// import OnBoarding1 from '@/assets/svg/Onboarding1'
+import DeliveryOrMarket from '@/assets/svg/DeliveryOrMarket'
 import { router } from 'expo-router'
 import CheckLoc from '@/app/(Utitilies)/checkLoc'
 import CheckNet from '@/app/(Utitilies)/checkNet'
@@ -14,7 +15,7 @@ const index = () => {
 
 
             {/* <OnBoarding1 width={scale(342)} height={scale(228)} /> */}
-            <OnBoarding1 />
+            <DeliveryOrMarket />
 
             {/* make the status bar in the <View/> below */}
             <Text style={styles.header}>

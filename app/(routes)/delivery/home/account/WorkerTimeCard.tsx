@@ -10,12 +10,11 @@ import {
 import DateTimePicker, {
     DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
+import { scale } from 'react-native-size-matters';
 
-type WorkerTimeCardProps = {
-    name: string;
-};
 
-const WorkerTimeCard = ({ name }: WorkerTimeCardProps) => {
+
+const WorkerTimeCard = () => {
     const [startTime, setStartTime] = useState(new Date(2023, 0, 1, 9, 0));
     const [endTime, setEndTime] = useState(new Date(2023, 0, 1, 17, 0));
     const [showStartPicker, setShowStartPicker] = useState(false);
@@ -59,21 +58,10 @@ const WorkerTimeCard = ({ name }: WorkerTimeCardProps) => {
 
     return (
         <View style={styles.card}>
-            <Text style={styles.name}>👷 العامل: {name}</Text>
 
             <View style={styles.timeRow}>
-                <Pressable onPress={() => setShowStartPicker(true)} style={styles.button}>
-                    <Text style={styles.buttonText}>🟢 من: {formatTime(startTime)}</Text>
-                </Pressable>
+                <Text style={styles.buttonText}> من :  </Text>
 
-                <Pressable onPress={() => setShowEndPicker(true)} style={styles.button}>
-                    <Text style={styles.buttonText}>🔴 إلى: {formatTime(endTime)}</Text>
-                </Pressable>
-            </View>
-
-            <Text style={styles.hours}>⏱ عدد الساعات: {calculateHours()}</Text>
-
-            {showStartPicker && (
                 <DateTimePicker
                     value={startTime}
                     mode="time"
@@ -81,9 +69,12 @@ const WorkerTimeCard = ({ name }: WorkerTimeCardProps) => {
                     display="default"
                     onChange={handleStartChange}
                 />
-            )}
+            </View>
 
-            {showEndPicker && (
+            <View style={styles.timeRow}>
+
+                <Text style={styles.buttonText}> الي :  </Text>
+
                 <DateTimePicker
                     value={endTime}
                     mode="time"
@@ -91,7 +82,17 @@ const WorkerTimeCard = ({ name }: WorkerTimeCardProps) => {
                     display="default"
                     onChange={handleEndChange}
                 />
-            )}
+
+            </View>
+
+
+
+            <Text style={styles.hours}>⏱ عدد الساعات: {calculateHours()}</Text>
+
+
+
+
+
         </View>
     );
 };
@@ -99,16 +100,11 @@ const WorkerTimeCard = ({ name }: WorkerTimeCardProps) => {
 const styles = StyleSheet.create({
     card: {
         backgroundColor: '#ffffff',
+        width: '100%',
+        height: '100%',
         padding: 20,
-        margin: 16,
-        borderRadius: 16,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.2,
-        shadowRadius: 6,
-        elevation: 5,
-        borderWidth: 1,
-        borderColor: '#e6e6e6',
+        margin: 0,
+
     },
     name: {
         fontSize: 20,
@@ -117,7 +113,9 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     timeRow: {
-        flexDirection: 'row',
+        marginVertical: 10,
+        flexDirection: 'row-reverse',
+        gap: 10,
         justifyContent: 'space-between',
     },
     button: {
@@ -127,23 +125,26 @@ const styles = StyleSheet.create({
         minWidth: '45%',
     },
     buttonText: {
-        fontSize: 16,
-        color: '#0057d9',
+        fontSize: scale(16),
+        lineHeight: scale(32),
         textAlign: 'center',
+        fontWeight: '500',
+        fontFamily: Platform.OS === 'ios' ? 'Almarai' : 'sans-serif',
     },
     hours: {
-        marginTop: 16,
-        fontSize: 16,
-        fontWeight: '500',
-        color: '#444',
+        marginTop: 5,
+        fontSize: scale(16),
+        lineHeight: scale(32),
         textAlign: 'center',
+        fontWeight: '500',
+        fontFamily: Platform.OS === 'ios' ? 'Almarai' : 'sans-serif',
     },
 });
 
 export default function App() {
     return (
         <View style={{ flex: 1, justifyContent: 'center', backgroundColor: '#f3f4f6' }}>
-            <WorkerTimeCard name="أحمد علي" />
+            <WorkerTimeCard />
         </View>
     );
 }

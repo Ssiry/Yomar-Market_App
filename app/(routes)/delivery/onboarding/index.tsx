@@ -13,7 +13,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useRef, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { OnBoardingData } from "@/constants/OnBoardingData";
+import { OnBoardingDeliveryData } from "@/constants/OnBoardingData";
 import { scale, verticalScale } from "react-native-size-matters";
 import { useFonts } from "expo-font";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -48,7 +48,7 @@ const OnBoarding = () => {
   //MARK: - Handle Next
   const handelNext = async () => {
     const nextIndex = activeIndex + 1;
-    if (nextIndex < OnBoardingData.length) {
+    if (nextIndex < OnBoardingDeliveryData.length) {
       scrollViewRef.current?.scrollTo({
         x: Dimensions.get("window").width * nextIndex,
         animated: true,
@@ -120,7 +120,7 @@ const OnBoarding = () => {
         ref={scrollViewRef}
       // style={styles.ScrollContainer}
       >
-        {OnBoardingData.map((item, index) => (
+        {OnBoardingDeliveryData.map((item, index) => (
           <View key={index} style={styles.slide}>
             {item.image}
             <Text style={styles.title}>{item.title}</Text>
@@ -151,7 +151,7 @@ const OnBoarding = () => {
       MARK:- Pagenation  
       */}
       <View style={styles.paginationContainer}>
-        {OnBoardingData.map((_, index) => (
+        {OnBoardingDeliveryData.map((_, index) => (
           <View key={index} style={[styles.dot, { opacity: activeIndex === index ? 1 : 0.3, },]} />
         ))}
       </View>

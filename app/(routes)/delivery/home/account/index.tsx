@@ -127,16 +127,15 @@ const Profile = () => {
 
             <PopUp
                 view1={
-                    <Text>
-                        هل تريد استخدام الكوبون؟ يمكنك استخدامه مرة واحدة فقط.
-                    </Text>
+
+                    <Text style={{ width: '100%', fontFamily: 'Almarai', textAlign: 'center', fontSize: scale(18), lineHeight: scale(30), fontWeight: '600' }}>ساعات العمل</Text>
                 }
                 view2={
-                    <View style={{ width: '100%', height: scale(200), justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ width: '100%', height: scale(150), justifyContent: 'center', alignItems: 'center' }}>
                         <WorkerTimeCard />
                     </View>
                 }
-                btnText='استخدام الكوبون'
+                btnText='إغلاق'
 
                 isVisible={workTime}
 
@@ -144,7 +143,7 @@ const Profile = () => {
                     setWorkTime(false);
                 }}
             />
-        </SafeAreaView>
+        </SafeAreaView >
     );
 };
 
