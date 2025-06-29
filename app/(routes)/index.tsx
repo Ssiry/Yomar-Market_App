@@ -40,8 +40,11 @@ const index = () => {
             }}>
 
                 <TouchableOpacity style={[styles.Btn]}
+                    // onPress={() => {
+                    //     router.push('/(routes)/market')
+                    // }}
                     onPress={() => {
-                        router.push('/(routes)/market')
+                        router.push('/(routes)/market/home')
                     }}
                 >
                     <Text style={[styles.BtnText]}>

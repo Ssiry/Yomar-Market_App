@@ -23,7 +23,7 @@ const index = () => {
             >
 
                 {/* nav-bar header */}
-                <NavBar />
+                <NavBar isfileUpload={false} />
 
                 {/* categor bar */}
                 <View style={{ width: '100%', height: scale(50), justifyContent: 'center', alignItems: 'center', marginTop: scale(10) }}>

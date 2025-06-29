@@ -102,7 +102,7 @@ const index = () => {
                                         style={{
                                             width: 110,
                                             height: 110,
-                                            borderRadius: 55,
+                                            borderRadius: 15,
                                             borderWidth: 4,
                                             borderColor: '#0a7',
                                             shadowColor: '#000',
@@ -138,7 +138,7 @@ const index = () => {
                                         style={{
                                             width: 110,
                                             height: 110,
-                                            borderRadius: 55,
+                                            borderRadius: 15,
                                             backgroundColor: '#E6F0F0',
                                             justifyContent: 'center',
                                             alignItems: 'center',

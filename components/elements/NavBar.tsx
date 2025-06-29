@@ -1,17 +1,40 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { scale } from 'react-native-size-matters';
-// import { SafeAreaView } from 'react-native-safe-area-context';
-// import Banner from '@/components/elements/Banner';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome5';
 import { router } from 'expo-router';
-// import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons'
-// import { router } from 'expo-router';
-// import NavBar from '@/components/elements/NavBar';
+import * as DocumentPicker from 'expo-document-picker';
+
+interface NavBarProps {
+    isfileUpload: boolean;
+}
+
+// const CategoryBar: React.FC<CategoryBarProps> 
 
 
-const NavBar = () => {
+const NavBar: React.FC<NavBarProps> = ({ isfileUpload }) => {
+    // const [fileIcon, setFileIcon] = useState(isfileUpload);
+
+    const pickDocument = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: [
+                'application/vnd.ms-excel',               // .xls
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+                'text/csv',                                // .csv
+            ],
+            copyToCacheDirectory: true,
+        });
+
+        if (!result.canceled) {
+            console.log('Picked file:', result.assets?.[0]);
+            alert(`Picked: ${result.assets?.[0]?.name}`);
+        } else {
+            console.log('File picking cancelled.');
+        }
+    };
+
     return (
         <View style={styles.navbar}>
             {/* Left */}
@@ -25,6 +48,15 @@ const NavBar = () => {
 
             {/* Right */}
             <View style={styles.navRight}>
+                {/* file-circle-plus */}
+                {/* 
+                {isfileUpload &&
+                    <TouchableOpacity
+                        onPress={() => pickDocument()}
+                        style={styles.iconButton}>
+                        <FontAwesome6Icon name="file-upload" size={scale(24)} color={'#036E65'} />
+                    </TouchableOpacity>
+                } */}
                 <TouchableOpacity
                     onPress={() => router.push('/(routes)/chat')}
                     style={styles.iconButton}>

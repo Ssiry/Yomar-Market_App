@@ -104,7 +104,7 @@ const AccountInfoScreen = () => {
                                     editable={false}
                                 />
 
-                                <Text style={styles.label}>رقم الهاتف</Text>
+                                <Text style={styles.label}>رقم الجوال</Text>
                                 <TextInput
                                     style={styles.input}
                                     value="+966 - 433-7656"

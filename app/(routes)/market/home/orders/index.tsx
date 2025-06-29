@@ -11,6 +11,8 @@ import CategoryBar from './CategoryBar'
 import CurrentOrders from './currentOrders'
 import WorkingOnOrders from './workingOnOrders'
 import Waitting from './Waitting'
+import SearchIcon from 'react-native-vector-icons/Ionicons';
+
 
 
 // const orders = [
@@ -43,7 +45,12 @@ const Orders = () => {
                         الطلبات
                     </Text>
 
-                    <View style={styles.dummyView} />
+                    {/* <View style={styles.dummyView} /> */}
+                    <TouchableOpacity
+                        onPress={() => router.push('/(Utitilies)/Search')}
+                        style={styles.iconButton}>
+                        <SearchIcon name="search" size={scale(24)} color={'#036E65'} />
+                    </TouchableOpacity>
                 </View>
 
                 {/* <View style={styles.separatorContainer}>

@@ -18,6 +18,8 @@ import BgPattern from '@/assets/svg/Pattern';
 const VerifyOTP = () => {
     const inputRefs = useRef<(TextInput | null)[]>([]);
     const [otp, setOtp] = useState(["", "", "", ""]);
+    const [storedOtp] = useState(AsyncStorage.getItem('otp'))
+
     const [timeLeft, setTimeLeft] = useState(60);
     const [loading, setLoading] = useState(false);
 
@@ -147,6 +149,21 @@ const VerifyOTP = () => {
                     <Text style={styles.submitButtonText}>استمرار</Text>
                 )}
             </TouchableOpacity>
+
+
+
+            <Text
+                style={[{
+                    position: 'absolute',
+                    width: '100%',
+                    lineHeight: scale(30),
+                    bottom: scale(30),
+                    color: 'red',
+                    textAlign: 'center'
+                },]}
+            >
+                {storedOtp}
+            </Text>
         </SafeAreaView>
     );
 };

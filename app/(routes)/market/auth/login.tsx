@@ -30,7 +30,7 @@ const Login = () => {
         setPhone(filtered);
 
         if (filtered.length < 10 && filtered.length > 0) {
-            setError('رقم الهاتف غير مكتمل');
+            setError('رقم الجوال غير مكتمل');
         } else {
             setError('');
         }
@@ -51,7 +51,7 @@ const Login = () => {
             generateOTP();
             router.push('/(routes)/market/auth/verifyOTP');
         } else {
-            alert('يرجى إدخال رقم الهاتف وكلمة المرور بشكل صحيح');
+            alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
         }
     };
     const generateOTP = () => {

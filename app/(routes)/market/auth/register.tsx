@@ -64,7 +64,7 @@ const Register = () => {
 
         // Validation check for phone number
         if (filtered.length < 10 && filtered.length > 0) {
-            setError('رقم الهاتف غير مكتمل');
+            setError('رقم الجوال غير مكتمل');
         } else if (filtered.length === 0) {
             setError('');
         } else {
@@ -103,7 +103,7 @@ const Register = () => {
             // Perform the API call to send the OTP
             router.push('/(routes)/market/auth/verifyOTP');
         } else {
-            alert('يرجى إدخال رقم الهاتف وكلمة المرور بشكل صحيح');
+            alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
         }
     };
 
@@ -278,10 +278,10 @@ const Register = () => {
 
 
                 {/* اسم المسئول عن المتجر  */}
-                <Text style={styles.inputHeader}>اسم المسئول عن المتجر</Text>
+                <Text style={styles.inputHeader}>اسم المسؤول عن المتجر</Text>
                 <TextInput
                     style={styles.textInput}
-                    placeholder='ادخل اسم المسئول'
+                    placeholder='ادخل اسم المسؤول'
                     placeholderTextColor="#878787"
 
                     keyboardType="phone-pad"

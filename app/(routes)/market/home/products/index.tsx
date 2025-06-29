@@ -8,6 +8,9 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { router } from 'expo-router'
 import ProductCard from '@/components/elements/ProductCard'
 import ProductCardRow from '@/components/elements/ProductCardRow'
+import * as DocumentPicker from 'expo-document-picker';
+import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome5';
+
 import Add from './Add'
 import AddCategory from './AddCategory'
 
@@ -33,6 +36,26 @@ const index = () => {
     const [addCategory, setAddCategory] = React.useState(false);
     const [addProduct, setAddProduct] = React.useState(false);
 
+
+    const pickDocument = async () => {
+        const result = await DocumentPicker.getDocumentAsync({
+            type: [
+                'application/vnd.ms-excel',               // .xls
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+                'text/csv',                                // .csv
+            ],
+            copyToCacheDirectory: true,
+        });
+
+        if (!result.canceled) {
+            console.log('Picked file:', result.assets?.[0]);
+            alert(`Picked: ${result.assets?.[0]?.name}`);
+        } else {
+            console.log('File picking cancelled.');
+        }
+    };
+
+
     return (
         <SafeAreaView
             style={styles.safeContainer}>
@@ -50,15 +73,19 @@ const index = () => {
                     <TouchableOpacity style={styles.iconButton}
                         onPress={() => setAdd(true)}
                     >
-                        <Icon name="add-circle-outline" size={scale(24)} color="#333" />
+                        <Icon name="add-circle-outline" size={scale(24)} color="#036E65" />
                     </TouchableOpacity>
 
                     <Text style={styles.pageTitleText}>
                         ادارة المنتجات
                     </Text>
 
-                    <View style={styles.dummyView} />
-
+                    {/* <View style={styles.dummyView} /> */}
+                    <TouchableOpacity
+                        onPress={() => pickDocument()}
+                        style={styles.iconButton}>
+                        <FontAwesome6Icon name="file-upload" size={scale(24)} color={'#036E65'} />
+                    </TouchableOpacity>
                 </View>
 
                 {/* MARK:- Flex Category */}

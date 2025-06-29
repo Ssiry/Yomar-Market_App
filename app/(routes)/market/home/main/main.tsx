@@ -14,10 +14,11 @@ import CurrentOrders from './currentOrders';
 import WorkingOnOrders from './workingOnOrders';
 
 const headerData = [
+
     {
-        id: 1, title: "نقداً",
-        icon: <FontAwesome6Icon name={'hand-holding-dollar'} color={'#036E65'} size={scale(30)} />,
-        value: 50
+        id: 1, title: "المبيعات",
+        icon: <Icon name={'attach-money'} color={'#036E65'} size={scale(30)} />,
+        value: 500
     },
     {
         id: 2, title: "الطلبات",
@@ -25,15 +26,15 @@ const headerData = [
         value: 33
     },
     {
-        id: 3, title: "الايرادات",
-        icon: <Icon name={'attach-money'} color={'#036E65'} size={scale(30)} />,
-        value: 500
+        id: 3, title: "الهدف",
+        icon: <FontAwesome6Icon name={'hand-holding-dollar'} color={'#036E65'} size={scale(30)} />,
+        value: 50
     },
-    {
-        id: 4, title: "شبكة",
-        icon: <FontistoIcon name={'shopping-pos-machine'} color={'#036E65'} size={scale(30)} />,
-        value: 450
-    },
+    // {
+    //     id: 4, title: "المبيعات اليومية",
+    //     icon: <FontistoIcon name={'shopping-pos-machine'} color={'#036E65'} size={scale(30)} />,
+    //     value: 450
+    // },
 
 ]
 
@@ -53,24 +54,34 @@ const Main = () => {
                 showsHorizontalScrollIndicator={false}
             >
                 {/* nav-bar header */}
-                <NavBar />
+                <NavBar isfileUpload={true} />
 
 
+
+
+
+
+                {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} > */}
                 <View style={[styles.AnalyticsRowContainer]}>
 
+
                     {headerData.map((item) => (
-                        <View key={item.id} style={[styles.AnalyticsItem]} >
-                            <View style={[styles.itemHeader]}>
+
+                        <View key={item.id} style={[styles.AnalyticsItem, item.title === 'الهدف' ? { width: '100%', height: 'auto', alignContent: 'space-between', justifyContent: 'space-between' } : {}]} >
+
+                            <View style={[styles.itemHeader, item.title === 'الهدف' ? { width: '50%' } : {}]}>
                                 <Text style={[styles.itemText, { fontSize: scale(16) }]}>
                                     {item.title}
                                 </Text>
                                 {item.icon}
                             </View>
-                            <Text style={[styles.itemText, { fontSize: scale(18) }]}>{item.value}</Text>
+                            <Text style={[styles.itemText, item.title === 'الهدف' ? { width: '30%', textAlign: 'center' } : {}, { fontSize: scale(18) }]}>{item.value}</Text>
 
                         </View>
+
                     ))}
                 </View>
+                {/* </ScrollView> */}
 
                 {/* Current orders */}
                 <View style={[{ width: '100%', alignItems: 'center', justifyContent: 'center', marginBottom: scale(10) }]}>
@@ -115,11 +126,11 @@ const styles = StyleSheet.create({
     AnalyticsRowContainer: {
         paddingVertical: scale(10),
         width: '100%', backgroundColor: "#fff", borderRadius: scale(8), display: "flex", flexWrap: 'wrap', justifyContent: "space-between",
-        gap: scale(15), paddingHorizontal: scale(10), alignItems: "flex-start", flexDirection: "row",
+        gap: scale(10), paddingHorizontal: scale(10), alignItems: "flex-start", flexDirection: "row",
     },
 
     AnalyticsItem: {
-        width: '45%',
+        width: '48%',
         height: scale(90),
         backgroundColor: "#E6F0F0",
         borderRadius: scale(12),
@@ -127,7 +138,8 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        flexDirection: "column",
+        flexDirection: "row-reverse",
+        flexWrap: 'wrap',
         gap: scale(10),
         padding: scale(10),
     },

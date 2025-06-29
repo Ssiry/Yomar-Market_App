@@ -27,7 +27,7 @@ const CheckPhone = () => {
         setPhone(filtered);
 
         if (filtered.length < 10 && filtered.length > 0) {
-            setError('رقم الهاتف غير مكتمل');
+            setError('رقم الجوال غير مكتمل');
         } else {
             setError('');
         }
@@ -43,7 +43,7 @@ const CheckPhone = () => {
             // Perform the API call to send the OTP
             router.push('/(routes)/market/auth/verifyOTP');
         } else {
-            alert('يرجى إدخال رقم الهاتف وكلمة المرور بشكل صحيح');
+            alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
         }
     };
 
@@ -79,7 +79,7 @@ const CheckPhone = () => {
                     <Icon name="chevron-back-outline" size={scale(24)} color="#000" />
                 </TouchableOpacity>
                 <Text style={{ fontFamily: 'Almarai', fontSize: scale(16), fontWeight: 'bold' }}>
-                    تحقق من رقم الهاتف
+                    تحقق من رقم الجوال
                 </Text>
             </View>
 
@@ -95,11 +95,11 @@ const CheckPhone = () => {
 
                 {/* text input */}
                 <Text style={styles.inputHeader}>
-                    رقم الهاتف
+                    رقم الجوال
                 </Text>
                 <TextInput
                     style={styles.textInput}
-                    placeholder='ادخل رقم هاتفك'
+                    placeholder='ادخل رقم الجوال'
                     placeholderTextColor="#878787"
                     value={phone}
                     onChangeText={handlePhoneChange}
