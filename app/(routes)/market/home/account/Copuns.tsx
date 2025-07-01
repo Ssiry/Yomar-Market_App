@@ -51,10 +51,7 @@ const Coupons = () => {
             <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
                 <BgPattern />
             </View>
-            {/* <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: scale(20) }}>
-                <MaterialIcon name='sale' size={scale(60)} color={"#036E65"} />
-                <Text style={styles.title}>إنشاء كوبون خصم</Text>
-            </View> */}
+
 
             {/* Page Title */}
             <View style={styles.pageTitle}>
@@ -68,7 +65,7 @@ const Coupons = () => {
             </View>
 
 
-            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <View style={[styles.couponRow]}>
 
 
                 <TextInput
@@ -220,6 +217,7 @@ const styles = StyleSheet.create({
         fontSize: scale(14),
         fontWeight: 'bold'
     },
+    couponRow: { display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%' },
     couponCard: {
         borderColor: '#ccc',
         borderWidth: 1,

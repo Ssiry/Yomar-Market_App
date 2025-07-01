@@ -1,10 +1,14 @@
 import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import BgPattern from '@/assets/svg/Pattern'
 import { scale } from 'react-native-size-matters'
 import { router } from 'expo-router'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import LanguageModal from './Language'
+import WorkerTimeCard from './WorkerTimeCard'
+import PopUp from '@/app/(Utitilies)/PopUp'
+import WorkerWeeklyTime from './WorkerWeeklyTime'
 
 // ✅ نقل المكون ProfileItem للأعلى واستخدام props للتحكم بالحالة
 const ProfileItem: React.FC<{
@@ -43,10 +47,13 @@ const ProfileItem: React.FC<{
     </TouchableOpacity>
 );
 
-const GeneralSettings = () => {
+const Index = () => {
     // ✅ يجب أن تكون هذه داخل مكون GeneralSettings
-    const [isNotificationEnabled, setIsNotificationEnabled] = React.useState(true);
-    const [isLocationEnabled, setIsLocationEnabled] = React.useState(false);
+    const [isNotificationEnabled, setIsNotificationEnabled] = useState(true);
+    const [isLocationEnabled, setIsLocationEnabled] = useState(true);
+    const [language, setLanguage] = useState<boolean>(false);
+    const [workTime, setWorkTime] = useState<boolean>(false);
+    const [workerWeeklyTime, setWorkerWeeklyTime] = useState<boolean>(false);
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -86,31 +93,119 @@ const GeneralSettings = () => {
                         value={isLocationEnabled}
                         onValueChange={setIsLocationEnabled}
                     />
+
+
+
                     <ProfileItem
                         category="غير ذلك"
                         label="اللغة"
-                        onPress={() => { }}
+                        onPress={() => { setLanguage(true) }}
+                    />
+
+                    <ProfileItem
+                        category="غير ذلك"
+                        label="اوقات العمل"
+                        onPress={() => { setWorkTime(true) }}
+                    />
+
+                    <ProfileItem
+                        category="غير ذلك"
+                        label=" مواعيد الأسبوعية"
+                        onPress={() => { setWorkerWeeklyTime(true) }}
                     />
                 </View>
 
                 <View style={styles.card}>
                     <Text style={{ width: '100%', fontFamily: 'Almarai' }}>غير ذلك</Text>
                     <ProfileItem category="الحساب" label="حول “يومآر”" onPress={() => {
-                        router.push('/(routes)/market/home/account/About')
+                        router.push('/(routes)/delivery/home/account/About')
                     }} />
                     <ProfileItem category="الحساب" label="سياسات الخصوصية" onPress={() => {
-                        router.push('/(routes)/market/home/account/PrivacyPolicy')
+                        router.push('/(routes)/delivery/home/account/PrivacyPolicy')
                     }} />
                     <ProfileItem category="الحساب" label="القواعد والشروط" onPress={() => {
-                        router.push('/(routes)/market/home/account/T&C')
+                        router.push('/(routes)/delivery/home/account/T&C')
                     }} />
                 </View>
             </ScrollView>
+
+            {/* language modal */}
+            <LanguageModal
+                visible={language}
+                onConfirm={() => setLanguage(false)}
+                onCancel={() => setLanguage(false)}
+            />
+
+
+            {/* <PopUp
+                view1={
+
+                    <Text style={{ width: '100%', fontFamily: 'Almarai', textAlign: 'center', fontSize: scale(18), lineHeight: scale(30), fontWeight: '600' }}>ساعات العمل</Text>
+                }
+                view2={
+                    <View style={{ width: '100%', height: scale(150), justifyContent: 'center', alignItems: 'center' }}>
+
+                        <WorkerTimeCard />
+                    </View>
+                }
+                btnText='إغلاق'
+
+                isVisible={workTime}
+
+                onPress={() => {
+                    setWorkTime(false);
+                }}
+            /> */}
+
+
+            <PopUp
+                view1={
+
+                    <Text style={{ width: '100%', fontFamily: 'Almarai', textAlign: 'center', fontSize: scale(18), lineHeight: scale(30), fontWeight: '600' }}>ساعات العمل</Text>
+                }
+                view2={
+                    <View style={{ width: '100%', height: scale(350), justifyContent: 'center', alignItems: 'center' }}>
+                        <ScrollView
+                            showsVerticalScrollIndicator={false}
+                            horizontal={false}
+                            style={{ width: '100%', paddingVertical: scale(10) }}
+                            bounces={true}
+
+
+                        >
+
+                            <View style={{ width: '100%', height: scale(170), marginBottom: scale(20), justifyContent: 'center', alignItems: 'center' }}>
+
+                                <WorkerTimeCard />
+                                <View style={{
+                                    width: '100%',
+                                    height: scale(1),
+                                    justifyContent: 'center',
+                                    backgroundColor: '#E5E5E5',
+                                    alignItems: 'center',
+                                    marginTop: scale(10),
+
+                                }} />
+                            </View>
+
+                            <WorkerWeeklyTime />
+                        </ScrollView>
+                    </View>
+                }
+                btnText='إغلاق'
+
+                isVisible={workerWeeklyTime}
+
+                onPress={() => {
+                    setWorkerWeeklyTime(false);
+                }}
+            />
+
         </SafeAreaView>
     )
 }
 
-export default GeneralSettings
+export default Index
 
 
 const styles = StyleSheet.create({

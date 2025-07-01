@@ -2,6 +2,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { scale } from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/Ionicons'
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 interface DeleteDeliveryModalProps {
     visible: boolean;
@@ -19,27 +20,46 @@ const DeleteDeliveryModal = ({ visible, onConfirm, onCancel }: DeleteDeliveryMod
             <View style={styles.overlay}>
                 <View style={styles.modal}>
 
-                    <Icon name="trash" size={scale(58)} color="#fff" style={styles.icon} />
+                    <Icon name="ellipsis-horizontal-circle" size={scale(58)} color="#333" style={styles.icon} />
 
                     <Text style={styles.title}>
-                        حذف المندوب
+                        تحكم بالمندوب
                     </Text>
 
-                    <Text style={styles.subTitle}>
-                        هل انت متاكد من حذف المندوب ؟
-                    </Text>
+                    <View style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: scale(10) }}>
+
+                        <TouchableOpacity style={[styles.btn]}>
+
+                            <Text style={styles.subTitle}>
+                                حذف المندوب
+                            </Text>
+
+                            <Icon name="trash-outline" size={scale(24)} color="#e74c3c" />
+
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.btn]}>
+                            <Text style={styles.subTitle}>
+                                تعطيل المندوب
+                            </Text>
+
+                            <FontAwesome5Icon name="toggle-off" size={scale(24)} color="#333" />
+
+                        </TouchableOpacity>
+                    </View>
+
 
                     <View style={styles.buttonContainer}>
-
+                        {/* 
 
                         <TouchableOpacity onPress={onConfirm} style={[styles.button, styles.confirmButton]}>
-                            <Text style={styles.confirmText}>نعم (حذف المندوب)</Text>
-                        </TouchableOpacity>
+                            <Text style={styles.confirmText}>تاكيد</Text>
+                        </TouchableOpacity> */}
 
 
 
                         <TouchableOpacity onPress={onCancel} style={[styles.button, styles.cancelButton]}>
-                            <Text style={styles.cancelText}>لا</Text>
+                            <Text style={styles.cancelText}>اغلاق</Text>
                         </TouchableOpacity>
 
 
@@ -83,8 +103,19 @@ const styles = StyleSheet.create({
 
         padding: scale(20),
         borderRadius: scale(50),
-        backgroundColor: '#e74c3c',
+        backgroundColor: '#e5e5e5',
 
+    },
+    btn: {
+        borderRadius: scale(12),
+        backgroundColor: '#f0f0f0',
+        padding: scale(10),
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row-reverse',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        // marginBottom: scale(20),
     },
     title: {
         fontSize: scale(18),
@@ -97,11 +128,10 @@ const styles = StyleSheet.create({
     },
     subTitle: {
         fontSize: scale(14),
-        color: '#878787',
+        color: '#333',
+        fontWeight: 'bold',
         textAlign: 'center',
-        // marginBottom: scale(20),
         fontFamily: 'Almarai',
-        width: '100%',
         lineHeight: scale(20),
     },
     buttonContainer: {
@@ -115,12 +145,16 @@ const styles = StyleSheet.create({
         paddingVertical: scale(15),
         paddingHorizontal: scale(30),
         borderRadius: scale(100),
+        width: '100%',
 
     },
     confirmButton: {
         backgroundColor: '#e74c3c',
+        width: '48%',
     },
     cancelButton: {
+        width: '100%',
+
         backgroundColor: '#bdc3c7',
     },
     confirmText: {

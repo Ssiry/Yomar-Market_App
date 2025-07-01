@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { router } from 'expo-router'
 import CurrentOrders from '../main/currentOrders'
 import AddDelivery from './addDelivery'
-import DeleteDeliery from './deleteDeliery'
+import DeleteDeliery from './controlDelivery'
 import Call from '../../../chat/Call'
 import { Alert } from 'react-native';
 
@@ -34,7 +34,7 @@ const deliveryData = [
 
 const index = () => {
     const [addDelivery, setAddDelivery] = React.useState(false)
-    const [deleteDelivery, setDeleteDelivery] = React.useState(false)
+    const [controlDelivery, setControlDelivery] = React.useState(false)
     const [call, setCall] = React.useState(false)
 
 
@@ -73,9 +73,7 @@ const index = () => {
             >
 
                 <View style={styles.pageTitle}>
-                    {/* <TouchableOpacity style={styles.iconButton} onPress={() => router.back()} >
-                        <Icon name="chevron-back-outline" size={scale(24)} color="#333" />
-                    </TouchableOpacity> */}
+
 
                     <View style={styles.dummyView} />
 
@@ -117,8 +115,8 @@ const index = () => {
                             <View style={[styles.Row, { gap: scale(3), }]}>
 
                                 {/* delete icon  */}
-                                <TouchableOpacity style={[styles.Touchable, { backgroundColor: '#FF6E6C', width: scale(30), borderRadius: scale(8), marginHorizontal: scale(4) }]} onPress={() => setDeleteDelivery(true)} >
-                                    <Icon name={'trash'} size={scale(17)} color="#fff" />
+                                <TouchableOpacity style={[styles.Touchable, { backgroundColor: '#E5E5E5', width: scale(30), borderRadius: scale(8), marginHorizontal: scale(4) }]} onPress={() => setControlDelivery(true)} >
+                                    <Icon name={'ellipsis-horizontal-circle-outline'} size={scale(20)} color="#333" />
                                 </TouchableOpacity>
 
                                 {/* image */}
@@ -186,9 +184,9 @@ const index = () => {
 
 
             <DeleteDeliery
-                visible={deleteDelivery}
-                onConfirm={() => { setDeleteDelivery(false) }}
-                onCancel={() => { setDeleteDelivery(false) }}
+                visible={controlDelivery}
+                onConfirm={() => { setControlDelivery(false) }}
+                onCancel={() => { setControlDelivery(false) }}
             />
 
             {/* 

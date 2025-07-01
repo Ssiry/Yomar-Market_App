@@ -46,6 +46,7 @@ const index = () => {
                     onPress={() => {
                         router.push('/(routes)/market/home')
                     }}
+                // MARK:- this will be the delivery page
                 >
                     <Text style={[styles.BtnText]}>
                         الدخول كـ “تاجر”

@@ -5,6 +5,7 @@ import PaymentCard from './payment';
 import { router } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BgPattern from '@/assets/svg/Pattern';
+import RS from '@/assets/svg/RS';
 
 const plans = [
     { id: 1, name: 'الاساسية', price: 19, deliveryLimit: 5 },
@@ -12,8 +13,11 @@ const plans = [
     { id: 3, name: 'الخاصة', price: 99, deliveryLimit: ' غير محدود ' },
 ];
 
+
+
 const MarketPlans = () => {
-    const [selectedPlanId, setSelectedPlanId] = useState(null);
+    const [selectedPlanId, setSelectedPlanId] = useState(plans[0].id);
+    const [subscriptionDate, setSubscriptionDate] = useState<Date | null>(null);
     const [pay, setPay] = useState(false);
 
     const handleSelectPlan = (plan: any) => {
@@ -21,6 +25,25 @@ const MarketPlans = () => {
         // TODO: send to backend (e.g., via fetch or Axios)
         console.log(`Selected plan: ${plan.name}`);
     };
+
+    const getRemainingTime = () => {
+        if (!subscriptionDate) return '';
+
+        const now = new Date();
+        const endDate = new Date(subscriptionDate);
+        endDate.setMonth(endDate.getMonth() + 1); // بعد شهر
+
+        const diff = endDate.getTime() - now.getTime();
+
+        if (diff <= 0) return 'انتهى الاشتراك';
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+        return `متبقي ${days} يوم، ${hours} ساعة، ${minutes} دقيقة`;
+    };
+
 
     const renderPlan = ({ item }: { item: typeof plans[0] }) => (
         <TouchableOpacity
@@ -34,7 +57,19 @@ const MarketPlans = () => {
             <Text style={styles.planInfo}>
                 عدد المناديب :
                 {item.deliveryLimit}</Text>
-            <Text style={styles.planPrice}>${item.price}/شهر</Text>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: scale(5), width: '40%' }}>
+                <Text style={styles.planPrice}>
+                    /  شهر
+                </Text>
+                <RS
+                    color="#333"
+                    width={scale(24)} height={scale(24)} />
+                <Text style={styles.planPrice}>
+                    {item.price}
+                </Text>
+            </View>
+
             <View style={styles.selectButton}>
                 <Text style={styles.selectButtonText}>
                     {selectedPlanId === item.id ? 'تم الاختيار' : 'اختار الخطة'}
@@ -72,7 +107,22 @@ const MarketPlans = () => {
                 contentContainerStyle={styles.list}
             />
 
-            <TouchableOpacity style={{ width: '90%' }} onPress={() => setPay(true)}>
+            {subscriptionDate && (
+                <View style={{ marginTop: scale(20), alignItems: 'center' }}>
+                    <Text style={{ fontFamily: 'Almarai', fontSize: scale(14), color: '#333' }}>
+                        تاريخ الاشتراك: {subscriptionDate.toLocaleDateString('ar-EG')}
+                    </Text>
+                    <Text style={{ fontFamily: 'Almarai', fontSize: scale(14), color: '#036E65', marginTop: scale(6) }}>
+                        {getRemainingTime()}
+                    </Text>
+                </View>
+            )}
+
+
+            <TouchableOpacity style={{ width: '90%' }} onPress={() => {
+                setSubscriptionDate(new Date());
+                setPay(true);
+            }}>
                 <View style={styles.confirmBtn}>
                     <Text style={styles.comfirmTxt}>تأكيد الاختيار</Text>
                 </View>
@@ -143,7 +193,7 @@ const styles = StyleSheet.create({
     planPrice: {
         fontFamily: 'almarai',
         lineHeight: scale(24),
-        fontSize: 16,
+        fontSize: scale(18),
         fontWeight: '500',
         marginBottom: 10,
     },

@@ -105,7 +105,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({ isVisible, onPress }) => {
                 <View style={styles.overlay}>
                     <View style={styles.modal}>
                         <Text style={styles.header}>اتمام عمليه الدفع</Text>
-                        <Text style={styles.subHeader}>يرجي التاكد من بيانات الكارت جيدا</Text>
+                        <Text style={styles.subHeader}>يرجي التاكد من البطاقة جيدا</Text>
 
                         <Text style={[styles.inputHeader, { marginTop: scale(12) }]}>اسم حامل البطاقة</Text>
                         <TextInput

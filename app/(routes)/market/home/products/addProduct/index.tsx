@@ -11,7 +11,7 @@ const index = () => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
-    const [image, setImage] = useState<string | null>(null);
+    const [images, setImages] = useState<string[]>([]);
 
     const handlePriceChange = (text: string) => {
         setPrice(text);
@@ -25,24 +25,46 @@ const index = () => {
         setQuantity(text);
     };
 
+    // const pickImage = async () => {
+
+    //     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    //     if (permissionResult.granted === false) {
+    //         alert("من فضلك فعّل صلاحيات الوصول إلى الصور.");
+    //         // ImagePicker.requestMediaLibraryPermissionsAsync();
+    //         return;
+    //     }
+
+    //     const result = await ImagePicker.launchImageLibraryAsync({
+    //         mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //         allowsEditing: true,
+    //         aspect: [4, 3],
+    //         quality: 1,
+    //     });
+
+    //     if (!result.canceled) {
+    //         setImage(result.assets[0].uri);
+    //     }
+    // };
+
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-        if (permissionResult.granted === false) {
+        if (!permissionResult.granted) {
             alert("من فضلك فعّل صلاحيات الوصول إلى الصور.");
-            // ImagePicker.requestMediaLibraryPermissionsAsync();
             return;
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
+            allowsMultipleSelection: true,
+            allowsEditing: false,
             quality: 1,
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            const selectedUris = result.assets.map(asset => asset.uri);
+            setImages(prev => [...prev, ...selectedUris]);
         }
     };
 
@@ -92,34 +114,57 @@ const index = () => {
 
                         {/* IMAGE SECTION */}
                         <TouchableOpacity
-                            style={{ alignSelf: 'center', paddingVertical: scale(20), }}
+                            style={{ alignSelf: 'center', paddingVertical: scale(20) }}
                             onPress={pickImage}
                         >
-                            {image ? (
-                                <View style={{ alignItems: 'center' }}>
+                            <View style={{ alignItems: 'center' }}>
+                                <View
+                                    style={{
+                                        width: 110,
+                                        height: 110,
+                                        borderRadius: 15,
+                                        backgroundColor: '#E6F0F0',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderWidth: 2,
+                                        borderColor: '#036E65',
+                                        marginBottom: 8,
+                                    }}
+                                >
+                                    <Icon name="camera-outline" size={40} color="#036E65" />
+                                </View>
+                                <Text style={{ color: '#036E65', lineHeight: scale(20), fontFamily: 'Almarai', textAlign: 'center', fontSize: 13 }}>
+                                    أضف صور المنتج (يمكنك اختيار أكثر من صورة)
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        {/* Show selected images */}
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            style={{ marginTop: scale(10), marginBottom: scale(10) }}
+                        >
+                            {images.map((uri, index) => (
+                                <View key={index} style={{ position: 'relative', marginRight: scale(10) }}>
                                     <Image
-                                        source={{ uri: image }}
+                                        source={{ uri }}
                                         style={{
-                                            width: 110,
-                                            height: 110,
-                                            borderRadius: 15,
-                                            borderWidth: 4,
+                                            width: 80,
+                                            height: 80,
+                                            borderRadius: 10,
+                                            borderWidth: 2,
                                             borderColor: '#0a7',
-                                            shadowColor: '#000',
-                                            shadowOffset: { width: 0, height: 2 },
-                                            shadowOpacity: 0.25,
-                                            shadowRadius: 8,
-                                            marginBottom: 8,
                                         }}
-                                        resizeMethod="resize"
-                                        resizeMode="cover"
                                     />
                                     <TouchableOpacity
-                                        onPress={() => setImage(null)}
+                                        onPress={() => {
+                                            setImages(prev => prev.filter((_, i) => i !== index));
+                                        }}
                                         style={{
                                             position: 'absolute',
-                                            top: 0,
-                                            right: 0,
+                                            top: -6,
+                                            right: -6,
                                             backgroundColor: '#fff',
                                             borderRadius: 12,
                                             padding: 2,
@@ -128,34 +173,11 @@ const index = () => {
                                             elevation: 2,
                                         }}
                                     >
-                                        <Icon name="close-circle" size={24} color="#f44" />
+                                        <Icon name="close-circle" size={20} color="#f44" />
                                     </TouchableOpacity>
-                                    <Text style={{ color: '#888', fontFamily: 'Almarai', fontSize: 12, marginTop: 2 }}>تغيير الصورة</Text>
                                 </View>
-                            ) : (
-                                <View style={{ alignItems: 'center' }}>
-                                    <View
-                                        style={{
-                                            width: 110,
-                                            height: 110,
-                                            borderRadius: 15,
-                                            backgroundColor: '#E6F0F0',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            borderWidth: 2,
-                                            borderColor: '#036E65',
-                                            marginBottom: 8,
-                                        }}
-                                    >
-                                        <Icon name="camera-outline" size={40} color="#036E65" />
-                                    </View>
-                                    <Text style={{ color: '#036E65', lineHeight: scale(20), fontFamily: 'Almarai', textAlign: 'center', fontSize: 13 }}>
-                                        من فضلك أضف صورة المنتج
-                                        (اختياري)
-                                    </Text>
-                                </View>
-                            )}
-                        </TouchableOpacity>
+                            ))}
+                        </ScrollView>
 
                         <Text style={[styles.inputHeader, { marginTop: scale(14) }]}>اسم المنتج </Text>
                         <TextInput
@@ -166,17 +188,38 @@ const index = () => {
                             placeholderTextColor="#878787"
                         />
 
+                        <View style={{ width: '100%', display: 'flex', flexDirection: 'row-reverse', gap: scale(10), }}>
 
-                        <Text style={[styles.inputHeader, { marginTop: scale(14) }]}>سعر المنتج</Text>
-                        <TextInput
-                            style={styles.textInput}
-                            value={price}
-                            keyboardType="numeric"
-                            onChangeText={handlePriceChange}
-                            placeholder="اكتب السعر "
-                            placeholderTextColor="#878787"
-                        />
+                            <View style={{ width: '50%' }}>
 
+                                <Text style={[styles.inputHeader, { marginTop: scale(14) }]}>سعر الجملة</Text>
+                                <TextInput
+                                    style={[styles.textInput]}
+                                    value={price}
+                                    keyboardType="numeric"
+                                    onChangeText={handlePriceChange}
+                                    placeholder="اكتب السعر "
+                                    placeholderTextColor="#878787"
+                                />
+                            </View>
+
+                            <View style={{ width: '47%' }}>
+
+                                <Text style={[styles.inputHeader, { marginTop: scale(14) }]}>سعر شامل الضريبة</Text>
+                                <TextInput
+                                    style={[styles.textInput]}
+                                    value={price ? (Number(price) + Number(price) * 0.1).toString() : ''}
+                                    keyboardType="numeric"
+                                    // onChangeText={handlePriceChange}
+                                    placeholder=" السعر  + 10% ضريبة"
+                                    placeholderTextColor="#878787"
+                                    // aria-disabled="true"
+                                    editable={false}
+                                />
+                            </View>
+
+
+                        </View>
 
                         <Text style={[styles.inputHeader, { marginTop: scale(14) }]}>الكمية</Text>
                         <TextInput
