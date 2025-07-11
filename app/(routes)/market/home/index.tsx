@@ -72,7 +72,7 @@ export default function Home() {
         }}
       />
       <Tab.Screen
-        name="الحساب"
+        name="المزيد"
         component={Profile}
         options={{
           tabBarIcon: ({ color, size }) => (

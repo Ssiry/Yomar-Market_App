@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, Linking } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 // import MarketsMap from './MarketsMap'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { s, scale } from 'react-native-size-matters'
@@ -13,6 +13,7 @@ import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome5';
 
 import Add from './Add'
 import AddCategory from './AddCategory'
+import PopUp from '@/app/(Utitilies)/PopUp'
 
 const Categories = [
     { item: 'التوابل', },
@@ -32,9 +33,10 @@ const Categories = [
 ]
 
 const index = () => {
-    const [add, setAdd] = React.useState(false);
-    const [addCategory, setAddCategory] = React.useState(false);
-    const [addProduct, setAddProduct] = React.useState(false);
+    const [add, setAdd] = useState(false);
+    const [addCategory, setAddCategory] = useState(false);
+    const [addProduct, setAddProduct] = useState(false);
+    const [file, setFile] = useState(false);
 
 
     const pickDocument = async () => {
@@ -53,6 +55,7 @@ const index = () => {
         } else {
             console.log('File picking cancelled.');
         }
+        setFile(false);
     };
 
 
@@ -184,6 +187,8 @@ const index = () => {
 
 
             </ScrollView>
+
+
 
             <Add
                 visible={add}

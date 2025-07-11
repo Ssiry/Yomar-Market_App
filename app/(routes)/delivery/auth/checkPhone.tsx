@@ -6,10 +6,13 @@ import { router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BgPattern from '@/assets/svg/Pattern'
+import axios from 'axios'
 
 const CheckPhone = () => {
     const [phone, setPhone] = useState('');
     const [error, setError] = useState('');
+
+
 
     const handlePhoneChange = (text: string) => {
         let filtered = text.replace(/[^0-9]/g, '');
@@ -27,25 +30,42 @@ const CheckPhone = () => {
         setPhone(filtered);
 
         if (filtered.length < 10 && filtered.length > 0) {
-            setError('رقم الهاتف غير مكتمل');
+            setError('رقم الجوال غير مكتمل');
         } else {
             setError('');
         }
     };
 
 
-    const handleSubmit = () => {
-        if (phone.length === 10) {
-            //generate OTP
+    const handleCheckPhone = async () => {
+        if (!phone) {
+            Alert.alert("⚠️", "يرجى إدخال رقم الهاتف");
+            return;
+        }
 
-            generateOTP();
+        try {
+            const response = await axios.post('http://172.20.10.4:5007/auth/delivery/check-phone', { phone });
 
-            // Perform the API call to send the OTP
-            router.push('/(routes)/delivery/auth/verifyOTP');
-        } else {
-            alert('يرجى إدخال رقم الهاتف وكلمة المرور بشكل صحيح');
+            if (response.status === 200) {
+                // ✅ الرقم صحيح — الانتقال لصفحة إدخال كود التحقق
+                AsyncStorage.setItem('phone', phone)
+                AsyncStorage.setItem('otpFor', 'changePassword')
+
+                router.push({
+                    pathname: "/(routes)/delivery/auth/verifyOTP",
+                    // params: { phone }
+                });
+            }
+        } catch (error: any) {
+            if (error.response?.status === 404) {
+                Alert.alert("❌", "رقم الهاتف غير مسجل.");
+            } else {
+                console.error("❌ Check Phone Error:", error);
+                Alert.alert("❌", "حدث خطأ أثناء التحقق من الرقم.");
+            }
         }
     };
+
 
     const generateOTP = () => {
         // Generate a random 4-digit OTP
@@ -79,7 +99,7 @@ const CheckPhone = () => {
                     <Icon name="chevron-back-outline" size={scale(24)} color="#000" />
                 </TouchableOpacity>
                 <Text style={{ fontFamily: 'Almarai', fontSize: scale(16), fontWeight: 'bold' }}>
-                    تحقق من رقم الهاتف
+                    تحقق من رقم الجوال
                 </Text>
             </View>
 
@@ -95,16 +115,16 @@ const CheckPhone = () => {
 
                 {/* text input */}
                 <Text style={styles.inputHeader}>
-                    رقم الهاتف
+                    رقم الجوال
                 </Text>
                 <TextInput
                     style={styles.textInput}
-                    placeholder='ادخل رقم هاتفك'
-                    placeholderTextColor="#878787"
                     value={phone}
                     onChangeText={handlePhoneChange}
-                    keyboardType="phone-pad"
+                    keyboardType="numeric"
                     maxLength={10}
+                    placeholder="05XXXXXXXX"
+                    placeholderTextColor="#878787"
                 />
                 {error ? <Text style={styles.errorMessage}>{error}</Text> : null}
 
@@ -112,7 +132,7 @@ const CheckPhone = () => {
 
             {/* submit btn */}
             <TouchableOpacity
-                onPress={handleSubmit}
+                onPress={handleCheckPhone}
                 style={{
                     width: '100%',
                     height: scale(48),

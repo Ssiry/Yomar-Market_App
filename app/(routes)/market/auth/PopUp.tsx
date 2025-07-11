@@ -111,7 +111,10 @@ const PopUp: React.FC<PopUpProps> = ({ isVisible, onClose, onConfirm }) => {
         fetchAddress();
     }, [region]);
 
+
+    //  MARK: need to make it sent to register to save
     const handleConfirm = () => {
+
         onConfirm({
             latitude: region.latitude,
             longitude: region.longitude,

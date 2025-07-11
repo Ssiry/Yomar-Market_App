@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { scale } from 'react-native-size-matters';
@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BgPattern from '@/assets/svg/Pattern';
+import axios from 'axios';
 
 const Login = () => {
     const [phone, setPhone] = useState('');
@@ -44,14 +45,42 @@ const Login = () => {
         }
         setPassword(text);
     };
-
-    const handleSubmit = () => {
+    const handleSave = async () => {
         if (phone.length === 10 && password.length >= 8) {
 
-            generateOTP();
-            router.push('/(routes)/delivery/auth/verifyOTP');
+            try {
+                const response = await axios.post('http://172.20.10.4:5007/auth/delivery-login', {
+                    phone, // Send phone as username since the backend expects username
+                    password,
+                });
+
+                if (response.data.token) {
+                    // Store token for future authenticated requests
+                    // You might want to use AsyncStorage or SecureStore here
+                    // AsyncStorage.setItem('userToken', response.data.token);
+                    // console.log("Registration error:", response.data);
+
+                    Alert.alert('Success', response.data.message || 'Login successful');
+
+                    generateOTP();
+                    await AsyncStorage.setItem('token', response.data.token);
+                    router.push('/(routes)/delivery/auth/verifyOTP');
+
+
+                }
+                else {
+                    setError(response.data.message || 'Something went wrong');
+                    console.log(response.data.message)
+                }
+            } catch (err) {
+                if (axios.isAxiosError(err) && err.response) {
+                    setError(err.response.data.message || 'Invalid username or password');
+                } else {
+                    setError('Unable to connect to server');
+                }
+            }
         } else {
-            alert('يرجى إدخال رقم الهاتف وكلمة المرور بشكل صحيح');
+            alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
         }
     };
 
@@ -128,7 +157,7 @@ const Login = () => {
             </TouchableOpacity>
 
             <TouchableOpacity
-                onPress={handleSubmit}
+                onPress={handleSave}
                 style={styles.loginButton}
             >
                 <Text style={styles.loginButtonText}>تسجيل الدخول</Text>

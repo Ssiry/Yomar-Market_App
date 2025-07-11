@@ -5,6 +5,8 @@ import { scale } from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { router } from 'expo-router'
 import BgPattern from '@/assets/svg/Pattern'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from 'axios'
 
 const ChangePass = () => {
     const [newPassword, setNewPassword] = useState('');
@@ -12,17 +14,46 @@ const ChangePass = () => {
     const [showNewPassword, setShowNewPassword] = useState(true);
     const [showConfirmPassword, setShowConfirmPassword] = useState(true);
 
-    const handleSubmit = () => {
-        if (newPassword.length < 8) {
-            Alert.alert("خطأ", "كلمة المرور يجب أن لا تقل عن ٨ خانات");
+
+
+
+    const handleSubmit = async () => {
+        if (!newPassword || !confirmPassword) {
+            Alert.alert("⚠️", "يرجى إدخال كلمة المرور وتأكيدها.");
             return;
         }
+
         if (newPassword !== confirmPassword) {
-            Alert.alert("خطأ", "كلمة المرور وتأكيدها غير متطابقين");
+            Alert.alert("⚠️", "كلمتا المرور غير متطابقتين.");
             return;
         }
-        router.push("/(routes)/delivery/auth/success");
+
+        try {
+            // ✅ استخدم await للحصول على الرقم من AsyncStorage
+            const phone = await AsyncStorage.getItem('phone');
+
+            if (!phone) {
+                Alert.alert("❌", "لم يتم العثور على رقم الهاتف. يرجى إعادة المحاولة.");
+                return;
+            }
+
+            const response = await axios.post('http://172.20.10.4:5007/auth/delivery/reset-password', {
+                phone,
+                newPassword,
+            });
+
+            if (response.status === 200) {
+                Alert.alert("✅", "تم تغيير كلمة المرور بنجاح.");
+                // تنظيف البيانات
+                await AsyncStorage.removeItem('phone');
+                router.replace("/(routes)/delivery/auth/login");
+            }
+        } catch (error: any) {
+            console.error("❌ Reset error:", error);
+            Alert.alert("❌", error.response?.data?.message || "حدث خطأ.");
+        }
     };
+
 
     return (
         <KeyboardAvoidingView

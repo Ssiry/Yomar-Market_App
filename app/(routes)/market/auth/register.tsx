@@ -10,6 +10,7 @@ import BgPattern from '@/assets/svg/Pattern';
 import * as ImagePicker from 'expo-image-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PopUp from './PopUp';
+import axios from 'axios';
 // import MapModal from './ModalMap';
 // import MapModal from './ModalMap';
 
@@ -17,12 +18,20 @@ import PopUp from './PopUp';
 
 const Register = () => {
     const [phone, setPhone] = useState('');
+    const [name, setName] = useState('');
+    const [adminName, setAdminName] = useState('');
+
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isAgree, setIsAgree] = useState(false);
     const [error, setError] = useState('');
     const [isMapVisible, setIsMapVisible] = useState(false);
+    const [zoneKM, setZoneKM] = useState<string>('');
+    const [long, setLong] = useState<number | undefined>();
+    const [lati, setLati] = useState<number | undefined>();
+
+
 
     const [image, setImage] = useState<string | null>(null);
 
@@ -90,8 +99,9 @@ const Register = () => {
 
         // هنا تقدر تضيف منطق التسجيل الفعلي
         // Alert.alert("تم التسجيل", "مرحبا بك في يومار!");
-        handleSubmit();
-        router.push("/(routes)/market/home");
+        // handleSubmit();
+        handleSave();
+        // router.push("/(routes)/market/home");
     };
 
     const handleSubmit = () => {
@@ -106,6 +116,60 @@ const Register = () => {
             alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
         }
     };
+
+    const handleSave = async () => {
+        if (!phone || !password) {
+            Alert.alert("❗ خطأ", "يرجى إدخال رقم الهاتف وكلمة المرور");
+            return;
+        }
+
+        try {
+            const requestData = {
+                phone,
+                password,
+                imguri: image ?? 'undefined',
+                name,
+                adminName,
+                target: Number(0),
+                long: long !== undefined ? long : 0,
+                lati: lati !== undefined ? lati : 0,
+                zoneKM: parseFloat(zoneKM),
+            };
+
+            const response = await axios.post('http://172.20.10.4:5007/auth/market-register', requestData);
+
+            if (response.data.token) {
+                Alert.alert("✅ تم", "تم التسجيل بنجاح");
+
+                // حفظ التوكن محليًا
+                await AsyncStorage.setItem("marketToken", response.data.token);
+                await AsyncStorage.setItem("marketId", response.data.market.id.toString());
+
+                // إرسال OTP لو عندك
+                // generateOTP();
+
+                // الانتقال لصفحة التحقق أو الصفحة الرئيسية
+                router.push("/(routes)/market/home");
+
+                // تنظيف الحقول
+                setPhone('');
+                setPassword('');
+            } else {
+                Alert.alert("⚠️ تحذير", response.data.message || "فشل التسجيل، يرجى المحاولة مرة أخرى");
+            }
+
+        } catch (error) {
+            console.error("❌ Registration error:", error);
+
+            const err = error as any;
+            if (err.response?.status === 409) {
+                Alert.alert("⚠️ تحذير", "رقم الهاتف مسجل بالفعل");
+            } else {
+                Alert.alert("❌ فشل", "حدث خطأ أثناء التسجيل، حاول مرة أخرى لاحقًا");
+            }
+        }
+    };
+
 
     const generateOTP = () => {
         // Generate a random 4-digit OTP
@@ -135,14 +199,15 @@ const Register = () => {
             </View>
 
             <PopUp
-
-
-                // btnText="حسناً"
                 isVisible={isMapVisible}
                 onClose={() => { setIsMapVisible(false) }}
                 onConfirm={(location) => {
                     console.log('Selected location:', location);
                     setIsMapVisible(false);
+                    // setLocation(location)
+                    setLati(location.latitude);
+                    setLong(location.longitude)
+
                 }
                 }
             />
@@ -172,18 +237,7 @@ const Register = () => {
                         <View style={{ alignItems: 'center' }}>
                             <Image
                                 source={{ uri: image }}
-                                style={{
-                                    width: 110,
-                                    height: 110,
-                                    borderRadius: 55,
-                                    borderWidth: 4,
-                                    borderColor: '#0a7',
-                                    shadowColor: '#000',
-                                    shadowOffset: { width: 0, height: 2 },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 8,
-                                    marginBottom: 8,
-                                }}
+                                style={styles.view1}
                                 resizeMethod="resize"
                                 resizeMode="cover"
                             />
@@ -235,24 +289,14 @@ const Register = () => {
                     placeholder='ادخل اسم المتجر'
                     placeholderTextColor="#878787"
 
-                    keyboardType="phone-pad"
+                    // keyboardType="phone-pad"
                     textAlign="right"
-                    value={phone}
-                    onChangeText={handlePhoneChange}
+                    value={name}
+                    onChangeText={setName}
                 />
 
                 {/* عنوان المتجر  */}
                 <Text style={styles.inputHeader}>عنوان المتجر</Text>
-                {/* <TextInput
-                    style={styles.textInput}
-                    placeholder='ادخل عنوان المتجر'
-                    placeholderTextColor="#878787"
-
-                    keyboardType="phone-pad"
-                    textAlign="right"
-                    value={phone}
-                    onChangeText={handlePhoneChange}
-                /> */}
 
                 <View style={styles.passwordContainer}>
                     <TouchableOpacity
@@ -270,6 +314,7 @@ const Register = () => {
                         textAlign='right'
                         placeholder='ادخل عنوان المتجر  /   اضغط علي الخريطة'
                         placeholderTextColor="#878787"
+                        aria-disabled={true}
                         value={password}
                         onChangeText={setPassword}
                     />
@@ -284,10 +329,9 @@ const Register = () => {
                     placeholder='ادخل اسم المسؤول'
                     placeholderTextColor="#878787"
 
-                    keyboardType="phone-pad"
                     textAlign="right"
-                    value={phone}
-                    onChangeText={handlePhoneChange}
+                    value={adminName}
+                    onChangeText={setAdminName}
                 />
 
 
@@ -305,26 +349,24 @@ const Register = () => {
                     onChangeText={handlePhoneChange}
                 />
 
+                <Text style={styles.inputHeader}>منطقة التواجد</Text>
 
-                {/* رقم الهاتف
-                <Text style={styles.inputHeader}>رقم الهاتف</Text>
                 <TextInput
                     style={styles.textInput}
-                    placeholder='ادخل رقم هاتفك'
+                    placeholder="1.4"
                     placeholderTextColor="#878787"
-
-                    keyboardType="phone-pad"
+                    keyboardType="numeric" // allows digits and dot on most devices
                     textAlign="right"
-                    value={phone}
-                    onChangeText={handlePhoneChange}
-                /> */}
-
-
-
-
-
-
-
+                    value={zoneKM}
+                    onChangeText={(text) => {
+                        // Allow only digits and a single dot
+                        const cleanedText = text.replace(/[^0-9.]/g, '');
+                        const validFloat = cleanedText
+                            .split('.')
+                            .reduce((acc, part, index) => acc + (index === 0 ? part : '.' + part), '');
+                        setZoneKM(validFloat);
+                    }}
+                />
 
                 {/* كلمة المرور */}
                 <Text style={styles.inputHeader}>كلمة المرور</Text>
@@ -492,5 +534,8 @@ const styles = StyleSheet.create({
     },
     loginButtonText: {
         fontFamily: 'Almarai', fontSize: scale(14), fontWeight: '800', color: "#036E65"
+    },
+    view1: {
+        width: 110, height: 110, borderRadius: 55, borderWidth: 4, borderColor: '#0a7', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 8, marginBottom: 8,
     }
 });

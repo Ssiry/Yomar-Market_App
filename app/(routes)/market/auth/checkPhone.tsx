@@ -6,10 +6,13 @@ import { router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import BgPattern from '@/assets/svg/Pattern'
+import axios from 'axios'
 
 const CheckPhone = () => {
     const [phone, setPhone] = useState('');
     const [error, setError] = useState('');
+
+
 
     const handlePhoneChange = (text: string) => {
         let filtered = text.replace(/[^0-9]/g, '');
@@ -34,18 +37,35 @@ const CheckPhone = () => {
     };
 
 
-    const handleSubmit = () => {
-        if (phone.length === 10) {
-            //generate OTP
+    const handleCheckPhone = async () => {
+        if (!phone) {
+            Alert.alert("⚠️", "يرجى إدخال رقم الهاتف");
+            return;
+        }
 
-            generateOTP();
+        try {
+            const response = await axios.post('http://172.20.10.4:5007/auth/market/check-phone', { phone });
 
-            // Perform the API call to send the OTP
-            router.push('/(routes)/market/auth/verifyOTP');
-        } else {
-            alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
+            if (response.status === 200) {
+                // ✅ الرقم صحيح — الانتقال لصفحة إدخال كود التحقق
+                AsyncStorage.setItem('phone', phone)
+                AsyncStorage.setItem('otpFor', 'changePassword')
+
+                router.push({
+                    pathname: "/(routes)/market/auth/verifyOTP",
+                    // params: { phone }
+                });
+            }
+        } catch (error: any) {
+            if (error.response?.status === 404) {
+                Alert.alert("❌", "رقم الهاتف غير مسجل.");
+            } else {
+                console.error("❌ Check Phone Error:", error);
+                Alert.alert("❌", "حدث خطأ أثناء التحقق من الرقم.");
+            }
         }
     };
+
 
     const generateOTP = () => {
         // Generate a random 4-digit OTP
@@ -99,12 +119,12 @@ const CheckPhone = () => {
                 </Text>
                 <TextInput
                     style={styles.textInput}
-                    placeholder='ادخل رقم الجوال'
-                    placeholderTextColor="#878787"
                     value={phone}
                     onChangeText={handlePhoneChange}
-                    keyboardType="phone-pad"
+                    keyboardType="numeric"
                     maxLength={10}
+                    placeholder="05XXXXXXXX"
+                    placeholderTextColor="#878787"
                 />
                 {error ? <Text style={styles.errorMessage}>{error}</Text> : null}
 
@@ -112,7 +132,7 @@ const CheckPhone = () => {
 
             {/* submit btn */}
             <TouchableOpacity
-                onPress={handleSubmit}
+                onPress={handleCheckPhone}
                 style={{
                     width: '100%',
                     height: scale(48),

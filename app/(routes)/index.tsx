@@ -44,7 +44,7 @@ const index = () => {
                     //     router.push('/(routes)/market')
                     // }}
                     onPress={() => {
-                        router.push('/(routes)/market/home')
+                        router.push('/(routes)/market')
                     }}
                 // MARK:- this will be the delivery page
                 >

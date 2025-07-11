@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import {
     View,
@@ -6,6 +7,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     TextInput,
+    Alert,
 } from 'react-native';
 
 import { scale } from 'react-native-size-matters';
@@ -59,6 +61,56 @@ const AddDelivery: React.FC<AddDeliveryProps> = ({ isVisible, onPress }) => {
         }
         setPassword(text);
     };
+
+
+    const handleSave = async () => {
+        if (!phone || !password) {
+            Alert.alert("❗ خطأ", "يرجى إدخال رقم الهاتف وكلمة المرور");
+            return;
+        }
+
+        try {
+            const requestData = {
+                phone,
+                password,
+            };
+
+            const response = await axios.post('http://172.20.10.4:5007/auth/delivery-add', requestData);
+
+            if (response.data.token) {
+                Alert.alert("✅ تم", "تم التسجيل بنجاح");
+
+                // يمكنك إرسال OTP هنا إن كنت تستخدم Firebase أو API خارجية
+
+                // الانتقال لصفحة التحقق
+                // router.push('/(routes)/auth/verifyOTP');
+
+                // تنظيف الحقول
+                setPhone('');
+                setPassword('');
+            } else {
+                Alert.alert("⚠️ تحذير", response.data.message || "فشل التسجيل، يرجى المحاولة مرة أخرى");
+            }
+
+        } catch (error: any) {
+            console.error("❌ Registration error:", error);
+
+            if (error.response?.status === 409) {
+                Alert.alert("⚠️ تحذير", "رقم الهاتف مسجل بالفعل");
+            } else {
+                Alert.alert("❌ فشل", "حدث خطأ أثناء التسجيل، حاول مرة أخرى لاحقًا");
+            }
+        }
+    };
+
+    // const handleSubmit = () => {
+    //     if (phone.length === 10) {
+    //         // handleSave();
+    //     } else {
+    //         alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
+    //     }
+    // };
+
 
     return (
         <View style={styles.container}>
@@ -120,12 +172,10 @@ const AddDelivery: React.FC<AddDeliveryProps> = ({ isVisible, onPress }) => {
                             </Text>
                             <TextInput
                                 style={styles.textInput}
-                                value={phone}
+                                value={password}
                                 onChangeText={handlePasswordChange}
-                                // keyboardType="numeric"
                                 secureTextEntry={true}
                                 textContentType="password"
-                                // maxLength={10}
                                 placeholder="ادخل كلمة المرور"
                                 placeholderTextColor="#878787"
                             />
@@ -139,7 +189,9 @@ const AddDelivery: React.FC<AddDeliveryProps> = ({ isVisible, onPress }) => {
 
                             <TouchableOpacity
                                 style={{ width: '100%', height: scale(50), backgroundColor: '#036E65', paddingVertical: scale(10), borderRadius: scale(100), justifyContent: 'center', alignItems: 'center', }}
-                                onPress={() => { }}>
+                                onPress={() => {
+                                    handleSave();
+                                }}>
 
                                 <Text style={{ fontFamily: 'Almarai', color: '#fff', fontSize: scale(14), fontWeight: 'bold', textAlign: 'center', }}>
                                     اضافة المندوب
