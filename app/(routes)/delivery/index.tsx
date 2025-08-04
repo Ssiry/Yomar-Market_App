@@ -30,14 +30,13 @@ const MarketIndex: React.FC = () => {
 
     return (
         // <View>
-        // <Redirect href={isOnboarding ? '/(routes)/delivery/onboarding' : '/(routes)/delivery/auth'} />
+        <Redirect href={isOnboarding ? '/(routes)/delivery/onboarding' : '/(routes)/delivery/auth'} />
         // <Redirect href={isOnboarding ? '/(routes)/delivery/onboarding' : '/(routes)/delivery/auth'} />
 
-        // <Redirect href={isOnboarding ? '/(routes)/delivery/home/account' : '/(routes)/delivery/auth'} />
-        // </View>
 
-        <Redirect href={'/(routes)/delivery/home'} />
+        // <Redirect href={'/(routes)/delivery/home'} />
     );
 };
 
 export default MarketIndex;
+

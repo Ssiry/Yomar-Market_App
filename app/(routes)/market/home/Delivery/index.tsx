@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, Linking } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 // import MarketsMap from './MarketsMap'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { s, scale } from 'react-native-size-matters'
@@ -8,9 +8,11 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { router } from 'expo-router'
 import CurrentOrders from '../main/currentOrders'
 import AddDelivery from './addDelivery'
-import DeleteDeliery from './controlDelivery'
+import ControlDeliveryModal from './controlDelivery'
 import Call from '../../../chat/Call'
 import { Alert } from 'react-native';
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const deliveryData = [
@@ -32,10 +34,19 @@ const deliveryData = [
     },
 ]
 
+type Delivery = {
+    id: string;
+    imguri: string;
+    phone: string;
+    // Add other fields if needed
+};
+
 const index = () => {
-    const [addDelivery, setAddDelivery] = React.useState(false)
-    const [controlDelivery, setControlDelivery] = React.useState(false)
-    const [call, setCall] = React.useState(false)
+
+    const [addDelivery, setAddDelivery] = useState(false)
+    const [controlDelivery, setControlDelivery] = useState(false)
+    const [call, setCall] = useState(false)
+    const [selectedDeilvery, setSelectedDeilvery] = useState<Number>(0)
 
 
     const handleCellularCall = async (phoneNumber: any) => {
@@ -59,6 +70,59 @@ const index = () => {
         }
     };
 
+    const handleDeleteDelivery = async (deliveryId: Number) => {
+        try {
+            const token = await AsyncStorage.getItem('token'); // تأكد من أن التوكن مخزن
+
+            const response = await axios.delete(`http://192.168.1.11:5007/market/deliveries/${deliveryId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`, // إذا كان المحمي بالتوكن
+                }
+            });
+
+            if (response.status === 200) {
+                Alert.alert("✅ تم", "تم حذف المندوب بنجاح");
+                // قم بتحديث قائمة المناديب بعد الحذف
+                fetchMarketDeliveries();
+            } else {
+                Alert.alert("⚠️", "فشل في حذف المندوب");
+            }
+        } catch (error: any) {
+            console.error("❌ Deletion error:", error);
+            Alert.alert("❌ خطأ", "حدث خطأ أثناء الحذف");
+        }
+        setControlDelivery(false);
+
+    };
+
+
+
+    const [deliveries, setDeliveries] = useState<Delivery[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchMarketDeliveries = async () => {
+        setLoading(true);
+        try {
+            const marketId = await AsyncStorage.getItem('marketId');
+            if (!marketId) {
+                Alert.alert("⚠️", "لم يتم العثور على رقم السوق");
+                return;
+            }
+
+            const response = await axios.get(`http://192.168.1.11:5007/market/deliveries/${marketId}`);
+            setDeliveries(response.data);
+        } catch (error) {
+            console.error("❌ Error fetching market deliveries:", error);
+            Alert.alert("خطأ", "تعذر تحميل الكباتن لهذا السوق");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    useEffect(() => {
+        fetchMarketDeliveries();
+    }, []);
 
     return (
         // <View style={{ width: "100%", height: "100%" }}>
@@ -74,63 +138,71 @@ const index = () => {
 
                 <View style={styles.pageTitle}>
 
-
                     <View style={styles.dummyView} />
 
-
-                    <Text style={styles.pageTitleText}>
-                        المندوب
-                    </Text>
+                    <Text style={styles.pageTitleText}> المندوب  </Text>
 
                     <TouchableOpacity style={styles.iconButton} onPress={() => setAddDelivery(true)} >
                         <Icon name="add-circle-outline" size={scale(24)} color="#333" />
                     </TouchableOpacity>
+
                 </View>
 
-                <AddDelivery isVisible={addDelivery} onPress={() => setAddDelivery(false)} />
+                <AddDelivery isVisible={addDelivery} onPress={() => {
+                    fetchMarketDeliveries();
+                    setAddDelivery(false)
+
+                }} />
 
 
 
-                {deliveryData.map((item) => (
-
-
+                {deliveries.map((item) => (
                     <View
                         key={item.id}
                         style={{
-
-                            width: '100%', backgroundColor: '#E6F0F0', borderRadius: scale(22), marginTop: scale(14),
+                            width: '100%',
+                            backgroundColor: '#E6F0F0',
+                            borderRadius: scale(22),
+                            marginTop: scale(14),
                             padding: scale(10),
                             paddingBottom: scale(15),
                             display: 'flex',
                             flexDirection: 'column',
                             justifyContent: 'center',
                             alignItems: 'center',
-                            // gap: scale(10),
                             shadowColor: "#000",
-                        }}>
-
+                        }}
+                    >
                         {/* LINE ONE */}
-
                         <View style={[styles.Row, { width: '100%', backgroundColor: '#fff', paddingVertical: scale(10), paddingHorizontal: scale(5), borderRadius: scale(15) }]}>
-                            <View style={[styles.Row, { gap: scale(3), }]}>
+                            <View style={[styles.Row, { gap: scale(3) }]}>
 
-                                {/* delete icon  */}
-                                <TouchableOpacity style={[styles.Touchable, { backgroundColor: '#E5E5E5', width: scale(30), borderRadius: scale(8), marginHorizontal: scale(4) }]} onPress={() => setControlDelivery(true)} >
+                                {/* Delete or Control button */}
+                                <TouchableOpacity
+                                    style={[styles.Touchable, { backgroundColor: '#E5E5E5', width: scale(30), borderRadius: scale(8), marginHorizontal: scale(4) }]}
+                                    onPress={() => {
+                                        setSelectedDeilvery(Number(item.id))
+                                        console.log('ID: ', Number(item.id))
+                                        setControlDelivery(true)
+                                    }}
+                                >
                                     <Icon name={'ellipsis-horizontal-circle-outline'} size={scale(20)} color="#333" />
                                 </TouchableOpacity>
 
                                 {/* image */}
-                                <View style={{ width: 44, height: 44, }} >
+                                <View style={{ width: 44, height: 44 }} >
                                     <Image
-                                        source={item.image} // Replace with your image URL
-                                        style={{ width: 44, height: 44, borderRadius: scale(100) }} // Adjust the size and border radius as needed
-                                        resizeMode="cover" // Optional: adjust the image scaling
+                                        source={{ uri: item.imguri }} // ✅ dynamically loaded from backend
+                                        style={{ width: 44, height: 44, borderRadius: scale(100) }}
+                                        resizeMode="cover"
                                     />
                                 </View>
-                                {/* name & ID */}
+
+                                {/* name & phone */}
                                 <View style={{ height: 44, marginLeft: scale(4) }} >
                                     <Text style={{ fontFamily: 'Almarai', fontSize: scale(13), fontWeight: 'bold', color: '#333', marginBottom: scale(5) }}>
-                                        {item.name}                                    </Text>
+                                        {item.phone}
+                                    </Text>
                                     <Text style={{ fontFamily: 'Almarai', fontSize: scale(12), color: '#878787' }}>
                                         #{item.id}
                                     </Text>
@@ -138,27 +210,18 @@ const index = () => {
                             </View>
 
                             {/* call & message */}
-                            <View style={[styles.Row, { gap: scale(6), }]}>
-
-                                <TouchableOpacity style={[styles.Touchable]} onPress={() => {
-                                    router.push('/(routes)/chat/ChatPage')
-                                }}>
+                            <View style={[styles.Row, { gap: scale(6) }]}>
+                                <TouchableOpacity style={[styles.Touchable]} onPress={() => router.push('/(routes)/chat/ChatPage')}>
                                     <Icon name={'chatbox-ellipses-outline'} size={scale(20)} color="#fff" />
                                 </TouchableOpacity>
-
-                                <TouchableOpacity style={[styles.Touchable]} onPress={() => { setCall(true) }}>
+                                <TouchableOpacity style={[styles.Touchable]} onPress={() => handleCellularCall(item.phone)}>
                                     <Icon name={'call-outline'} size={scale(20)} color="#fff" />
                                 </TouchableOpacity>
                             </View>
-
-
                         </View>
-
 
                         {/* LINE TWO */}
                         <CurrentOrders />
-
-
                     </View>
                 ))}
 
@@ -183,15 +246,12 @@ const index = () => {
 
 
 
-            <DeleteDeliery
+            <ControlDeliveryModal
                 visible={controlDelivery}
-                onConfirm={() => { setControlDelivery(false) }}
+                onDelete={() => { handleDeleteDelivery(selectedDeilvery) }}
                 onCancel={() => { setControlDelivery(false) }}
             />
 
-            {/* 
-            MARK:-  MODALS END
-            */}
 
 
 

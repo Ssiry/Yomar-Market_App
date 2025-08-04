@@ -46,11 +46,12 @@ const Login = () => {
         setPassword(text);
     };
 
+
     const handleSave = async () => {
         if (phone.length === 10 && password.length >= 8) {
 
             try {
-                const response = await axios.post('http://172.20.10.4:5007/auth/market-login', {
+                const response = await axios.post('http://192.168.1.11:5007/market/auth/login', {
                     phone, // Send phone as username since the backend expects username
                     password,
                 });
@@ -64,7 +65,11 @@ const Login = () => {
                     Alert.alert('Success', response.data.message || 'Login successful');
 
                     generateOTP();
+
+                    await AsyncStorage.setItem('marketId', String(response.data.market.id));
+
                     await AsyncStorage.setItem('token', response.data.token);
+
                     router.push('/(routes)/market/auth/verifyOTP');
 
 

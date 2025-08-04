@@ -1,5 +1,6 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     View,
     Text,
@@ -18,6 +19,8 @@ interface AddDeliveryProps {
     onPress: () => void;
 }
 
+const LINK = 'https//192.168.1.11:5007'
+
 const AddDelivery: React.FC<AddDeliveryProps> = ({ isVisible, onPress }) => {
 
     const [visible, setVisible] = useState(true);
@@ -25,6 +28,8 @@ const AddDelivery: React.FC<AddDeliveryProps> = ({ isVisible, onPress }) => {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [marketId, setMarketId] = useState('');
+
 
 
     const handlePhoneChange = (text: string) => {
@@ -63,53 +68,67 @@ const AddDelivery: React.FC<AddDeliveryProps> = ({ isVisible, onPress }) => {
     };
 
 
+    useEffect(() => {
+        const fetchMarketId = async () => {
+            const storedMarketId = await AsyncStorage.getItem('marketId');
+            setMarketId(storedMarketId ?? '');
+            if (!storedMarketId) {
+                Alert.alert("⚠️", "لا يمكن العثور على هوية السوق");
+                return;
+            }
+        };
+        fetchMarketId();
+    }, []);
+
+
     const handleSave = async () => {
-        if (!phone || !password) {
-            Alert.alert("❗ خطأ", "يرجى إدخال رقم الهاتف وكلمة المرور");
+        if (!phone || !password || !name) {
+            Alert.alert("❗ خطأ", "يرجى إدخال اسم المندوب، رقم الهاتف وكلمة المرور");
+            return;
+        }
+
+        if (phone.length < 10 || password.length < 8) {
+            Alert.alert("⚠️", "تأكد من أن رقم الجوال 10 أرقام وكلمة المرور 8 أحرف على الأقل");
             return;
         }
 
         try {
+            const marketId = await AsyncStorage.getItem('marketId');
+            if (!marketId) {
+                Alert.alert("⚠️", "لا يمكن العثور على هوية السوق");
+                return;
+            }
+
             const requestData = {
                 phone,
                 password,
+                name,
+                marketId: Number(marketId),
             };
 
-            const response = await axios.post('http://172.20.10.4:5007/auth/delivery-add', requestData);
 
-            if (response.data.token) {
-                Alert.alert("✅ تم", "تم التسجيل بنجاح");
+            const response = await axios.post('http://192.168.1.11:5007/market/deliveries', requestData);
 
-                // يمكنك إرسال OTP هنا إن كنت تستخدم Firebase أو API خارجية
-
-                // الانتقال لصفحة التحقق
-                // router.push('/(routes)/auth/verifyOTP');
-
-                // تنظيف الحقول
+            if (response.status === 201) {
+                Alert.alert("✅ تم", "تم تسجيل الكابتن بنجاح");
                 setPhone('');
                 setPassword('');
+                setName('');
+                onPress(); // إغلاق المودال
             } else {
-                Alert.alert("⚠️ تحذير", response.data.message || "فشل التسجيل، يرجى المحاولة مرة أخرى");
+                Alert.alert("⚠️", response.data.error || "فشل التسجيل");
             }
 
         } catch (error: any) {
-            console.error("❌ Registration error:", error);
-
+            console.error("❌ Error:", error);
             if (error.response?.status === 409) {
-                Alert.alert("⚠️ تحذير", "رقم الهاتف مسجل بالفعل");
+                Alert.alert("⚠️", "رقم الهاتف مستخدم مسبقًا");
             } else {
-                Alert.alert("❌ فشل", "حدث خطأ أثناء التسجيل، حاول مرة أخرى لاحقًا");
+                Alert.alert("❌", "حدث خطأ أثناء التسجيل");
             }
         }
     };
 
-    // const handleSubmit = () => {
-    //     if (phone.length === 10) {
-    //         // handleSave();
-    //     } else {
-    //         alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
-    //     }
-    // };
 
 
     return (

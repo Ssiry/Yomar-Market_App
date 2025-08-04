@@ -44,7 +44,7 @@ const CheckPhone = () => {
         }
 
         try {
-            const response = await axios.post('http://172.20.10.4:5007/auth/market/check-phone', { phone });
+            const response = await axios.post('http://192.168.1.11:5007/market/auth/check-phone', { phone });
 
             if (response.status === 200) {
                 // ✅ الرقم صحيح — الانتقال لصفحة إدخال كود التحقق

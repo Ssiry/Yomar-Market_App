@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -12,7 +12,8 @@ import {
     Platform,
     TouchableWithoutFeedback,
     Keyboard,
-    Modal
+    Modal,
+    Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -21,14 +22,25 @@ import { scale } from 'react-native-size-matters';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import BgPattern from '@/assets/svg/Pattern';
 import { router } from 'expo-router';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-I18nManager.forceRTL(true);
+
+// I18nManager.forceRTL(true);
 
 
 const AccountInfoScreen = () => {
-    const [gender, setGender] = useState('ذكر');
-    const [birthDate, setBirthDate] = useState(new Date(1999, 5, 19)); // شهر يبدأ من 0
+
+    // const [img, setImg] = useState();
+    // const [gender, setGender] = useState('ذكر');
+    // const [birthDate, setBirthDate] = useState(new Date(1999, 5, 19)); // شهر يبدأ من 0
     const [showDatePicker, setShowDatePicker] = useState(true);
+
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [img, setImg] = useState(); // لاحقًا
+    const [gender, setGender] = useState('ذكر');
+    const [birthDate, setBirthDate] = useState(new Date(1999, 5, 19));
 
     const handleDateChange = (event: any, selectedDate?: Date) => {
         setShowDatePicker(false);
@@ -53,9 +65,120 @@ const AccountInfoScreen = () => {
         return date <= minDate; // العمر 13 سنة أو أكثر، وليس في المستقبل
     };
 
-    const formatDate = (date: Date) => {
-        return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+
+    const handleSave = async () => {
+        try {
+            const token = await AsyncStorage.getItem('delivery/token');
+            if (!token) {
+                alert("يرجى تسجيل الدخول أولاً.");
+                return;
+            }
+
+            const response = await axios.put('http://192.168.1.11:5007/delivery/account/update',
+                {
+                    name,
+                    phone,
+                    imguri: img, // لاحقًا
+
+                    // gender: gender === 'ذكر' ? 'MALE' : 'FEMALE',
+                    // birthDate: birthDate.toISOString(), // ✅ هذا المطلوب
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+
+
+            alert("✅ تم حفظ البيانات بنجاح");
+        } catch (error) {
+            console.error(error);
+            alert("❌ حدث خطأ أثناء الحفظ");
+        }
     };
+
+
+    const confirmDelete = () => {
+        return new Promise((resolve) => {
+            Alert.alert(
+                'تحذير',
+                'هل أنت متأكد من رغبتك في حذف الحساب؟ هذا الإجراء لا يمكن التراجع عنه.',
+                [
+                    { text: 'إلغاء', onPress: () => resolve(false), style: 'cancel' },
+                    { text: 'حذف', onPress: () => resolve(true), style: 'destructive' },
+                ],
+                { cancelable: true }
+            );
+        });
+    };
+
+
+    const handleDeleteAccount = async () => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            if (!token) {
+                alert("❌ لم يتم العثور على توكن، يرجى تسجيل الدخول.");
+                return;
+            }
+
+
+
+            // تأكيد قبل الحذف
+            const confirm = confirmDelete(); // اختياري: تستخدم نافذة تأكيد
+
+            if (!confirm) return;
+
+            await axios.delete('http://192.168.1.11:5007/delivery/account/delete', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            await AsyncStorage.removeItem('delivery/token'); // إزالة التوكن
+            alert("✅ تم حذف الحساب بنجاح");
+            router.replace('/(routes)/delivery/auth'); // إعادة التوجيه لصفحة تسجيل الدخول
+        } catch (error) {
+            console.error(error);
+            alert("❌ فشل في حذف الحساب.");
+        }
+    };
+
+
+
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const token = await AsyncStorage.getItem('delivery/token');
+                console.log("Fetched token:", token);
+
+                if (!token) return;
+
+                const response = await axios.get('http://192.168.1.11:5007/delivery/account/profile', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+
+                const delivery = response.data;
+
+
+
+                setImg(delivery.imguri || ''); // لاحقًا
+                setName(delivery.name || '');
+                await AsyncStorage.setItem('userName', delivery.name || '');
+                setPhone(delivery.phone || '');
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    console.error('Failed to fetch profile:', error.response?.data || error.message);
+                } else {
+                    console.error('Failed to fetch profile:', error);
+                }
+            }
+        };
+
+        fetchProfile();
+    }, []);
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -84,10 +207,12 @@ const AccountInfoScreen = () => {
                                 <View style={styles.dummyView} />
                             </View>
 
+
                             {/* Profile Image */}
                             <View style={styles.profileSection}>
                                 <Image
-                                    source={require('@/assets/images/Image.png')}
+                                    // source={img ? { uri: img } : require('@/assets/images/character.png')}
+                                    source={require('@/assets/images/character.png')}
                                     style={styles.profileImage}
                                 />
                                 <TouchableOpacity style={styles.cameraIcon}>
@@ -95,62 +220,39 @@ const AccountInfoScreen = () => {
                                 </TouchableOpacity>
                             </View>
 
+
                             {/* Form */}
                             <View style={styles.form}>
-                                <Text style={styles.label}>البريد الالكتروني</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    value="albertstevano@gmail.com"
-                                    editable={false}
-                                />
+
 
                                 <Text style={styles.label}>رقم الجوال</Text>
                                 <TextInput
                                     style={styles.input}
-                                    value="+966 - 433-7656"
+                                    value={phone}
+                                    placeholder='05XXXXXXXX'
                                     editable={false}
                                 />
 
                                 <Text style={styles.label}>الاسم بالكامل</Text>
                                 <TextInput
                                     style={styles.input}
-                                    value="علي حسن طلال عسيري"
+                                    value={name}
+                                    onChangeText={setName}
                                 />
 
                                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    {/* النوع */}
-                                    <View style={[styles.form, { width: '35%' }]}>
-                                        <Text style={styles.label}>النوع</Text>
-                                        <View style={styles.pickerWrapper}>
-                                            <Picker
-                                                selectedValue={gender}
-                                                onValueChange={(itemValue) => setGender(itemValue)}
-                                                mode="dropdown"
-                                            >
-                                                <Picker.Item label="ذكر" value="ذكر" />
-                                                <Picker.Item label="أنثى" value="أنثى" />
-                                            </Picker>
-                                        </View>
-                                    </View>
 
-                                    {/* تاريخ الميلاد */}
-                                    <View style={[styles.form, { width: '60%', alignItems: 'flex-end', gap: scale(24) }]}>
-                                        <Text style={styles.label}>تاريخ الميلاد</Text>
-
-                                        <DateTimePicker
-
-                                            value={birthDate}
-                                            mode="date"
-                                            display="default"
-                                            onChange={handleDateChange}
-                                        />
-                                    </View>
                                 </View>
                             </View>
 
                             {/* Save Button */}
-                            <TouchableOpacity style={styles.saveButton}>
+                            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                                 <Text style={styles.saveText}>حفظ</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={[styles.saveButton, { backgroundColor: '#c0392b' }]}
+                                onPress={handleDeleteAccount}>
+                                <Text style={styles.saveText}>حذف الحساب</Text>
                             </TouchableOpacity>
                         </ScrollView>
                     </View>
@@ -161,6 +263,9 @@ const AccountInfoScreen = () => {
 };
 
 export default AccountInfoScreen;
+
+
+
 const styles = StyleSheet.create({
     safeContainer: {
         flex: 1,

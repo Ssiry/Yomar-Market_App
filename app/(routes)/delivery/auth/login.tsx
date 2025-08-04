@@ -45,11 +45,12 @@ const Login = () => {
         }
         setPassword(text);
     };
+
     const handleSave = async () => {
         if (phone.length === 10 && password.length >= 8) {
 
             try {
-                const response = await axios.post('http://172.20.10.4:5007/auth/delivery-login', {
+                const response = await axios.post('http://192.168.1.11:5007/delivery/auth/login', {
                     phone, // Send phone as username since the backend expects username
                     password,
                 });
@@ -60,10 +61,21 @@ const Login = () => {
                     // AsyncStorage.setItem('userToken', response.data.token);
                     // console.log("Registration error:", response.data);
 
-                    Alert.alert('Success', response.data.message || 'Login successful');
+                    // Alert.alert('Success', response.data.message || 'Login successful');
+
+                    await AsyncStorage.setItem('delivery/token', response.data.token);
+                    await AsyncStorage.setItem('userName', 'مستخدم جديد');
+
+                    console.log("Login token:", response.data.token);
 
                     generateOTP();
-                    await AsyncStorage.setItem('token', response.data.token);
+
+                    // Store the token in AsyncStorage
+                    await AsyncStorage.setItem('delivery/token', response.data.token);
+                    console.log("Login token (delivery/token):", response.data.token);
+
+                    generateOTP();
+
                     router.push('/(routes)/delivery/auth/verifyOTP');
 
 

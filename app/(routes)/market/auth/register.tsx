@@ -104,18 +104,7 @@ const Register = () => {
         // router.push("/(routes)/market/home");
     };
 
-    const handleSubmit = () => {
-        if (phone.length === 10) {
-            //generate OTP
 
-            generateOTP();
-
-            // Perform the API call to send the OTP
-            router.push('/(routes)/market/auth/verifyOTP');
-        } else {
-            alert('يرجى إدخال رقم الجوال وكلمة المرور بشكل صحيح');
-        }
-    };
 
     const handleSave = async () => {
         if (!phone || !password) {
@@ -136,7 +125,7 @@ const Register = () => {
                 zoneKM: parseFloat(zoneKM),
             };
 
-            const response = await axios.post('http://172.20.10.4:5007/auth/market-register', requestData);
+            const response = await axios.post('http://192.168.1.11:5007:/market/auth/register', requestData);
 
             if (response.data.token) {
                 Alert.alert("✅ تم", "تم التسجيل بنجاح");

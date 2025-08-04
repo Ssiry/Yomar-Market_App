@@ -4,13 +4,13 @@ import { scale } from 'react-native-size-matters'
 import Icon from 'react-native-vector-icons/Ionicons'
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
-interface DeleteDeliveryModalProps {
+interface ControlDeliveryModalProps {
     visible: boolean;
-    onConfirm: () => void;
+    onDelete: () => void;
     onCancel: () => void;
 }
 
-const DeleteDeliveryModal = ({ visible, onConfirm, onCancel }: DeleteDeliveryModalProps) => {
+const ControlDeliveryModal = ({ visible, onDelete, onCancel }: ControlDeliveryModalProps) => {
     return (
         <Modal
             visible={visible}
@@ -28,7 +28,9 @@ const DeleteDeliveryModal = ({ visible, onConfirm, onCancel }: DeleteDeliveryMod
 
                     <View style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: scale(10) }}>
 
-                        <TouchableOpacity style={[styles.btn]}>
+                        <TouchableOpacity
+                            onPress={onDelete}
+                            style={[styles.btn]}>
 
                             <Text style={styles.subTitle}>
                                 حذف المندوب
@@ -50,6 +52,7 @@ const DeleteDeliveryModal = ({ visible, onConfirm, onCancel }: DeleteDeliveryMod
 
 
                     <View style={styles.buttonContainer}>
+
                         {/* 
 
                         <TouchableOpacity onPress={onConfirm} style={[styles.button, styles.confirmButton]}>
@@ -71,7 +74,7 @@ const DeleteDeliveryModal = ({ visible, onConfirm, onCancel }: DeleteDeliveryMod
     )
 }
 
-export default DeleteDeliveryModal
+export default ControlDeliveryModal
 
 const styles = StyleSheet.create({
     overlay: {

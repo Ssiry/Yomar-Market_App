@@ -37,7 +37,7 @@ const ChangePass = () => {
                 return;
             }
 
-            const response = await axios.post('http://172.20.10.4:5007/auth/delivery/reset-password', {
+            const response = await axios.post('http://192.168.1.11:5007:/delivery/auth/reset-password', {
                 phone,
                 newPassword,
             });

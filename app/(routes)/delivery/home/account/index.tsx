@@ -15,6 +15,7 @@ import CurrentOrders from '../orders/currentOrders';
 import { router } from 'expo-router';
 import PopUp from '../orders/PopUp';
 import WorkerTimeCard from './WorkerTimeCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileItem: React.FC<{ icon: string; label: string; onPress: () => void }> = ({ icon, label, onPress }) => (
     <TouchableOpacity onPress={onPress} style={styles.Row}>
@@ -40,8 +41,19 @@ const ProfileItem: React.FC<{ icon: string; label: string; onPress: () => void }
 );
 
 const Profile = () => {
-    const [activeOrder, setActiveOrder] = useState(0);
     const [workTime, setWorkTime] = useState(false);
+
+
+    const handleLogout = async () => {
+        try {
+            await AsyncStorage.removeItem('delivery/token');
+            alert('تم تسجيل الخروج بنجاح');
+            router.replace('/(routes)/delivery/auth'); // أو الصفحة التي يبدأ منها المستخدم
+        } catch (error) {
+            console.error(error);
+            alert('حدث خطأ أثناء تسجيل الخروج');
+        }
+    };
 
     return (
         <SafeAreaView style={styles.safeContainer}>
@@ -61,24 +73,6 @@ const Profile = () => {
                     <View style={styles.dummyView} />
                 </View>
 
-                {/* Profile Image & Info */}
-                <View style={{ alignItems: 'center', marginTop: scale(20) }}>
-                    <TouchableOpacity>
-                        <Image
-                            source={require('@/assets/images/Image.png')}
-                            style={styles.profileImage}
-                            resizeMode="cover"
-                        />
-                        <View style={styles.cameraIcon}>
-                            <Icon name="camera" color="#333" size={scale(16)} />
-                        </View>
-                    </TouchableOpacity>
-                    <Text style={styles.userName}>طلال السعدي</Text>
-                    <Text style={styles.userPhone}>+996 0566 2322</Text>
-                </View>
-
-                {/* Current Orders */}
-                {activeOrder > 0 && <CurrentOrders />}
 
                 {/* Profile Navigation */}
                 <View style={styles.card}>
@@ -91,16 +85,6 @@ const Profile = () => {
                     }} />
                 </View>
 
-                {/* Support */}
-                <View style={styles.card}>
-                    <Text style={{ width: '100%', fontFamily: 'Almarai' }}>
-                        الكوبونات و الاشتراكات
-                    </Text>
-                    <ProfileItem icon="time-outline" label="ساعات العمل" onPress={() => {
-                        setWorkTime(true);
-                    }} />
-
-                </View>
 
                 {/* Support */}
                 <View style={styles.card}>
@@ -113,9 +97,6 @@ const Profile = () => {
                 {/* Logout */}
                 <TouchableOpacity style={styles.logoutButton}
                     onPress={() => {
-                        // Handle logout logic here
-                        console.log('User logged out');
-                        router.push('/(routes)/delivery');
                     }}
                 >
                     <Icon name="exit-outline" size={scale(20)} color="red" />
@@ -125,24 +106,7 @@ const Profile = () => {
 
             </ScrollView>
 
-            <PopUp
-                view1={
 
-                    <Text style={{ width: '100%', fontFamily: 'Almarai', textAlign: 'center', fontSize: scale(18), lineHeight: scale(30), fontWeight: '600' }}>ساعات العمل</Text>
-                }
-                view2={
-                    <View style={{ width: '100%', height: scale(150), justifyContent: 'center', alignItems: 'center' }}>
-                        <WorkerTimeCard />
-                    </View>
-                }
-                btnText='إغلاق'
-
-                isVisible={workTime}
-
-                onPress={() => {
-                    setWorkTime(false);
-                }}
-            />
         </SafeAreaView >
     );
 };

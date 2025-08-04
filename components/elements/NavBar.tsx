@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { scale } from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome5';
 import { router } from 'expo-router';
 import * as DocumentPicker from 'expo-document-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface NavBarProps {
     isfileUpload: boolean;
@@ -14,26 +15,25 @@ interface NavBarProps {
 // const CategoryBar: React.FC<CategoryBarProps> 
 
 
-const NavBar: React.FC<NavBarProps> = ({ isfileUpload }) => {
-    // const [fileIcon, setFileIcon] = useState(isfileUpload);
+const NavBar: React.FC<NavBarProps> = ({ }) => {
+    const [name, setName] = useState('');
 
-    const pickDocument = async () => {
-        const result = await DocumentPicker.getDocumentAsync({
-            type: [
-                'application/vnd.ms-excel',               // .xls
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
-                'text/csv',                                // .csv
-            ],
-            copyToCacheDirectory: true,
-        });
-
-        if (!result.canceled) {
-            console.log('Picked file:', result.assets?.[0]);
-            alert(`Picked: ${result.assets?.[0]?.name}`);
-        } else {
-            console.log('File picking cancelled.');
-        }
-    };
+    useEffect(() => {
+        const fetchUserName = async () => {
+            try {
+                const userName = await AsyncStorage.getItem('userName');
+                if (userName) {
+                    setName(userName);
+                } else {
+                    setName('مستخدم جديد');
+                }
+            } catch (error) {
+                console.error('Failed to fetch user name:', error);
+                setName('مستخدم جديد');
+            }
+        };
+        fetchUserName();
+    }, []);
 
     return (
         <View style={styles.navbar}>
@@ -41,8 +41,8 @@ const NavBar: React.FC<NavBarProps> = ({ isfileUpload }) => {
             <View style={styles.navLeft}>
                 <Icon name="location-history" size={scale(36)} color={'#036E65'} />
                 <View style={styles.locationTextContainer}>
-                    <Text style={styles.userName}>حسن عسيري</Text>
-                    <Text style={styles.locationText}>1234 شارع الملك عبد العزيز</Text>
+                    <Text style={styles.userName}>{name}</Text>
+                    {/* <Text style={styles.locationText}>1234 شارع الملك عبد العزيز</Text> */}
                 </View>
             </View>
 

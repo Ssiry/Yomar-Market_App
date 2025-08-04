@@ -15,35 +15,6 @@ const ChangePass = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(true);
 
 
-    // const handleSubmit = async () => {
-    //     if (!newPassword || !confirmPassword) {
-    //         Alert.alert("⚠️", "يرجى إدخال كلمة المرور وتأكيدها.");
-    //         return;
-    //     }
-
-    //     if (newPassword !== confirmPassword) {
-    //         Alert.alert("⚠️", "كلمتا المرور غير متطابقتين.");
-    //         return;
-    //     }
-
-    //     AsyncStorage.getItem('phone');
-
-    //     try {
-    //         const response = await axios.post('http://172.20.10.4:5007/auth/reset-password', {
-    //             phone: AsyncStorage.getItem('phone'),
-    //             newPassword,
-    //         });
-
-    //         if (response.status === 200) {
-    //             Alert.alert("✅", "تم تغيير كلمة المرور بنجاح.");
-    //             router.replace("/(routes)/market/auth/login"); // العودة لواجهة تسجيل الدخول
-    //         }
-    //     } catch (error: any) {
-    //         console.error("❌ Reset error:", error);
-    //         Alert.alert("❌", error.response?.data?.message || "حدث خطأ.");
-    //     }
-    // };
-
 
     const handleSubmit = async () => {
         if (!newPassword || !confirmPassword) {
@@ -65,7 +36,7 @@ const ChangePass = () => {
                 return;
             }
 
-            const response = await axios.post('http://172.20.10.4:5007/auth/market/reset-password', {
+            const response = await axios.post('http://192.168.1.11:5007/market/auth/reset-password', {
                 phone,
                 newPassword,
             });
