@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import BgPattern from '@/assets/svg/Pattern'
 import { scale } from 'react-native-size-matters'
 import NavBar from '@/components/elements/NavBar'
@@ -10,7 +10,9 @@ import Waitting from '@/app/(routes)/delivery/home/orders/Waitting'
 import DeliveryNotFound from '@/assets/svg/DeliveryNotFound'
 
 const index = () => {
-    const [selectedCategory, setSelectedCategory] = React.useState<string>('متاح')
+    const [selectedCategory, setSelectedCategory] = useState<string>('متاح')
+    const [name, setName] = useState<string>('gl hassan')
+
     return (
         <SafeAreaView style={styles.safeContainer}>
             <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
@@ -23,7 +25,7 @@ const index = () => {
             >
 
                 {/* nav-bar header */}
-                <NavBar isfileUpload={false} />
+                <NavBar name={name} />
 
                 {/* categor bar */}
                 <View style={{ width: '100%', height: scale(50), justifyContent: 'center', alignItems: 'center', marginTop: scale(10) }}>

@@ -62,13 +62,11 @@ const Login = () => {
                     // AsyncStorage.setItem('userToken', response.data.token);
                     // console.log("Registration error:", response.data);
 
-                    Alert.alert('Success', response.data.message || 'Login successful');
-
                     generateOTP();
 
                     await AsyncStorage.setItem('marketId', String(response.data.market.id));
 
-                    await AsyncStorage.setItem('token', response.data.token);
+                    await AsyncStorage.setItem('market/token', response.data.token);
 
                     router.push('/(routes)/market/auth/verifyOTP');
 

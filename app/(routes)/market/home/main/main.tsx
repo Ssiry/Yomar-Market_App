@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, ActivityIndicator, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { scale } from 'react-native-size-matters';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -12,37 +12,90 @@ import FontistoIcon from 'react-native-vector-icons/Fontisto';
 import Icon2 from 'react-native-vector-icons/Feather';
 import CurrentOrders from './currentOrders';
 import WorkingOnOrders from './workingOnOrders';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-const headerData = [
-
-    {
-        id: 1, title: "المبيعات",
-        icon: <Icon name={'attach-money'} color={'#036E65'} size={scale(30)} />,
-        value: 500
-    },
-    {
-        id: 2, title: "الطلبات",
-        icon: <Icon2 name={'box'} color={'#036E65'} size={scale(30)} />,
-        value: 33
-    },
-    {
-        id: 3, title: "الهدف",
-        icon: <FontAwesome6Icon name={'hand-holding-dollar'} color={'#036E65'} size={scale(30)} />,
-        value: 50
-    },
-    // {
-    //     id: 4, title: "المبيعات اليومية",
-    //     icon: <FontistoIcon name={'shopping-pos-machine'} color={'#036E65'} size={scale(30)} />,
-    //     value: 450
-    // },
-
-]
-
-
-
-// الطلبات ، المبيعات ، الهدف 
 
 const Main = () => {
+    // State to manage the selected category
+    const [name, setName] = useState<string>('')
+    const [numOfOrder, setNumOfOrder] = useState<number>(0)
+    const [sales, setSales] = useState<number>(0)
+    const [target, setTarget] = useState<number>(0)
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
+
+
+    // Function to handle category selection
+
+    const handleUpdateTarget = async (newTarget: number) => {
+        try {
+            const token = await AsyncStorage.getItem('market/token');
+
+
+            const response = await axios.post(
+                'http://192.168.1.11:5007/market/home/update-target',
+                { target: newTarget },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            Alert.alert('تم التحديث', response.data.message);
+            console.log('✅ Market updated:', response.data.market);
+
+        } catch (error) {
+            console.error('❌ Error updating target:', error);
+            Alert.alert('فشل التحديث', 'حدث خطأ أثناء تحديث الهدف');
+        }
+    };
+
+
+    // useEffect to fetch initial data or perform any setup if needed
+    useEffect(() => {
+        const fetchMarketInfo = async () => {
+            try {
+                const token = await AsyncStorage.getItem('market/token');
+
+
+                if (!token) {
+                    setError('No token found');
+                    setLoading(false);
+                    return;
+                }
+
+                const response = await axios.get('http://192.168.1.11:5007/market/home/market-info', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                const data = response.data;
+
+                setName(data.name || '');
+                setNumOfOrder(data.numOfOrder || 0);
+                setSales(data.sales || 0);
+                setTarget(data.target || 0);
+
+            } catch (err) {
+                console.error('Error fetching market info:', err);
+                setError('Failed to fetch market info');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMarketInfo();
+    }, []);
+
+    // Render the component
+    if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
+    if (error) return <Text>{error}</Text>;
+
     return (
         <SafeAreaView style={styles.safeContainer}>
             <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
@@ -53,35 +106,82 @@ const Main = () => {
                 showsVerticalScrollIndicator={false}
                 showsHorizontalScrollIndicator={false}
             >
+
                 {/* nav-bar header */}
-                <NavBar isfileUpload={true} />
+                <NavBar name={name} />
 
 
 
 
 
 
-                {/* <ScrollView horizontal showsHorizontalScrollIndicator={false} > */}
                 <View style={[styles.AnalyticsRowContainer]}>
 
+                    <View style={[styles.AnalyticsItem]} >
+                        <View style={[styles.itemHeader,]}>
+                            <Text style={[styles.itemText, { fontSize: scale(16) }]}>
+                                المبيعات
+                            </Text>
+                            <Icon name={'attach-money'} color={'#036E65'} size={scale(30)} />
+                        </View>
+                        <Text style={[styles.itemText, { fontSize: scale(18) }]}>
+                            {sales}
+                        </Text>
+                    </View>
 
-                    {headerData.map((item) => (
+                    <View style={[styles.AnalyticsItem]} >
 
-                        <View key={item.id} style={[styles.AnalyticsItem, item.title === 'الهدف' ? { width: '100%', height: 'auto', alignContent: 'space-between', justifyContent: 'space-between' } : {}]} >
+                        <View style={[styles.itemHeader]}>
+                            <Text style={[styles.itemText, { fontSize: scale(16) }]}>
+                                الطلبات
+                            </Text>
+                            <Icon2 name={'box'} color={'#036E65'} size={scale(30)} />
+                        </View>
+                        <Text style={[styles.itemText, { fontSize: scale(18) }]}>
+                            {numOfOrder}
+                        </Text>
 
-                            <View style={[styles.itemHeader, item.title === 'الهدف' ? { width: '50%' } : {}]}>
-                                <Text style={[styles.itemText, { fontSize: scale(16) }]}>
-                                    {item.title}
-                                </Text>
-                                {item.icon}
-                            </View>
-                            <Text style={[styles.itemText, item.title === 'الهدف' ? { width: '30%', textAlign: 'center' } : {}, { fontSize: scale(18) }]}>{item.value}</Text>
+                    </View>
 
+                    <View style={[styles.AnalyticsItem, styles.target]} >
+                        <View style={[styles.itemHeader, { width: '50%' }]}>
+                            <Text style={[styles.itemText, { fontSize: scale(16) }]}>
+                                الهدف
+                            </Text>
+                            <FontAwesome6Icon name={'hand-holding-dollar'} color={'#036E65'} size={scale(30)} />
                         </View>
 
-                    ))}
+                        <TextInput
+                            style={[styles.itemText, { width: '27%', textAlign: 'center' }, {
+                                backgroundColor: '#fff',
+                                padding: scale(8),
+                                borderRadius: scale(8),
+                                fontSize: scale(18)
+                            }]}
+                            value={String(target)}
+                            onChangeText={(text) => setTarget(Number(text))}
+                            keyboardType="numeric"
+                            maxLength={6}
+                            placeholder="أدخل الهدف"
+                            placeholderTextColor="#878787"
+                        />
+
+                        <TouchableOpacity
+                            onPressIn={() => handleUpdateTarget(target)}
+                            style={styles.iconButton}
+                        >
+                            <FontistoIcon
+                                name="check"
+                                size={scale(20)}
+                                color="#036E65"
+                            />
+                        </TouchableOpacity>
+
+                    </View>
+
+
+
                 </View>
-                {/* </ScrollView> */}
 
                 {/* Current orders */}
                 <View style={[{ width: '100%', alignItems: 'center', justifyContent: 'center', marginBottom: scale(10) }]}>
@@ -171,5 +271,6 @@ const styles = StyleSheet.create({
         height: scale(20),
         color: "#036E65",
     },
+    target: { width: '100%', height: 'auto', alignContent: 'space-between', justifyContent: 'space-between' },
 
 });

@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import React, { useState } from 'react';
 import {
     View,
@@ -6,6 +8,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     TextInput,
+    Alert,
 } from 'react-native';
 
 import { scale } from 'react-native-size-matters';
@@ -20,44 +23,60 @@ const AddCategory: React.FC<AddCategoryProps> = ({ isVisible, onPress }) => {
 
     const [visible, setVisible] = useState(true);
     const [name, setName] = useState('');
-    // const [password, setPassword] = useState('');
-    // const [error, setError] = useState('');
+    const [error, setError] = useState<string | null>(null);
 
-
-    // const handlePhoneChange = (text: string) => {
-    //     let filtered = text.replace(/[^0-9]/g, '');
-
-    //     if (filtered.length === 1 && filtered !== '0') {
-    //         filtered = '';
-    //     } else if (filtered.length === 2 && filtered !== '05') {
-    //         filtered = '0';
-    //     }
-
-    //     if (filtered.length > 10) {
-    //         filtered = filtered.slice(0, 10);
-    //     }
-
-    //     setPhone(filtered);
-
-    //     if (filtered.length < 10 && filtered.length > 0) {
-    //         setError('رقم الهاتف غير مكتمل');
-    //     } else {
-    //         setError('');
-    //     }
-    // };
 
     const handleNameChange = (text: string) => {
         setName(text);
     };
 
-    // const handlePasswordChange = (text: string) => {
-    //     if (text.length < 8 && text.length !== 0) {
-    //         setError('كلمة المرور يجب أن تكون 8 أحرف على الأقل');
-    //     } else {
-    //         setError('');
-    //     }
-    //     setPassword(text);
-    // };
+
+
+    const handleSaveCategory = async (categoryName: string) => {
+        if (!categoryName || categoryName.trim() === '') {
+            Alert.alert('⚠️ تنبيه', 'يرجى إدخال اسم التصنيف');
+            return;
+        }
+
+        try {
+            const token = await AsyncStorage.getItem('market/token'); // أو حسب نوع المستخدم
+
+            if (!token) {
+                Alert.alert('خطأ', 'لم يتم العثور على التوكن');
+                return;
+            }
+
+            const response = await axios.post(
+                'http://192.168.1.11:5007/market/products/categories',
+                { name: categoryName },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+
+            Alert.alert('✅ تم', response.data.message || 'تمت إضافة التصنيف بنجاح');
+            console.log('Added Category:', response.data.category);
+
+        } catch (error) {
+            console.error('❌ Error adding category:', error);
+            if (
+                typeof error === 'object' &&
+                error !== null &&
+                'response' in error &&
+                typeof (error as any).response === 'object' &&
+                (error as any).response?.status === 409
+            ) {
+                Alert.alert('⚠️ موجود', 'هذا التصنيف موجود مسبقًا');
+            } else {
+                Alert.alert('خطأ', 'حدث خطأ أثناء إضافة التصنيف');
+            }
+        }
+    };
+
+
 
     return (
         <View style={styles.container}>
@@ -102,34 +121,6 @@ const AddCategory: React.FC<AddCategoryProps> = ({ isVisible, onPress }) => {
                             />
 
 
-                            {/* <Text style={[styles.inputHeader, { marginTop: scale(14) }]}>رقم الجوال</Text>
-                            <TextInput
-                                style={styles.textInput}
-                                value={phone}
-                                onChangeText={handlePhoneChange}
-                                keyboardType="numeric"
-                                maxLength={10}
-                                placeholder="05XXXXXXXX"
-                                placeholderTextColor="#878787"
-                            /> */}
-
-                            {/* <Text style={[styles.inputHeader, { marginTop: scale(14) }]}>
-                                كلمة المرور
-                            </Text>
-                            <TextInput
-                                style={styles.textInput}
-                                value={phone}
-                                onChangeText={handlePasswordChange}
-                                // keyboardType="numeric"
-                                secureTextEntry={true}
-                                textContentType="password"
-                                // maxLength={10}
-                                placeholder="ادخل كلمة المرور"
-                                placeholderTextColor="#878787"
-                            /> */}
-
-                            {/* {error ? <Text style={styles.errorMessage}>{error}</Text> : null} */}
-
                         </View>
 
                         {/*  */}
@@ -137,7 +128,11 @@ const AddCategory: React.FC<AddCategoryProps> = ({ isVisible, onPress }) => {
 
                             <TouchableOpacity
                                 style={{ width: '100%', height: scale(50), backgroundColor: '#036E65', paddingVertical: scale(10), borderRadius: scale(100), justifyContent: 'center', alignItems: 'center', }}
-                                onPress={() => { }}>
+                                onPress={() => {
+                                    handleSaveCategory(name);
+                                    setName('');
+                                    onPress();
+                                }}>
 
                                 <Text style={{ fontFamily: 'Almarai', color: '#fff', fontSize: scale(14), fontWeight: 'bold', textAlign: 'center', }}>
                                     اضافة القسم

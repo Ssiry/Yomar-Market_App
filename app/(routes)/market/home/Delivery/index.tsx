@@ -192,7 +192,10 @@ const index = () => {
                                 {/* image */}
                                 <View style={{ width: 44, height: 44 }} >
                                     <Image
-                                        source={{ uri: item.imguri }} // ✅ dynamically loaded from backend
+                                        // source={item.imguri ? { uri: item.imguri } : require('@/assets/images/character.png')} // ✅ dynamically loaded from backend
+                                        source={require('@/assets/images/character.png')} // ✅ dynamically loaded from backend
+
+
                                         style={{ width: 44, height: 44, borderRadius: scale(100) }}
                                         resizeMode="cover"
                                     />

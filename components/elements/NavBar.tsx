@@ -9,31 +9,15 @@ import * as DocumentPicker from 'expo-document-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface NavBarProps {
-    isfileUpload: boolean;
+    name: string;
 }
 
 // const CategoryBar: React.FC<CategoryBarProps> 
 
 
-const NavBar: React.FC<NavBarProps> = ({ }) => {
-    const [name, setName] = useState('');
+const NavBar: React.FC<NavBarProps> = ({ name }: NavBarProps) => {
 
-    useEffect(() => {
-        const fetchUserName = async () => {
-            try {
-                const userName = await AsyncStorage.getItem('userName');
-                if (userName) {
-                    setName(userName);
-                } else {
-                    setName('مستخدم جديد');
-                }
-            } catch (error) {
-                console.error('Failed to fetch user name:', error);
-                setName('مستخدم جديد');
-            }
-        };
-        fetchUserName();
-    }, []);
+
 
     return (
         <View style={styles.navbar}>
