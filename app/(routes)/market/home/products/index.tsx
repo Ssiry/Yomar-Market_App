@@ -17,32 +17,16 @@ import PopUp from '@/app/(Utitilies)/PopUp'
 import axios from 'axios'
 import { GestureHandlerRootView, RefreshControl } from 'react-native-gesture-handler'
 
-const Categories = [
-    { item: 'التوابل', },
-    { item: 'المجمدات', },
-    { item: 'الألبان', },
-    { item: 'المنزل', },
-    { item: 'الخضروات', },
-    { item: 'المعلبات', },
-    { item: 'اللحوم', },
-    { item: 'المخبوزات', },
-    { item: 'التموينات', },
-    { item: 'المشروبات', },
-    { item: 'التنظيف', },
-    { item: 'الأسماك', },
-
-
-]
 
 const index = () => {
     const [add, setAdd] = useState(false);
     const [addCategory, setAddCategory] = useState(false);
-    const [addProduct, setAddProduct] = useState(false);
     const [file, setFile] = useState(false);
 
     const [categories, setCategories] = useState<{
         id: string; name: string;
     }[]>([]);
+
     const [loading, setLoading] = useState(true); // لعرض مؤشر التحميل
     const [error, setError] = useState<string | null>(null);
 
@@ -65,6 +49,7 @@ const index = () => {
         }
         setFile(false);
     };
+
     const fetchCategories = async () => {
         try {
             const response = await axios.get('http://192.168.1.11:5007/market/products/categories'); // عدّل الرابط حسب عنوان السيرفر
@@ -78,8 +63,6 @@ const index = () => {
     };
 
     useEffect(() => {
-
-
         fetchCategories();
     }, [])
 
@@ -89,11 +72,11 @@ const index = () => {
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>
 
-            <SafeAreaView
-                style={styles.safeContainer}>
+            <SafeAreaView style={styles.safeContainer}>
                 <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
                     <BgPattern />
                 </View>
+
                 <ScrollView
                     style={styles.scrollView}
                     showsVerticalScrollIndicator={false}
@@ -129,46 +112,31 @@ const index = () => {
 
                     {/* MARK:- Flex Category */}
                     <View
-                        style={{
-                            flexDirection: 'row',
-                            flexWrap: 'wrap',
-                            justifyContent: 'space-between',
-                            width: '100%',
-                            paddingVertical: scale(10),
-                            gap: scale(10),
-                        }}
+                        style={styles.view2}
                     >
-                        {categories.map((item, id) => (
-                            <TouchableOpacity
-                                key={id}
-                                style={[styles.catItem, { display: 'flex', alignContent: 'center', justifyContent: "center" }]}
-                            // onPress={() => router.push(`/home/products/${item.item}`)}
-                            >
-                                <Text style={styles.catItemText}>
-                                    {item.name}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
+                        {loading ? (
+                            <ActivityIndicator size="large" color="#036E65" />
+                        ) : (
+                            categories.map((item, id) => (
+                                <TouchableOpacity
+                                    key={id}
+                                    style={[styles.catItem]}
+                                // onPress={() => router.push(`/home/products/${item.item}`)}
+                                >
+                                    <Text style={styles.catItemText}>
+                                        {item.name}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))
+                        )}
                     </View>
 
 
                     {/* see All Product from best sale */}
                     <View style={styles.pageTitle}>
-                        <View style={{
-                            // backgroundColor: '#E5E5E5',
-                            // borderRadius: scale(8),
-                            padding: scale(4),
-                            // width: scale(36),
-                            height: scale(36),
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: 'center',
-                            gap: scale(6),
-                            alignItems: 'center',
+                        <View style={styles.view3}>
 
-                        }}>
-
-                            <Text style={{ fontFamily: "Almarai", lineHeight: scale(20), color: "#036E65" }}>
+                            <Text style={styles.text1}>
                                 كُل المنتجات
                             </Text>
 
@@ -180,7 +148,7 @@ const index = () => {
                                 <Icon name="arrow-forward" size={scale(14)} color="#036E65" />
                             </TouchableOpacity>
                         </View>
-                        <Text style={{ color: '#333', fontFamily: 'Almarai', fontSize: scale(16), fontWeight: 'bold' }}>
+                        <Text style={styles.text2}>
                             الاكثر مبيعاً
                         </Text>
                     </View>
@@ -190,18 +158,9 @@ const index = () => {
 
                     {/* see All Product from added latest */}
                     <View style={styles.pageTitle}>
-                        <View style={{
-                            padding: scale(4),
-                            height: scale(36),
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: 'center',
-                            gap: scale(6),
-                            alignItems: 'center',
+                        <View style={styles.view4}>
 
-                        }}>
-
-                            <Text style={{ fontFamily: "Almarai", lineHeight: scale(20), color: "#036E65" }}>
+                            <Text style={styles.text1}>
                                 كُل المنتجات
                             </Text>
 
@@ -213,14 +172,11 @@ const index = () => {
                                 <Icon name="arrow-forward" size={scale(14)} color="#036E65" />
                             </TouchableOpacity>
                         </View>
-                        <Text style={{ color: '#333', fontFamily: 'Almarai', fontSize: scale(16), fontWeight: 'bold' }}>
+                        <Text style={styles.text2}>
                             المضافة مؤخراً
                         </Text>
                     </View>
                     <ProductCardRow />
-
-
-
 
                 </ScrollView>
 
@@ -283,7 +239,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderRadius: scale(8)
     },
-    catItem: { width: 105, height: 40, backgroundColor: '#C8DFDD', borderRadius: scale(8) },
+    catItem: { display: 'flex', alignContent: 'center', justifyContent: "center", width: 105, height: 40, backgroundColor: '#C8DFDD', borderRadius: scale(8) },
     catItemText: {
         fontFamily: 'Almarai',
         fontSize: scale(14),
@@ -291,5 +247,39 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#333',
         lineHeight: scale(22),
-    }
+    },
+    view2: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        width: '100%',
+        paddingVertical: scale(10),
+        gap: scale(10),
+    },
+    view3: {
+        // backgroundColor: '#E5E5E5',
+        // borderRadius: scale(8),
+        padding: scale(4),
+        // width: scale(36),
+        height: scale(36),
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: 'center',
+        gap: scale(6),
+        alignItems: 'center',
+
+    },
+    text1: { fontFamily: "Almarai", lineHeight: scale(20), color: "#036E65" },
+    text2: { color: '#333', fontFamily: 'Almarai', fontSize: scale(16), fontWeight: 'bold' },
+    view4: {
+        padding: scale(4),
+        height: scale(36),
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: 'center',
+        gap: scale(6),
+        alignItems: 'center',
+
+    },
+
 })

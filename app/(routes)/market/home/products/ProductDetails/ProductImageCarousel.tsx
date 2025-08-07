@@ -10,17 +10,9 @@ import { scale } from 'react-native-size-matters';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const App = () => {
+const App: React.FC<{ data: string[] }> = ({ data }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const progress = useSharedValue(0);
-
-    const data = [
-        { id: 1, img: require('@/assets/images/product.png') },
-        { id: 2, img: require('@/assets/images/product1.jpg') },
-        { id: 3, img: require('@/assets/images/product2.jpeg') },
-        { id: 4, img: require('@/assets/images/product3.jpeg') },
-        // { id: 5, img: require('@/assets/images/product.png') },
-    ];
 
     useEffect(() => {
         progress.value = withTiming(currentIndex, { duration: 300 });
@@ -40,8 +32,8 @@ const App = () => {
                 renderItem={({ index }) => (
                     <View style={styles.slide}>
                         <Image
-                            source={data[index].img}
-                            style={{ width: "100%", height: "100%", borderRadius: 20 }}
+                            source={{ uri: data[index] }}
+                            style={{ backgroundColor: '#C0DBD8', width: "100%", height: "100%", borderRadius: 20 }}
                             resizeMode="cover"
                         />
                     </View>
@@ -51,7 +43,7 @@ const App = () => {
             {/* Animated Progress Bar */}
             <View style={styles.indicatorContainer}>
                 <View style={styles.indicatorBar}>
-                    {data.map((_, index) => {
+                    {Array.isArray(data) && data.map((_, index) => {
                         const animatedStyle = useAnimatedStyle(() => {
                             const isActive = progress.value === index;
                             return {
@@ -82,6 +74,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     carousel: {
+        // width: '85%',
         aspectRatio: 1.3,
     },
     slide: {

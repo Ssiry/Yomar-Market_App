@@ -1,117 +1,112 @@
 import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { scale } from 'react-native-size-matters';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import RS from '@/assets/svg/RS';
 import { router } from 'expo-router';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Product {
     id: number;
-    name: string;
+    title: string;
     price: number;
-    image: any;
-    addToCart: boolean;
-    numberOfItems: number;
+    imgUrls: string[];
     description: string;
-    isFavorite?: boolean;
 }
-
-const createProducts = (count = 3): Product[] => {
-    return Array.from({ length: count }, (_, index) => ({
-        id: index + 1,
-        name: `منتج رقم ${index + 1}`,
-        price: Math.floor(Math.random() * 100) + 10,
-        image: require('@/assets/images/product.png'),
-        addToCart: false,
-        numberOfItems: 1,
-        description: 'وصف قصير للمنتج المحلي الطبيعي.',
-        isFavorite: false,
-    }));
-};
 
 
 const ProductCard: React.FC = () => {
-    const [products, setProducts] = useState<Product[]>(createProducts(3));
+    const [products, setProducts] = useState<Product[]>([]);
 
-
-    const NavigateToProductDetails = (id: number) => {
-        router.push('/(routes)/market/home/products/ProductDetails')
-        console.log('Product ID:', id);
-    }
-
-    const updateProduct = useCallback((id: number, updates: Partial<Product>) => {
-        setProducts(prevProducts =>
-            prevProducts.map(product =>
-                product.id === id ? { ...product, ...updates } : product
-            )
-        );
-    }, []);
-
-    // const handleAddToCart = (id: number) => {
-    //     updateProduct(id, { addToCart: true });
-    // };
-
-    // const handleIncrement = (id: number) => {
-    //     setProducts(prevProducts =>
-    //         prevProducts.map(product =>
-    //             product.id === id ? { ...product, numberOfItems: product.numberOfItems + 1 } : product
-    //         )
-    //     );
-
-    // };
-
-    // const handleDecrement = (id: number) => {
-    //     setProducts(prevProducts =>
-    //         prevProducts.map(product =>
-    //             product.id === id && product.numberOfItems > 1
-    //                 ? { ...product, numberOfItems: product.numberOfItems - 1 }
-    //                 : product
-    //         )
-    //     );
-    //     if (products.find(product => product.id === id)?.numberOfItems === 1) {
-    //         updateProduct(id, { addToCart: false });
+    // const fetchProducts = async () => {
+    //     try {
+    //         const response = await axios.get('http://192.168.1.11:5007/market/products/all');
+    //         setProducts(response.data);
+    //     } catch (error) {
+    //         console.error('Error fetching products:', error);
     //     }
     // };
 
+    const fetchProducts = async () => {
+        try {
+            const marketId = await AsyncStorage.getItem('marketId'); // ← غيّر المفتاح حسب تخزينك
+            if (!marketId) {
+                console.error('No market ID found');
+                return;
+            }
+
+            const response = await axios.get(`http://192.168.1.11:5007/market/products/${marketId}`);
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    };
+
+
+    useEffect(() => {
+        fetchProducts();
+    }, []);
+
+
+
     return (
         <View style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} bounces horizontal>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View style={styles.cards}>
                     {products.map(product => (
-                        <View key={product.id} style={[styles.card, product.addToCart ? { borderColor: '#036E65' } : {
+                        <View key={product.id} style={[styles.card, {
                             borderColor: '#E5E5E5', borderWidth: scale(1),
                         }]}>
-                            <TouchableOpacity onPress={() => NavigateToProductDetails(product.id)}>
+                            <TouchableOpacity onPress={async () => {
+                                await AsyncStorage.setItem('selectedProductId', product.id.toString());
+                                router.push('/(routes)/market/home/products/ProductDetails');
+                            }}>
                                 <ImageBackground
-                                    source={product.image}
+                                    source={{ uri: product.imgUrls[0] }}
                                     style={styles.productImage}
                                     imageStyle={styles.imageStyle}
-
                                 >
                                     <TouchableOpacity
-                                        onPress={() => {
-                                            router.push('/(routes)/market/home/products/editProduct')
-                                        }} style={styles.editIcon}>
+                                        onPress={async () => {
+                                            await AsyncStorage.setItem('selectedProductId', product.id.toString());
+                                            router.push('/(routes)/market/home/products/editProduct');
+                                        }}
+                                        style={styles.editIcon}
+                                    >
                                         <MaterialCommunityIcon name="circle-edit-outline" size={scale(20)} color="#000" />
                                     </TouchableOpacity>
-
                                 </ImageBackground>
                             </TouchableOpacity>
 
-
                             <View style={styles.bottomCard}>
-                                <TouchableOpacity onPress={() => NavigateToProductDetails(product.id)}
-                                    style={styles.priceRow}>
+                                <TouchableOpacity onPress={async () => {
+                                    await AsyncStorage.setItem('selectedProductId', product.id.toString());
+                                    router.push('/(routes)/market/home/products/ProductDetails');
+                                }} style={styles.priceRow}>
                                     <View style={styles.priceBlock}>
+
                                         <RS />
-                                        <Text style={styles.MarketDescription}>{product.price}</Text>
+
+                                        <Text
+                                            // need to make the limit of text that will be viewed
+                                            style={
+
+                                                [styles.MarketDescription,
+                                                {
+                                                }
+                                                ]}>{product.price}</Text>
                                     </View>
-                                    <Text style={styles.MarketName}>{product.name}</Text>
+                                    <Text style={styles.MarketName}>{product.title}</Text>
                                 </TouchableOpacity>
 
                                 <View style={styles.infoArea}>
-                                    <Text style={[{ width: '100%' }, styles.productDescription]}>{product.description}</Text>
+                                    <Text style={[{ width: '100%' }, styles.productDescription]}>
+                                        {product.description.length > 40
+                                            ? product.description.substring(0, 40) + '...'
+                                            : product.description}
+                                    </Text>
                                 </View>
                             </View>
                         </View>
@@ -121,6 +116,7 @@ const ProductCard: React.FC = () => {
         </View>
     );
 };
+
 
 export default ProductCard;
 
@@ -133,8 +129,7 @@ const styles = StyleSheet.create({
     },
     cards: {
         flexDirection: 'row',
-        // flexWrap: 'wrap',
-        gap: scale(4),
+        gap: scale(8),
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: scale(30),

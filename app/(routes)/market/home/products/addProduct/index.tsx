@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
@@ -7,24 +7,20 @@ import { router } from 'expo-router';
 import BgPattern from '@/assets/svg/Pattern';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 
 const index = () => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [quantity, setQuantity] = useState('');
     const [imagesUrls, setImagesUrls] = useState<string[]>([]);
+    const [description, setDescription] = useState('');
 
-    const handlePriceChange = (text: string) => {
-        setPrice(text);
-    };
+    const [categories, setCategories] = useState<{ id: number, name: string }[]>([]);
+    const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true); // لعرض مؤشر التحميل
+    const [error, setError] = useState<string | null>(null);
 
-    const handleNameChange = (text: string) => {
-        setName(text);
-    };
-
-    const handleQuantityChange = (text: string) => {
-        setQuantity(text);
-    };
 
 
     const pickImage = async () => {
@@ -48,43 +44,6 @@ const index = () => {
         }
     };
 
-
-
-    // const uploadImagesToCloudinary = async (imageUris: any) => {
-    //     const uploadedUrls = [];
-
-    //     for (const uri of imageUris) {
-    //         const formData = new FormData();
-
-    //         formData.append('file', {
-    //             uri: Platform.OS === 'ios' ? uri.replace('file://', '') : uri,
-    //             type: 'image/jpeg',
-    //             name: 'photo.jpg',
-    //         } as any);
-
-    //         formData.append('upload_preset', 'my_unsigned'); // استبدله بالـ preset الحقيقي
-    //         formData.append('cloud_name', 'dhdxjuw3v');
-
-    //         try {
-    //             const response = await axios.post(
-    //                 'https://api.cloudinary.com/v1_1/dhdxjuw3v/image/upload',
-    //                 formData,
-    //                 {
-    //                     headers: {
-    //                         'Content-Type': 'multipart/form-data',
-    //                     },
-    //                 }
-    //             );
-
-    //             uploadedUrls.push(response.data.secure_url);
-    //         } catch (error) {
-    //             console.error('❌ Error uploading image:', uri, (error as any).message);
-    //             // ممكن تضيف null أو تتجاهل الصورة بناءً على المطلوب
-    //         }
-    //     }
-
-    //     return uploadedUrls;
-    // };
 
     const uploadImagesToCloudinary = async (imageUris: string[]) => {
         const uploadedUrls: string[] = [];
@@ -131,6 +90,7 @@ const index = () => {
             const token = await AsyncStorage.getItem('market/token');
             const marketId = await AsyncStorage.getItem('marketId');
 
+
             if (!token || !marketId) {
                 Alert.alert("خطأ", "معلومات تسجيل الدخول غير متوفرة");
                 return;
@@ -139,19 +99,19 @@ const index = () => {
             // رفع الصور إلى Cloudinary
             const uploadedImageUrls = await uploadImagesToCloudinary(imagesUrls);
 
-            if (uploadedImageUrls.length === 0) {
-                Alert.alert("خطأ", "لم يتم رفع أي صور");
-                return;
-            }
+            // if (uploadedImageUrls.length === 0) {
+            //     Alert.alert("خطأ", "لم يتم رفع أي صور");
+            //     return;
+            // }
 
             const productData = {
                 imgUrls: uploadedImageUrls,
                 price: parseFloat(price),
                 title: name,
-                description: "لا يوجد وصف", // يمكن تعديله لاحقًا
+                description: description,
                 quantity: parseInt(quantity),
                 marketId: parseInt(marketId),
-                categoryId: 1 // 👈 يمكنك عمل اختيار ديناميكي لاحقًا
+                categoryId: selectedCategoryId,
             };
 
             const response = await axios.post(
@@ -172,11 +132,32 @@ const index = () => {
                 setQuantity('');
                 setImagesUrls([]);
             }
+
         } catch (error: any) {
             console.error("❌ Error:", error.response?.data || error.message);
             Alert.alert("فشل", error.response?.data?.error || "حدث خطأ أثناء إضافة المنتج");
+        } finally {
+            setLoading(false);
         }
     };
+
+    const fetchCategories = async () => {
+        try {
+            const response = await axios.get('http://192.168.1.11:5007/market/products/categories'); // عدّل الرابط حسب عنوان السيرفر
+            setCategories(response.data);
+        } catch (err) {
+            console.error('❌ Error fetching categories:', err);
+            setError('حدث خطأ أثناء جلب التصنيفات');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCategories();
+    }, [])
+
+
 
 
     return (
@@ -258,8 +239,31 @@ const index = () => {
                         <TextInput
                             style={styles.textInput}
                             value={name}
-                            onChangeText={handleNameChange}
+                            onChangeText={setName}
                             placeholder="اكتب اسم المنتج"
+                            placeholderTextColor="#878787"
+                        />
+
+                        <Text style={styles.inputHeader}>الفئة</Text>
+                        <View style={styles.pickerWrapper}>
+                            <Picker
+                                selectedValue={selectedCategoryId}
+                                onValueChange={(itemValue) => setSelectedCategoryId(itemValue)}
+                                style={styles.picker}
+                            >
+                                <Picker.Item label="اختر فئة المنتج" value={null} />
+                                {categories.map(category => (
+                                    <Picker.Item key={category.id} label={category.name} value={category.id} />
+                                ))}
+                            </Picker>
+                        </View>
+                        {/* وصف المنتج  */}
+                        <Text style={[styles.inputHeader]}>وصف المنتج</Text>
+                        <TextInput
+                            style={styles.textInput}
+                            value={description}
+                            onChangeText={setDescription}
+                            placeholder="اكتب وصف المنتج"
                             placeholderTextColor="#878787"
                         />
 
@@ -271,7 +275,7 @@ const index = () => {
                                     style={[styles.textInput]}
                                     value={price}
                                     keyboardType="numeric"
-                                    onChangeText={handlePriceChange}
+                                    onChangeText={setPrice}
                                     placeholder="اكتب السعر "
                                     placeholderTextColor="#878787"
                                 />
@@ -299,7 +303,7 @@ const index = () => {
                             style={styles.textInput}
                             value={quantity}
                             keyboardType="numeric"
-                            onChangeText={handleQuantityChange}
+                            onChangeText={setQuantity}
                             placeholder="اكتب الكمية "
                             placeholderTextColor="#878787"
                         />
@@ -314,9 +318,16 @@ const index = () => {
                         style={styles.btn2}
                         onPress={() => handleSaveProduct()}
                     >
-                        <Text style={styles.text2}>
-                            اضافة المنتج
-                        </Text>
+                        {loading ? (
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: scale(10) }}>
+                                <Icon name="sync-outline" size={20} color="#fff" style={{ marginRight: scale(10) }} />
+                                <Text style={styles.text2}>جاري الإضافة</Text>
+                            </View>
+                        ) : (
+                            <Text style={styles.text2}>
+                                اضافة المنتج
+                            </Text>
+                        )}
 
                     </TouchableOpacity>
 
@@ -405,6 +416,17 @@ const styles = StyleSheet.create({
     btn2: { width: '100%', height: scale(50), backgroundColor: '#036E65', paddingVertical: scale(10), borderRadius: scale(100), justifyContent: 'center', alignItems: 'center', },
     text2: { fontFamily: 'Almarai', color: '#fff', fontSize: scale(14), fontWeight: 'bold', textAlign: 'center', },
 
+    pickerWrapper: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        marginBottom: 10,
+        overflow: 'hidden',
+    },
 
+    picker: {
+        height: scale(40),
+        width: '100%',
+    },
 
 })
