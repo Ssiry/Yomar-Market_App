@@ -17,7 +17,7 @@ interface Product {
 }
 
 
-const ProductCard: React.FC = () => {
+const BestProductCard: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
 
 
@@ -29,7 +29,7 @@ const ProductCard: React.FC = () => {
                 return;
             }
 
-            const response = await axios.get(`http://192.168.1.11:5007/market/products/${marketId}`);
+            const response = await axios.get(`http://192.168.1.11:5007/market/products/best-sales-row/${marketId}`);
             setProducts(response.data);
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -110,7 +110,7 @@ const ProductCard: React.FC = () => {
 };
 
 
-export default ProductCard;
+export default BestProductCard;
 
 const styles = StyleSheet.create({
     container: {

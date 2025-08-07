@@ -1,5 +1,5 @@
 import { ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { scale } from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,114 +10,149 @@ import { router } from 'expo-router';
 
 // import NavBar from './NavBar';
 import BgPattern from '@/assets/svg/Pattern';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Product {
+    // image: any;
     id: number;
-    name: string;
+    title: string;
     price: number;
-    image: any;
-    addToCart: boolean;
-    numberOfItems: number;
+    imgUrls: string[];
     description: string;
-    isFavorite?: boolean;
 }
 
-const createProducts = (count = 15): Product[] => {
-    return Array.from({ length: count }, (_, index) => ({
-        id: index + 1,
-        name: `منتج رقم ${index + 1}`,
-        price: Math.floor(Math.random() * 100) + 10,
-        image: require('@/assets/images/product.png'),
-        addToCart: false,
-        numberOfItems: 1,
-        description: 'وصف قصير للمنتج المحلي الطبيعي.',
-        isFavorite: false,
-    }));
-};
 
 
 const MostSale = () => {
-    const [products, setProducts] = useState<Product[]>(createProducts(15));
+
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
 
 
-    const NavigateToProductDetails = (id: number) => {
-        router.push('/(routes)/market/home/products/ProductDetails')
-        console.log('Product ID:', id);
-    }
 
-    const updateProduct = useCallback((id: number, updates: Partial<Product>) => {
-        setProducts(prevProducts =>
-            prevProducts.map(product =>
-                product.id === id ? { ...product, ...updates } : product
-            )
-        );
+    const fetchProducts = async () => {
+        try {
+            setLoading(true)
+            const marketId = await AsyncStorage.getItem('marketId'); // ← غيّر المفتاح حسب تخزينك
+            if (!marketId) {
+                console.error('No market ID found');
+                return;
+            }
+
+            const response = await axios.get(`http://192.168.1.11:5007/market/products/best-sales/${marketId}`);
+            setProducts(response.data);
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+        finally {
+            setLoading(false)
+        }
+    };
+
+    useEffect(() => {
+
+        fetchProducts();
     }, []);
+
+
+
+    // const updateProduct = useCallback((id: number, updates: Partial<Product>) => {
+    //     setProducts(prevProducts =>
+    //         prevProducts.map(product =>
+    //             product.id === id ? { ...product, ...updates } : product
+    //         )
+    //     );
+    // }, []);
 
     return (
         <SafeAreaView style={styles.safeContainer}>
             <View style={{ position: 'absolute', top: 0, opacity: 0.1 }}>
                 <BgPattern />
             </View>
-            <ScrollView
-                showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} bounces >
+            {loading ? (
+                <Text>loading...</Text>
+            ) : (
+                <ScrollView
+                    showsVerticalScrollIndicator={false} showsHorizontalScrollIndicator={false} bounces >
 
 
-                <View style={styles.cards}>
-                    <View style={styles.pageTitle}>
-
-                        <View style={styles.dummyView} />
-
-                        <Text style={styles.pageTitleText}>
-                            المنتجات الاكثر مبيعاً
-                        </Text>
-                        <TouchableOpacity style={styles.iconButton}
-                            onPress={() => {
-                                router.back();
-                            }}
-                        >
-                            <Icon name="chevron-back-outline" size={scale(24)} color="#333" />
-                        </TouchableOpacity>
 
 
-                    </View>
-                    {products.map(product => (
-                        <View key={product.id} style={[styles.card, product.addToCart ? { borderColor: '#036E65' } : {
-                            borderColor: '#E5E5E5', borderWidth: scale(1),
-                        }]}>
-                            <TouchableOpacity onPress={() => NavigateToProductDetails(product.id)}>
-                                <ImageBackground
-                                    source={product.image}
-                                    style={styles.productImage}
-                                    imageStyle={styles.imageStyle}
+                    <View style={styles.cards}>
+                        <View style={styles.pageTitle}>
 
-                                >
-                                    <TouchableOpacity
-                                        onPress={() => { }} style={styles.editIcon}>
-                                        <MaterialCommunityIcon name="circle-edit-outline" size={scale(20)} color="#000" />
-                                    </TouchableOpacity>
+                            <View style={styles.dummyView} />
 
-                                </ImageBackground>
+                            <Text style={styles.pageTitleText}>
+                                المنتجات الاكثر مبيعاً
+                            </Text>
+                            <TouchableOpacity style={styles.iconButton}
+                                onPress={() => {
+                                    router.back();
+                                }}
+                            >
+                                <Icon name="chevron-back-outline" size={scale(24)} color="#333" />
                             </TouchableOpacity>
 
 
-                            <View style={styles.bottomCard}>
-                                <TouchableOpacity onPress={() => NavigateToProductDetails(product.id)}
-                                    style={styles.priceRow}>
-                                    <View style={styles.priceBlock}>
-                                        <RS />
-                                        <Text style={styles.MarketDescription}>{product.price}</Text>
-                                    </View>
-                                    <Text style={styles.MarketName}>{product.name}</Text>
+                        </View>
+
+
+                        {(products ?? []).map(product => (
+                            <View key={product.id} style={[styles.card, {
+                                borderColor: '#E5E5E5', borderWidth: scale(1),
+                            }]}>
+                                <TouchableOpacity onPress={async () => {
+                                    await AsyncStorage.setItem('selectedProductId', product.id.toString());
+                                    router.push('/(routes)/market/home/products/ProductDetails');
+                                }}>
+                                    <ImageBackground
+                                        source={product.imgUrls[0] ? { uri: product.imgUrls[0] } : undefined}
+                                        style={styles.productImage}
+                                        imageStyle={styles.imageStyle}
+
+                                    >
+                                        <TouchableOpacity
+                                            onPress={async () => {
+                                                await AsyncStorage.setItem('selectedProductId', product.id.toString());
+                                                router.push('/(routes)/market/home/products/editProduct');
+                                            }} style={styles.editIcon}>
+                                            <MaterialCommunityIcon name="circle-edit-outline" size={scale(20)} color="#000" />
+                                        </TouchableOpacity>
+
+                                    </ImageBackground>
                                 </TouchableOpacity>
 
-                                <View style={styles.infoArea}>
-                                    <Text style={[{ width: '100%' }, styles.productDescription]}>{product.description}</Text>
+
+                                <View style={styles.bottomCard}>
+                                    <TouchableOpacity onPress={async () => {
+                                        await AsyncStorage.setItem('selectedProductId', product.id.toString());
+                                        router.push('/(routes)/market/home/products/ProductDetails');
+                                    }}
+                                        style={styles.priceRow}>
+                                        <View style={styles.priceBlock}>
+                                            <RS />
+                                            <Text style={styles.MarketDescription}>{product.price}</Text>
+                                        </View>
+                                        <Text style={styles.MarketName}>{product.title}</Text>
+                                    </TouchableOpacity>
+
+                                    <View style={styles.infoArea}>
+                                        <Text style={[{ width: '100%' }, styles.productDescription]}>
+                                            {product.description.length > 40
+                                                ? product.description.substring(0, 40) + '...'
+                                                : product.description}
+                                        </Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    ))}
-                </View>
-            </ScrollView>
+                        ))}
+                    </View>
+
+                </ScrollView>
+            )}
+
         </SafeAreaView>
     )
 }

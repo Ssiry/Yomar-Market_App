@@ -16,6 +16,8 @@ import AddCategory from './AddCategory'
 import PopUp from '@/app/(Utitilies)/PopUp'
 import axios from 'axios'
 import { GestureHandlerRootView, RefreshControl } from 'react-native-gesture-handler'
+import LatestProductCard from './seeAll/latestRow'
+import BestProductCard from './seeAll/bestSalesRow'
 
 
 const index = () => {
@@ -152,8 +154,8 @@ const index = () => {
                             الاكثر مبيعاً
                         </Text>
                     </View>
-
-                    <ProductCardRow />
+                    <BestProductCard />
+                    {/* <ProductCardRow /> */}
 
 
                     {/* see All Product from added latest */}
@@ -176,7 +178,10 @@ const index = () => {
                             المضافة مؤخراً
                         </Text>
                     </View>
-                    <ProductCardRow />
+
+                    <LatestProductCard />
+
+                    {/* <ProductCardRow /> */}
 
                 </ScrollView>
 
