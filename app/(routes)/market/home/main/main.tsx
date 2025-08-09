@@ -94,7 +94,7 @@ const Main = () => {
 
     // Render the component
     if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
-    if (error) return <Text>{error}</Text>;
+    if (error) return <Text>{error} hhhh</Text>;
 
     return (
         <SafeAreaView style={styles.safeContainer}>

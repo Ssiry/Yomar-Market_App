@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Image, Text, TextInput, TouchableOpacity, View, Alert, Platform } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { scale } from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -87,6 +87,9 @@ const index = () => {
 
     const handleSaveProduct = async () => {
         try {
+            setLoading(true);
+
+
             const token = await AsyncStorage.getItem('market/token');
             const marketId = await AsyncStorage.getItem('marketId');
 
@@ -142,6 +145,8 @@ const index = () => {
     };
 
     const fetchCategories = async () => {
+        setLoading(true);
+
         try {
             const response = await axios.get('http://192.168.1.11:5007/market/products/categories'); // عدّل الرابط حسب عنوان السيرفر
             setCategories(response.data);
@@ -250,13 +255,25 @@ const index = () => {
                                 selectedValue={selectedCategoryId}
                                 onValueChange={(itemValue) => setSelectedCategoryId(itemValue)}
                                 style={styles.picker}
+                                dropdownIconColor="#666"
+                                itemStyle={styles.itemStyle} // يعمل على iOS
                             >
-                                <Picker.Item label="اختر فئة المنتج" value={null} />
+                                <Picker.Item
+                                    label="اختر فئة المنتج"
+                                    value={null}
+                                    style={styles.itemStyle} // يعمل على Android
+                                />
                                 {categories.map(category => (
-                                    <Picker.Item key={category.id} label={category.name} value={category.id} />
+                                    <Picker.Item
+                                        key={category.id}
+                                        label={category.name}
+                                        value={category.id}
+                                        style={styles.itemStyle}
+                                    />
                                 ))}
                             </Picker>
                         </View>
+
                         {/* وصف المنتج  */}
                         <Text style={[styles.inputHeader]}>وصف المنتج</Text>
                         <TextInput
@@ -317,6 +334,7 @@ const index = () => {
                     <TouchableOpacity
                         style={styles.btn2}
                         onPress={() => handleSaveProduct()}
+                        disabled={loading}
                     >
                         {loading ? (
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: scale(10) }}>
@@ -425,8 +443,13 @@ const styles = StyleSheet.create({
     },
 
     picker: {
-        height: scale(40),
+        // height: scale(0),
         width: '100%',
+        fontFamily: 'Almarai'
     },
-
+    itemStyle: {
+        fontFamily: 'Almarai',
+        fontSize: scale(14),
+        lineHeight: Platform.OS === 'ios' ? scale(20) : undefined, // iOS فقط يحتاج lineHeight
+    },
 })

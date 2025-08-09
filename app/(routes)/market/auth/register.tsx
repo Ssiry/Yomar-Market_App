@@ -25,6 +25,7 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isAgree, setIsAgree] = useState(false);
+    const [description, setDescription] = useState('');
     const [error, setError] = useState('');
     const [isMapVisible, setIsMapVisible] = useState(false);
     const [zoneKM, setZoneKM] = useState<string>('');
@@ -104,6 +105,40 @@ const Register = () => {
         // router.push("/(routes)/market/home");
     };
 
+    const uploadImageToCloudinary = async (imageUri: string) => {
+        const formData = new FormData();
+
+        formData.append('file', {
+            uri: imageUri, // لا تحذف "file://" في Expo
+            type: 'image/jpeg',
+            name: 'photo.jpg',
+        } as any);
+
+        formData.append('upload_preset', 'my_unsigned'); // تأكد أنها موجودة في Cloudinary ومفعّلة كـ unsigned
+
+        try {
+            const response = await axios.post(
+                'https://api.cloudinary.com/v1_1/dhdxjuw3v/image/upload',
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
+
+            return response.data.secure_url; // رابط الصورة المرفوعة
+        } catch (error) {
+            if (error && typeof error === 'object' && 'response' in error) {
+                // @ts-ignore
+                console.error('❌ Error uploading image:', error.response?.data || (error as any).message);
+            } else {
+                console.error('❌ Error uploading image:', (error as Error).message);
+            }
+            return null;
+        }
+    };
+
 
 
     const handleSave = async () => {
@@ -118,6 +153,7 @@ const Register = () => {
                 password,
                 imguri: image ?? 'undefined',
                 name,
+                description,
                 adminName,
                 target: Number(0),
                 long: long !== undefined ? long : 0,
@@ -125,7 +161,7 @@ const Register = () => {
                 zoneKM: parseFloat(zoneKM),
             };
 
-            const response = await axios.post('http://192.168.1.11:5007:/market/auth/register', requestData);
+            const response = await axios.post('http://192.168.1.11:5007/market/auth/register', requestData);
 
             if (response.data.token) {
                 Alert.alert("✅ تم", "تم التسجيل بنجاح");
@@ -323,6 +359,18 @@ const Register = () => {
                     onChangeText={setAdminName}
                 />
 
+
+                {/* وصف نشاط المتجر */}
+                <Text style={styles.inputHeader}>وصف نشاط المتجر</Text>
+                <TextInput
+                    style={styles.textInput}
+                    placeholder="اكتب نبذة عن المتجر"
+                    placeholderTextColor="#878787"
+
+                    textAlign="right"
+                    value={description}
+                    onChangeText={setDescription}
+                />
 
 
                 {/* رقم الجوال */}

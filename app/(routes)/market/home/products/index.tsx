@@ -6,8 +6,6 @@ import { s, scale } from 'react-native-size-matters'
 import BgPattern from '@/assets/svg/Pattern'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { router } from 'expo-router'
-import ProductCard from '@/components/elements/ProductCard'
-import ProductCardRow from '@/components/elements/ProductCardRow'
 import * as DocumentPicker from 'expo-document-picker';
 import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -18,6 +16,9 @@ import axios from 'axios'
 import { GestureHandlerRootView, RefreshControl } from 'react-native-gesture-handler'
 import LatestProductCard from './seeAll/latestRow'
 import BestProductCard from './seeAll/bestSalesRow'
+import CategoryProducts from './seeAll/byCategory'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { push } from 'expo-router/build/global-state/routing'
 
 
 const index = () => {
@@ -123,7 +124,14 @@ const index = () => {
                                 <TouchableOpacity
                                     key={id}
                                     style={[styles.catItem]}
-                                // onPress={() => router.push(`/home/products/${item.item}`)}
+                                    onPress={() => {
+                                        AsyncStorage.setItem('SelectedCategoryId', item.id.toString());
+                                        AsyncStorage.setItem('SelectedCategoryName', item.name);
+
+                                        // <CategoryProducts categoryId={id} />
+                                        router.push('/(routes)/market/home/products/seeAll/byCategory')
+                                    }
+                                    }
                                 >
                                     <Text style={styles.catItemText}>
                                         {item.name}
